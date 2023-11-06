@@ -6,6 +6,8 @@ const _O = {
 	indexedconsumableByIds: {}, //all fruits by it number
 	indexedtreeByIds: {}, //all tree by it number
 	indexedMobsBymobIds: {}, //all mobs by its ids
+	arrayRoomsIds: [], //all RoomsIds by arrival
+	arrayTreesByIds: [], //all TreesIds by arrival
 	worldDatas: {
 		lifeNumber: 2,
 		updateInterval: 10,
@@ -26,40 +28,27 @@ const _O = {
 		roomIds: 0,
 		// ----------------
 		consumableIds: 0,
+		consumableCounter: 0,
 		consumableSheatsArray: [],
 		consumablechance: 0.5,
 		consumabledatas: {
-			w: 24, // collateral display damages if changed
-			h: 24, // collateral display damages if changed
+			w: 12, // collateral display damages if changed
+			h: 12, // collateral display damages if changed
+			fontrem: 0.8,
 		},
 		// ----------------
 		mobIds: 0,
 		mobCounter: 0,
 		mobSheatsArray: [],
-		mobdatas: {
-			svgfontsize: 8,
-			svgfontposX: 12,
-			svgfontposY: 15,
-			svgfontcolor: "white",
-			cssfontsize: 0.5, //rem
-			colors: {
-				energie: "#ff1f87",
-				faim: "#87ff1f",
-				fatigue: "#1f87ff",
-			},
-			mobw: 24, // collateral display damages if changed
-			mobh: 24, // collateral display damages if changed
-			mobwresting: 24 + 14, // collateral display damages if changed
-			mobhresting: 24 + 14, // collateral display damages if changed
-			case: "rgba(155, 155, 55,.2)",
-		},
 		// ----------------
 		treeIds: 0,
+		treeCounter: 0,
 		treeSheatsArray: [],
 		threechance: 0.6,
 		treedatas: {
 			w: 48, // collateral display damages if changed
 			h: 48, // collateral display damages if changed
+			fontrem: 0.8,
 		},
 	},
 	mob: function () {
@@ -73,7 +62,7 @@ const _O = {
 				stats: {
 					energie: {
 						color: _O.worldDatas.mobdatas.colors.energie,
-						cur: _O.tools.rand(15, 45),
+						cur: 0,
 						min: 0,
 						max: 100,
 						regen: 0.05,
@@ -81,30 +70,30 @@ const _O = {
 						active: false,
 						rested: false,
 						needrest: false,
-						strokedashoffset: 48,
-						strokedasharray: 48,
+						strokedashoffset: 102,
+						strokedasharray: 102,
 						whenactive: "dying",
 						svg: {
 							type: "circle",
-							r: 7,
+							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 10,
 						},
 					},
 					faim: {
 						color: _O.worldDatas.mobdatas.colors.faim,
-						cur: _O.tools.rand(10, 20),
+						cur: 25,
 						min: 0,
 						max: 100,
-						regen: -0.04,
+						regen: -0.01,
 						sens: -1,
 						active: false,
 						rested: false,
 						needrest: false,
-						strokedashoffset: 79,
-						strokedasharray: 79,
+						strokedashoffset: 124,
+						strokedasharray: 124,
 						whenactive: "starving",
 						svg: {
 							type: "circle",
-							r: 9,
+							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 6,
 						},
 					},
 					fatigue: {
@@ -112,17 +101,17 @@ const _O = {
 						cur: _O.tools.rand(10, 20),
 						min: 0,
 						max: 100,
-						regen: -0.05,
+						regen: -0.04,
 						sens: 1,
 						active: false,
 						rested: false,
 						needrest: false,
-						strokedashoffset: 69,
-						strokedasharray: 69,
+						strokedashoffset: 150,
+						strokedasharray: 150,
 						whenactive: "exhausted",
 						svg: {
 							type: "circle",
-							r: 11,
+							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 2,
 						},
 					},
 				},
@@ -135,7 +124,7 @@ const _O = {
 					dicoveredCase: [],
 					clones: 0,
 					speed: 1,
-					updateInterval: _O.worldDatas.updateInterval + _O.tools.rand(0, 50),
+					updateInterval: _O.worldDatas.updateInterval+25,// + _O.tools.rand(0, 50),
 					alone: true,
 					parentId: null,
 				},
@@ -280,6 +269,7 @@ const _O = {
 					case "die":
 						// todo
 						mob.die(mob);
+						_O.mobCounter++;
 						break;
 
 					default:
@@ -308,10 +298,10 @@ const _O = {
 
 				this.doAction(this);
 				_O.mobFunctions.regenvalue(this, "fatigue");
-				_O.mobFunctions.regenvalue(this, "faim");
-
+				
+				if(!fati.needrest) _O.mobFunctions.regenvalue(this, "faim");
 				// _O.mobFunctions.regenvalue(this, "energie");
-				_O.mobFunctions.regen_energie(this, "energie");
+				if(fati.needrest) _O.mobFunctions.regen_energie(this, "energie");
 
 				_O.mobFunctions.siJeMeReplique(this);
 			},
@@ -327,44 +317,30 @@ const _O = {
 				"http://www.w3.org/2000/svg",
 				"svg"
 			);
+			let svgSideLength = _O.worldDatas.mobdatas.svgSideLength;
 			mob.blocs.svg.setAttribute("class", name);
 			mob.blocs.svg.setAttribute("title", "Change Profil");
-			mob.blocs.svg.setAttribute("viewBox", "0 0 24 24");
-			mob.blocs.svg.setAttribute("enable-background", "new -24 -24 48 48");
-			for (const key in mob._.stats) {
-				if (Object.hasOwnProperty.call(mob._.stats, key)) {
-					const stat = mob._.stats[key];
-					_O.svgfunctions.setSvgJauge(
-						mob,
-						stat.svg.type,
-						key,
-						stat.color,
-						stat.svg.r
-					);
+			mob.blocs.svg.setAttribute(
+				"viewBox",
+				"0 0 " + svgSideLength + " " + svgSideLength
+			);
+			mob.blocs.svg.setAttribute(
+				"enable-background",
+				"new 0 0 " + svgSideLength + " " + svgSideLength
+			);
+			for (const name in mob._.stats) {
+				if (Object.hasOwnProperty.call(mob._.stats, name)) {
+					const stat = mob._.stats[name];
+					_O.svgfunctions.setSvgJauge(name, mob);
 				}
 			}
-			_O.svgfunctions.setSvgTexte(mob, "text");
-			mob.blocs.svg.appendChild(mob.svgtextgrid);
 		},
-		setSvgTexte: function (mob, type) {
-			mob.svgtextgrid = document.createElementNS(
-				"http://www.w3.org/2000/svg",
-				type
-			);
-			mob.svgtextgridNum = document.createTextNode(mob._.s.actual.RoomNum);
-			// mob.svgtextgrid.setAttribute("transform", "translate(?, ?) rotate(90)"); // ??
-			mob.svgtextgrid.setAttribute("x", _O.worldDatas.mobdatas.svgfontposX);
-			mob.svgtextgrid.setAttribute("y", _O.worldDatas.mobdatas.svgfontposY);
-			mob.svgtextgrid.setAttribute(
-				"font-size",
-				_O.worldDatas.mobdatas.svgfontsize
-			);
-			mob.svgtextgrid.setAttribute("text-anchor", "middle");
-			mob.svgtextgrid.setAttribute("fill", _O.worldDatas.mobdatas.svgfontcolor);
-			mob.svgtextgrid.appendChild(mob.svgtextgridNum);
-			mob.blocs.svg.appendChild(mob.svgtextgrid);
-		},
-		setSvgJauge: function (mob, type, name, color, r) {
+		setSvgJauge: function (name, mob) {
+			let stat = mob._.stats[name];
+			let type = stat.svg.type;
+			let color = stat.color;
+			let r = stat.svg.r;
+
 			mob.blocs[name] = document.createElementNS(
 				"http://www.w3.org/2000/svg",
 				type
@@ -372,10 +348,16 @@ const _O = {
 			mob.blocs[name].setAttribute("class", name);
 			mob.blocs[name].setAttribute("stroke", color);
 			mob.blocs[name].setAttribute("r", r);
-			mob.blocs[name].setAttribute("cx", "12");
-			mob.blocs[name].setAttribute("cy", "12");
+			mob.blocs[name].setAttribute(
+				"cx",
+				_O.worldDatas.mobdatas.svgSideLength / 2
+			);
+			mob.blocs[name].setAttribute(
+				"cy",
+				_O.worldDatas.mobdatas.svgSideLength / 2
+			);
 			mob.blocs[name].setAttribute("fill", "none");
-			mob.blocs[name].setAttribute("stroke-width", "2");
+			mob.blocs[name].setAttribute("stroke-width", "4");
 			mob.blocs[name].setAttribute(
 				"stroke-dasharray",
 				mob._.stats[name].strokedasharray
@@ -392,17 +374,14 @@ const _O = {
 			mob._.perso.xp += 50;
 			mob._.stats.fatigue.max += 2;
 			mob._.stats.energie.max += 2;
-			if (mob._.perso.updateInterval >= _O.worldDatas.updateInterval + 5)
-				mob._.perso.updateInterval -= 5;
+			// if (mob._.perso.updateInterval >= _O.worldDatas.updateInterval + 5)
+			// 	mob._.perso.updateInterval -= 5;
 			// add Room to personal list
 			mob._.perso.dicoveredCase.push(mob._.s.actual.RoomNum);
 		},
-		replication: function (mob) {
-			mob._.stats.energie.cur = mob._.stats.energie.cur / 2;
-			mob._.stats.faim.cur = mob._.stats.faim.cur * 1.5;
-			mob._.stats.fatigue.max = mob._.stats.fatigue.max * 0.9;
-			mob._.perso.updateInterval += 2;
-		},
+		// replication: function (mob) {
+		// 	// mob._.perso.updateInterval += 2;
+		// },
 	},
 	roomFunctions: {
 		siJeChangeDeCase: function (mob) {
@@ -418,13 +397,36 @@ const _O = {
 			if (typeof actualRoom === "undefined") {
 				_O.roomFunctions.createNewRoom(mob._.s.actual.RoomNum);
 				_O.rewardBonus.newRoomdiscovered(mob);
-				mob.svgtextgridNum.textContent = mob._.s.actual.RoomNum;
+				// mob.svgtextgridNum.textContent = mob._.s.actual.RoomNum;
+
 				if (_O.worldDatas.roomIds > _O.worldDatas.mobIds * 2) {
-					_O.decorationFunctions.addtree(mob._.s.actual.RoomNum);
-					_O.decorationFunctions.addtree(mob._.s.actual.RoomNum);
-					_O.decorationFunctions.addtree(mob._.s.actual.RoomNum);
-					_O.decorationFunctions.addtree(mob._.s.actual.RoomNum);
-					// _O.consumableFunctions.addconsumable(mob._.s.actual.RoomNum);
+					let maxroom = Math.floor(
+						(_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength) *
+							(_O.worldDatas.sizes.size.h / _O.worldDatas.roomSideLength)
+					);
+
+					if (_O.worldDatas.treeCounter < maxroom) {
+						_O.decorationFunctions.addtree(
+							"addtree",
+							false,
+							mob._.s.actual.RoomNum
+						);
+						_O.decorationFunctions.addtree(
+							"addtree",
+							false,
+							mob._.s.actual.RoomNum
+						);
+						_O.decorationFunctions.addtree(
+							"addtree",
+							false,
+							mob._.s.actual.RoomNum
+						);
+						console.log(_O.worldDatas.treeCounter, maxroom, " arbre !??");
+					} else {
+						console.log("trop d'arbre !??");
+					}
+
+					// _O.consumableFunctions.dropconsumable("pop consumable",false, mob._.s.actual.RoomNum);
 				}
 			}
 		},
@@ -483,6 +485,14 @@ const _O = {
 				mob.blocs.alerte.classList.remove("up");
 			}
 		},
+		setRoomLevel: function (room) {
+			let oldmapname = "lv" + room.lv - 1;
+			let mapname = "lv" + room.lv;
+			room.div.classList.remove(oldmapname); //,'lv1','lv2','lv3','lv4,','lv5')
+			room.div.classList.add(mapname);
+
+			// _O.indexedRoomsByCaseNumber[caseNumber]
+		},
 		createNewRoom: function (caseNumber) {
 			// case jamais découverte
 			let newRoomPos = _O.roomFunctions.getRoomXYFromNumber(caseNumber);
@@ -497,13 +507,17 @@ const _O = {
 					left: newRoomPos.x + "px",
 				},
 			});
-			_O.indexedRoomsByCaseNumber[caseNumber] = {
+			let room = {
+				roomNum: caseNumber,
+				lv: 0,
 				div: newgrid,
 				habitants: {},
 				trees: {},
 				consumables: {},
 				coords: { x: newRoomPos.x, y: newRoomPos.y },
 			};
+			_O.indexedRoomsByCaseNumber[caseNumber] = room;
+			_O.arrayRoomsIds.push(caseNumber);
 			_O.worldDatas.roomIds++;
 			_O.worldRoomsDiv.prepend(_O.indexedRoomsByCaseNumber[caseNumber].div);
 		},
@@ -592,8 +606,8 @@ const _O = {
 				const newCol = col + offset.x;
 				const newRow = row + offset.y;
 				if (newCol >= 0 && newCol < cols && newRow >= 0) {
-					const roomNumber = newRow * cols + newCol + 1;
-					rooms.push(roomNumber);
+					const roomNum = newRow * cols + newCol + 1;
+					rooms.push(roomNum);
 				}
 			}
 			return rooms;
@@ -601,20 +615,33 @@ const _O = {
 	},
 	worldFunctions: {
 		createWorldDivsAndAddToDom: function () {
-			_O.worldDiv = document.createElement("div");
-			_O.worldDiv.className = "world";
-			_O.worldDiv.style.height = _O.worldDatas.sizes.size.h + "px";
-			_O.worldDiv.style.width = _O.worldDatas.sizes.size.w + "px";
-			_O.worldDiv.style.position = "absolute";
-			_O.worldDiv.style.top =
-				window.innerHeight / 2 - _O.worldDatas.sizes.size.h / 2 + "px";
-			_O.worldDiv.style.left =
-				window.innerWidth / 2 - _O.worldDatas.sizes.size.w / 2 + "px";
+			_O.worldDiv = _O.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "world",
+				},
+				style: {
+					top: window.innerHeight / 2 - _O.worldDatas.sizes.size.h / 2 + "px",
+					left: window.innerWidth / 2 - _O.worldDatas.sizes.size.w / 2 + "px",
+					height: _O.worldDatas.sizes.size.h + "px",
+					width: _O.worldDatas.sizes.size.w + "px",
+					position: "absolute",
+				},
+			});
+			_O.worldRoomsDiv = _O.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "allrooms",
+				},
+			});
 
-			_O.worldRoomsDiv = document.createElement("div");
-			_O.worldRoomsDiv.className = "allrooms";
-			_O.worldMobsDiv = document.createElement("div");
-			_O.worldMobsDiv.className = "allmobs";
+			_O.worldMobsDiv = _O.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "allmobs",
+				},
+			});
+
 			_O.worldDiv.appendChild(_O.worldRoomsDiv);
 			_O.worldDiv.appendChild(_O.worldMobsDiv);
 			document.body.prepend(_O.worldDiv);
@@ -689,7 +716,7 @@ const _O = {
 			let v = mob._.stats[valuename];
 			mob.blocs[valuename].setAttribute(
 				"stroke-dashoffset",
-				mob._.stats[valuename].strokedasharray +
+				mob._.stats[valuename].strokedashoffset +
 					(Math.floor((v.cur / v.max) * 100) / 100) *
 						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
@@ -910,22 +937,36 @@ const _O = {
 				},
 				treeUpdate: function (tree) {
 					let rand = _O.tools.rand(0, 100);
-					console.log(tree._.sheat.description + " updating : " + rand);
-					if (rand >8) {
-						// _O.consumableFunctions.addconsumable(tree._.s.actual.RoomNum);
-						_O.consumableFunctions.dropconsumable(tree._.s.actual.RoomNum);
+
+					// console.log(tree._.sheat.description + " updating : " + rand);
+
+					if (rand > 8) {
+						_O.consumableFunctions.dropconsumable("new fruit:", tree, false);
 					}
 				},
 				initiate: function (tree, caseNumber) {
 					_O.decorationFunctions.setNewIDS(tree);
 					_O.decorationFunctions.createNewDiv(tree);
-					// _O.decorationFunctions.setNewPos(tree, caseNumber);
-					_O.consumableFunctions.setNewPos(tree, caseNumber,_O.worldDatas.treedatas);
+					tree._.s.actual.RoomNum = caseNumber;
+
+					_O.communsFunctions.setNewPosInThisRoom(
+						tree,
+						_O.worldDatas.treedatas,
+						(parent = false)
+					);
+
+					_O.arrayTreesByIds.push(tree._.perso.id);
 					_O.indexedtreeByIds[tree._.perso.id] = tree;
 					_O.indexedRoomsByCaseNumber[caseNumber].trees[tree._.perso.id] = tree;
+
 					_O.worldRoomsDiv.append(tree.divElement);
 					if (tree._.sheat.drop) {
-						console.log(tree._.sheat.description + ' is a dropper')
+						_O.indexedRoomsByCaseNumber[caseNumber].lv += 1;
+						_O.roomFunctions.setRoomLevel(
+							_O.indexedRoomsByCaseNumber[caseNumber]
+						);
+
+						// console.log(tree._.sheat.description + " is a dropper");
 						tree.treeAlive = setInterval(() => {
 							tree.treeUpdate(tree);
 						}, tree._.perso.updateInterval);
@@ -934,36 +975,33 @@ const _O = {
 			};
 			return { ...tree };
 		},
-		addtree: function (caseNumber) {
-			if (_O.tools.rand(0, 100) <= _O.worldDatas.threechance * 100) {
-				if (_O.worldDatas.treeIds < _O.worldDatas.roomIds * 2) {
-					let tree = _O.decorationFunctions.tree();
-					tree.initiate(tree, caseNumber);
+		addtree: function (help = "vide", parent = false, caseNumber) {
+			// console.log(help, parent, caseNumber);
+			if (!(parent === false && caseNumber === false)) {
+				if (_O.tools.rand(0, 100) <= _O.worldDatas.threechance * 100) {
+					if (_O.worldDatas.treeIds < _O.worldDatas.roomIds * 2) {
+						let tree = _O.decorationFunctions.tree();
+						tree.initiate(tree, caseNumber);
+					}
 				}
+			} else {
+				console.log(
+					help +
+						" has no parent and no caseNumber ! this is not suppose to happen !!"
+				);
 			}
 		},
 		createNewDiv: function (tree) {
 			tree.divElement = _O.frontFunctions.createDiv({
 				tag: "div",
 				attributes: {
-					className: "tree",
+					className: "three " + tree._.sheat.model,
 					textContent: tree._.sheat.ico,
 				},
+				styles: {
+					title: tree._.perso.id + " " + tree._.perso.immat,
+				},
 			});
-			tree.divElement.title = tree._.perso.id + " " + tree._.perso.immat;
-			tree.divElement.className = "three " + tree._.sheat.model;
-		},
-		setNewPos: function (tree, caseNumber) {
-			tree._.s.actual.RoomNum = caseNumber;
-			let coords = _O.indexedRoomsByCaseNumber[caseNumber].coords;
-			let next = {
-				x: coords.x + tree._.s.actual.x - _O.worldDatas.treedatas.w / 2,
-				y: coords.y + tree._.s.actual.y - _O.worldDatas.treedatas.h / 2,
-			};
-			tree._.s.actual.x = next.x;
-			tree._.s.actual.y = next.y;
-			tree.divElement.style.left = tree._.s.actual.x + "px";
-			tree.divElement.style.top = tree._.s.actual.y + "px";
 		},
 		setNewIDS: function (tree) {
 			tree._.perso.id = _O.worldDatas.treeIds + 0;
@@ -981,7 +1019,43 @@ const _O = {
 					);
 			}
 			tree._.perso.immat = immat;
+			_O.treeCounter++;
 			_O.worldDatas.treeIds++;
+		},
+	},
+	communsFunctions: {
+		setNewPosInThisRoom: function (obj, objdatas, parent = false) {
+			if (parent) {
+				obj._.s.actual.RoomNum = parent._.s.actual.RoomNum;
+			}
+			let roomCoords =
+				_O.indexedRoomsByCaseNumber[obj._.s.actual.RoomNum].coords;
+
+			let next = {
+				x: roomCoords.x + obj._.s.actual.x,
+				y: roomCoords.y + obj._.s.actual.y,
+			};
+			obj._.s.actual.x = next.x;
+			obj._.s.actual.y = next.y;
+
+			obj.divElement.style.left = obj._.s.actual.x - objdatas.w / 2 + "px";
+			obj.divElement.style.top = obj._.s.actual.y - objdatas.h / 2 + "px";
+		},
+		setPos: function (obj, objdatas) {
+			let rand = _O.tools.rand(0, _O.arrayRoomsIds.length - 1);
+			obj._.s.actual.RoomNum = _O.arrayRoomsIds[rand];
+			let roomCoords =
+				_O.indexedRoomsByCaseNumber[obj._.s.actual.RoomNum].roomCoords;
+
+			let next = {
+				x: roomCoords.x + obj._.s.actual.x,
+				y: roomCoords.y + obj._.s.actual.y,
+			};
+			obj._.s.actual.x = next.x;
+			obj._.s.actual.y = next.y;
+
+			obj.divElement.style.left = obj._.s.actual.x - objdatas.w / 2 + "px";
+			obj.divElement.style.top = obj._.s.actual.y - objdatas.h / 2 + "px";
 		},
 	},
 	consumableFunctions: {
@@ -1001,6 +1075,7 @@ const _O = {
 						immat: null, // name
 						type: null, // type of consumable
 						updateInterval: _O.worldDatas.updateInterval + _O.tools.rand(0, 50),
+						parent: null,
 					},
 					s: {
 						actual: {
@@ -1013,75 +1088,61 @@ const _O = {
 					sheat: null,
 				},
 				update: function () {},
-				initiate: function (caseNumber) {
-					_O.consumableFunctions.setNewIDS(consumable);
-					_O.consumableFunctions.createNewDiv(consumable);
-					_O.consumableFunctions.setNewPos(consumable, caseNumber,_O.worldDatas.consumabledatas);
-
-					_O.indexedconsumableByIds[consumable._.perso.id] = consumable;
-
-					_O.indexedRoomsByCaseNumber[caseNumber].consumables[
-						consumable._.perso.id
-					] = consumable;
-
-					_O.worldRoomsDiv.append(consumable.divElement);
+				initiate: function (parent, caseNumber) {
+					this._.s.actual.RoomNum = caseNumber;
+					if (parent) {
+						this._.s.actual.RoomNum = parent._.s.actual.RoomNum;
+						this._.perso.parent = parent;
+					}
+					_O.consumableFunctions.setNewIDS(this);
+					_O.consumableFunctions.createNewDiv(this);
+					// _O.communsFunctions.setPos(this, _O.worldDatas.consumabledatas);
+					_O.communsFunctions.setNewPosInThisRoom(
+						this,
+						_O.worldDatas.consumabledatas,
+						parent
+					);
+					_O.indexedconsumableByIds[consumable._.perso.id] = this;
+					_O.indexedRoomsByCaseNumber[this._.s.actual.RoomNum].consumables[
+						this._.perso.id
+					] = this;
+					_O.worldRoomsDiv.append(this.divElement);
 				},
 			};
 			return { ...consumable };
 		},
-		addconsumable: function (caseNumber) {
-			if (_O.tools.rand(0, 100) <= _O.worldDatas.consumablechance * 100) {
-				if (_O.worldDatas.consumableIds < _O.worldDatas.roomIds / 3) {
-					let consumable = _O.consumableFunctions.consumable();
-					consumable.initiate(caseNumber);
+		dropconsumable: function (help = "", parent = false, caseNumber = false) {
+			if (!(parent === false && caseNumber === false)) {
+				if (_O.tools.rand(0, 100) <= _O.worldDatas.consumablechance * 100) {
+					if (_O.worldDatas.consumableIds < _O.worldDatas.roomIds / 3) {
+						let consumable = _O.consumableFunctions.consumable();
+						consumable.initiate(parent, caseNumber);
+
+						parent.divElement.classList.add("onfruits");
+						consumable.divElement.classList.add("new");
+						setTimeout(() => {
+							consumable.divElement.classList.remove("new");
+							parent.divElement.classList.remove("onfruits");
+						}, 2000);
+					}
 				}
-			}
-		},
-		dropconsumable: function (caseNumber) {
-			if (_O.tools.rand(0, 100) <= _O.worldDatas.consumablechance * 100) {
-				if (_O.worldDatas.consumableIds < _O.worldDatas.roomIds / 3) {
-					let consumable = _O.consumableFunctions.consumable();
-					consumable.initiate(caseNumber);
-					// _O.consumableFunctions.setNewPos(tree, caseNumber);
-				}
+			} else {
+				console.log(help + " has no parent and no caseNumber");
 			}
 		},
 		createNewDiv: function (consumable) {
 			consumable.divElement = _O.frontFunctions.createDiv({
 				tag: "div",
 				attributes: {
-					className: "consumable",
+					className: consumable._.sheat.className + " new",
 					textContent: consumable._.sheat.ico,
+					title: consumable._.sheat.description,
 				},
 			});
 			consumable.divElement.title =
 				consumable._.perso.id + " " + consumable._.perso.immat;
 			consumable.divElement.className =
-				"consumable " + consumable._.sheat.model;
-		},
-		setNewPos2: function (obj, caseNumber) {
-			obj._.s.actual.RoomNum = caseNumber;
-			let coords = _O.indexedRoomsByCaseNumber[caseNumber].coords;
-			let next = {
-				x: coords.x + obj._.s.actual.x - _O.worldDatas.treedatas.w / 2,
-				y: coords.y + obj._.s.actual.y - _O.worldDatas.treedatas.h / 2,
-			};
-			obj._.s.actual.x = next.x;
-			obj._.s.actual.y = next.y;
-			obj.divElement.style.left = obj._.s.actual.x + "px";
-			obj.divElement.style.top = obj._.s.actual.y + "px";
-		},
-		setNewPos: function (obj, caseNumber, objdatas) {
-			obj._.s.actual.RoomNum = caseNumber;
-			let coords = _O.indexedRoomsByCaseNumber[caseNumber].coords;
-			let next = {
-				x:coords.x + obj._.s.actual.x - objdatas.w / 2,
-				y:coords.y + obj._.s.actual.y - objdatas.h / 2,	};
-			obj._.s.actual.x = next.x;
-			obj._.s.actual.y = next.y;
-
-			obj.divElement.style.left = obj._.s.actual.x + "px";
-			obj.divElement.style.top = obj._.s.actual.y + "px";
+				consumable._.sheat.className + " " + consumable._.sheat.model;
 		},
 		setNewIDS: function (consumable) {
 			consumable._.perso.id = _O.worldDatas.consumableIds + 0;
@@ -1131,15 +1192,21 @@ const _O = {
 			let mobx = _O.mob();
 
 			mobx._.s = structuredClone(mob._.s);
+			mobx._.stats = structuredClone(mob._.stats);
 			mobx._.sheat = structuredClone(mob._.sheat);
 			mobx._.perso = structuredClone(mob._.perso);
+
+			mobx._.perso.xp = +10;
+			mobx._.stats.fatigue.cur = mob._.stats.fatigue.max * .70;
+			mob._.stats.energie.cur = 0;
+			mob._.stats.fatigue.cur = mob._.stats.fatigue.max;
+
+			mobx._.stats.energie.cur = 0;
 			mobx._.perso.clones = 0;
 			mobx._.perso.dicoveredCase = [];
 			mobx._.perso.xp = 0;
-
 			mobx._.stats.faim.cur = 0;
-			mobx._.stats.fatigue.cur = mobx._.stats.fatigue.max * 0.75;
-
+			// mobx._.perso.updateInterval = _O.worldDatas.updateInterval + 50;
 			mobx._.perso.parentId = mob._.perso.id;
 			mobx.createNewMobDiv();
 
@@ -1148,7 +1215,9 @@ const _O = {
 			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
 
 			mob._.perso.clones++;
-			_O.rewardBonus.replication(mob);
+			
+
+			// _O.rewardBonus.replication(mob);
 		},
 		regen_energie: function (mob, valuename) {
 			let v = mob._.stats[valuename];
@@ -1156,7 +1225,15 @@ const _O = {
 			if (v.cur > v.max) v.cur = v.max;
 			if (v.cur < v.min) v.cur = v.min;
 			let centage = Math.floor((Math.floor((v.cur / v.max) * 100) / 100) * 100);
-			_O.frontFunctions.refreshSvgJauge(mob, valuename);
+			
+			// let v = mob._.stats[valuename];
+			mob.blocs[valuename].setAttribute(
+				"stroke-dashoffset",
+				mob._.stats[valuename].strokedashoffset +
+					(Math.floor((v.cur / v.max) * 100) / 100) * mob._.stats[valuename].strokedasharray
+			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
+
+			// _O.frontFunctions.refreshSvgJauge(mob, valuename);
 		},
 		regenvalue: function (mob, valuename) {
 			let v = mob._.stats[valuename];
@@ -1167,9 +1244,8 @@ const _O = {
 			// refresh jauge
 			mob.blocs[valuename].setAttribute(
 				"stroke-dashoffset",
-				mob._.stats[valuename].strokedasharray +
-					(Math.floor((v.cur / v.max) * 100) / 100) *
-						mob._.stats[valuename].strokedasharray
+				mob._.stats[valuename].strokedashoffset +
+					(Math.floor((v.cur / v.max) * 100) / 100) * mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 		},
 		siJeMeReplique: function (mob) {
@@ -1200,7 +1276,31 @@ const _O = {
 			}
 		},
 	},
+	setdatas: function () {
+		console.log(_O);
+		let size = 52
+		_O.worldDatas.mobdatas={
+			svgSideLength: size,
+			mobw: size/2,
+			mobh: size/2,
+			mobwrestin: size/1.5,
+			mobhresting: size/1.5, 
+			case: "rgba(155, 155, 55,.2)",
+			cssfontsize: 5, //rem
+			cssfonticosize: 1.2, //rem
+			colors: {
+				energie:  "#ffffffDD", //blanc
+				faim: "#ff0000",//rouge
+				fatigue:"#00ff00",//vert
+			},
+			// svgfontsize: 24,
+			// svgfontposX: 24,
+			// svgfontposY: 24,
+			// svgfontcolor: "white",
+		}
+	},
 	start: function () {
+		this.setdatas();
 		this.frontFunctions.addCss();
 		this.worldFunctions.createWorldDivsAndAddToDom();
 		this.worldFunctions.createMobSheatsArray();
@@ -1246,6 +1346,7 @@ const _O = {
 				// world allrooms -------------------------
 				`.world .allrooms {position: absolute;width: 100%;height: 100%;overflow: hidden;border-radius: 1rem;-webkit-box-shadow: inset 0px 0px 35px 11px rgba(39, 39, 39, 0.84);box-shadow: inset 0px 0px 35px 11px rgba(46, 46, 46, 0.84);background-color: #fffafa25;` +
 				`}` +
+				// room -------------------------
 				`.room{padding:5px;color:white;font-size:.5rem;position:absolute;` +
 				// `outline:1px solid rgba(0,255,0,0.1);` +
 				`height:${_O.worldDatas.roomSideLength}px;` +
@@ -1261,11 +1362,16 @@ const _O = {
 				// ----------------------------------------
 				`.room:hover{border-radius:0;` +
 				`}` +
+				// room by lv ----------------------------------------
+				`.room.lv1{background-color:rgba(155, 200, 155,.2);}` +
+				`.room.lv2{background-color:rgba(200, 200, 155,.2);}` +
+				`.room.lv3{background-color:rgba(250, 250, 200,.2);}` +
+				`.room.lv4{background-color:rgba(155, 155, 55,.2);}` +
 				// -------------consumable--------------------
 				`.consumable {` +
 				`position:absolute;` +
 				`color:white;` +
-				`font-size:1rem;` +
+				`font-size:${_O.worldDatas.consumabledatas.fontrem}rem;` +
 				`text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
 				// `outline:2px solid rgba(255,255,255,1);` +
 				`width:${_O.worldDatas.consumabledatas.w}px;` +
@@ -1273,12 +1379,25 @@ const _O = {
 				`display:flex;` +
 				`align-items:center;` +
 				`justify-content:center;` +
+				`transition-duration:1s;` +
+				`transition-property:transform,opacity;` +
+				`transition-timing-function:ease-in-out;` +
+				`opacity:1;` +
+				`transform:scale(1);` +
+				`}` +
+				// consumable new --------------------
+				`.consumable.new {` +
+				`opacity:0.3;` +
+				`transition-duration:1s;` +
+				`transition-property:transform,opacity;` +
+				`transition-timing-function:ease-in-out;` +
+				`transform:scale(0.1);` +
 				`}` +
 				// -------------tree--------------------
 				`.tree {` +
 				`position:absolute;` +
 				`color:white;` +
-				`font-size:1rem;` +
+				`font-size:${_O.worldDatas.treedatas.fontrem}rem;` +
 				//`text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
 				// `outline:2px solid rgba(255,255,255,.3);` +
 				`width:${_O.worldDatas.treedatas.w}px;` +
@@ -1293,6 +1412,11 @@ const _O = {
 				`.tree.visited {` +
 				`background: radial-gradient(circle, rgba(32,200,2,.7) 0%, rgba(16,112,31,0) 50%);` +
 				`}` +
+				`.tree.onfruits {` +
+				`filter: hue-rotate(180deg);` +
+				// `background: radial-gradient(circle, rgba(2,32,20,.7) 0%, rgba(31,16,112,0) 50%);` +
+
+				`}` +
 				// ----------------------------------------
 				`.room2{align-content:flex-start;transform-origin:top left;` +
 				`height:${_O.worldDatas.roomSideLength / 10}px;` +
@@ -1304,8 +1428,7 @@ const _O = {
 				// -------------allmobs--------------------
 				`.world .mob{transition-duration:500ms;transition-property:width,height,color,margin;transition-timing-function:ease-in-out;border-radius:50%;cursor:pointer;position:absolute;` +
 				`display:flex;align-items:center;justify-content:center;` +
-				`border:1px dotted ${_O.worldDatas.mobdatas.colors[`energie`]};` +
-				`font-size:${_O.worldDatas.mobdatas.cssfontsize}rem;` +
+				// `border:2px dotted ${_O.worldDatas.mobdatas.colors[`energie`]};` +
 				`width:${_O.worldDatas.mobdatas.mobh}px;` +
 				`height:${_O.worldDatas.mobdatas.mobw}px;` +
 				`}` +
@@ -1320,9 +1443,9 @@ const _O = {
 				`.world .mob.exhausted{` +
 				`opacity:.7;` +
 				`font-size:.5rem;` +
-				`border:2px dotted ${_O.worldDatas.mobdatas.colors[`fatigue`]};` +
-				`width: ${_O.worldDatas.mobdatas.mobhresting}px;` +
-				`height: ${_O.worldDatas.mobdatas.mobwresting}px;` +
+				`border:2px dotted ${_O.worldDatas.mobdatas.colors[`energie`]};` +
+				`width: ${_O.worldDatas.mobdatas.mobwrestin}px;` +
+				`height: ${_O.worldDatas.mobdatas.mobhresting}px;` +
 				`margin-left: -7px;` +
 				`margin-top: -7px;` +
 				`}` +
@@ -1342,6 +1465,7 @@ const _O = {
 				`position: absolute;` +
 				`width: ${_O.worldDatas.mobdatas.mobh}px;` +
 				`height: ${_O.worldDatas.mobdatas.mobh}px;` +
+				`font-size:${_O.worldDatas.mobdatas.cssfonticosize}rem;` +
 				// `background-color: #FFFFFF65;` +
 				`}` +
 				// disstarving ---------------------------------
@@ -1378,7 +1502,7 @@ const _O = {
 				`opacity:1;` +
 				`}` +
 				// disico ---------------------------------
-				`.mob .disico {font-size: .9rem;border-radius: 50%;
+				`.mob .disico {border-radius: 50%;
 					width:max-content` +
 				`}` +
 				// dismyid ---------------------------------
@@ -1419,7 +1543,11 @@ const _O = {
 				// `bottom:50%;right:50%;` +
 				// `}` +
 				// -------------allsvg---------------------
-				`.mob svg{position:absolute;width:40px;height:40px;}` +
+				`.mob svg{` +
+				`position:absolute;` +
+				`width:${_O.worldDatas.mobdatas.svgSideLength}px;` +
+				`height:${_O.worldDatas.mobdatas.svgSideLength}px;` +
+				`}` +
 				`.mob svg circle{stroke-linecap:round;}`
 				// mobdisplay-------------- JS ------------
 				// `.mob:hover .mobdisplay {display: initial;}`
@@ -1432,18 +1560,21 @@ const _O = {
 					ico: "🌳",
 					description: "Deciduous Tree",
 					model: "tree",
+					className: "tree",
 					stats: {},
 				},
 				"Evergreen Tree": {
 					ico: "🌲",
 					description: "Evergreen Tree",
 					model: "tree",
+					className: "tree",
 					stats: {},
 				},
 				"Palm Tree": {
 					ico: "🌴",
 					description: "Palm Tree",
 					model: "tree",
+					className: "tree",
 					stats: {},
 					drop: {
 						indexedFlora: {
@@ -1456,7 +1587,8 @@ const _O = {
 				Grapes: {
 					ico: "🍇",
 					description: "Grapes",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 10,
 						fatigue: -5,
@@ -1466,7 +1598,8 @@ const _O = {
 				Melon: {
 					ico: "🍈",
 					description: "Melon",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 15,
 						fatigue: -3,
@@ -1476,7 +1609,8 @@ const _O = {
 				Watermelon: {
 					ico: "🍉",
 					description: "Watermelon",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 20,
 						fatigue: -5,
@@ -1486,7 +1620,8 @@ const _O = {
 				Orange: {
 					ico: "🍊",
 					description: "Orange",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 12,
 						fatigue: -6,
@@ -1496,7 +1631,8 @@ const _O = {
 				Lemon: {
 					ico: "🍋",
 					description: "Lemon",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 8,
 						fatigue: -4,
@@ -1506,7 +1642,8 @@ const _O = {
 				Banana: {
 					ico: "🍌",
 					description: "Banana",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 25,
 						fatigue: -8,
@@ -1516,7 +1653,8 @@ const _O = {
 				Pineapple: {
 					ico: "🍍",
 					description: "Pineapple",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 18,
 						fatigue: -7,
@@ -1526,7 +1664,8 @@ const _O = {
 				Mango: {
 					ico: "🥭",
 					description: "Mango",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 22,
 						fatigue: -6,
@@ -1536,7 +1675,8 @@ const _O = {
 				Apple: {
 					ico: "🍎",
 					description: "Apple",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 13,
 						fatigue: -5,
@@ -1546,7 +1686,8 @@ const _O = {
 				Pear: {
 					ico: "🍏",
 					description: "Pear",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 14,
 						fatigue: -4,
@@ -1556,7 +1697,8 @@ const _O = {
 				"Green Apple": {
 					ico: "🍐",
 					description: "Green Apple",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 14,
 						fatigue: -5,
@@ -1566,7 +1708,8 @@ const _O = {
 				Peach: {
 					ico: "🍑",
 					description: "Peach",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 16,
 						fatigue: -6,
@@ -1576,7 +1719,8 @@ const _O = {
 				Cherries: {
 					ico: "🍒",
 					description: "Cherries",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 12,
 						fatigue: -4,
@@ -1586,7 +1730,8 @@ const _O = {
 				Strawberry: {
 					ico: "🍓",
 					description: "Strawberry",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 9,
 						fatigue: -3,
@@ -1596,7 +1741,8 @@ const _O = {
 				Kiwi: {
 					ico: "🥝",
 					description: "Kiwi",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 10,
 						fatigue: -4,
@@ -1606,7 +1752,8 @@ const _O = {
 				Tomato: {
 					ico: "🍅",
 					description: "Tomato",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 7,
 						fatigue: -2,
@@ -1616,7 +1763,8 @@ const _O = {
 				Coconut: {
 					ico: "🥥",
 					description: "Coconut",
-					model: "consumable",
+					model: "fruit",
+					className: "consumable",
 					stats: {
 						energie: 30,
 						fatigue: -10,
