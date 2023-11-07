@@ -1,0 +1,409 @@
+const _M = {
+	// MOB : mobile object behaviour
+	mob: function () {
+		let mob = {
+			mobDivElement: document.createElement("div"),
+			blocs: {},
+			actionsTodo: [],
+			test: Math.floor(Math.random() * _W.worldDatas.mobSheatsArray.length),
+			_: {
+				alive: null,
+				stats: {
+					energie: {
+						color: _W.worldDatas.mobdatas.colors.energie,
+						cur: 0,
+						min: 0,
+						max: 100,
+						regen: 0.05,
+						sens: 1,
+						active: false,
+						rested: false,
+						needrest: false,
+						strokedashoffset: 102,
+						strokedasharray: 102,
+						whenactive: "dying",
+						svg: {
+							type: "circle",
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 10,
+						},
+					},
+					faim: {
+						color: _W.worldDatas.mobdatas.colors.faim,
+						cur: 25,
+						min: 0,
+						max: 100,
+						regen: -0.01,
+						sens: -1,
+						active: false,
+						rested: false,
+						needrest: false,
+						strokedashoffset: 124,
+						strokedasharray: 124,
+						whenactive: "starving",
+						svg: {
+							type: "circle",
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 6,
+						},
+					},
+					fatigue: {
+						color: _W.worldDatas.mobdatas.colors.fatigue,
+						cur: _T.tools.rand(10, 20),
+						min: 0,
+						max: 100,
+						regen: -0.04,
+						sens: 1,
+						active: false,
+						rested: false,
+						needrest: false,
+						strokedashoffset: 150,
+						strokedasharray: 150,
+						whenactive: "exhausted",
+						svg: {
+							type: "circle",
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 2,
+						},
+					},
+				},
+				perso: {
+					id: null,
+					immat: null, // name
+					type: null, // type of mob
+					IA: true,
+					xp: 0,
+					dicoveredCase: [],
+					clones: 0,
+					speed: 1,
+					updateInterval: _W.worldDatas.updateInterval + 25, // + _T.tools.rand(0, 50),
+					alone: true,
+					parentId: null,
+				},
+				s: {
+					actual: {
+						x: _T.tools.rand(0, _W.worldDatas.sizes.size.w),
+						y: _T.tools.rand(0, _W.worldDatas.sizes.size.h),
+						z: _T.tools.rand(-1, 1),
+						RoomNum: 0,
+					},
+					futur: {
+						x: 0,
+						y: 0,
+						z: 0,
+						RoomNum: 0,
+					},
+					past: {
+						x: 0,
+						y: 0,
+						z: 0,
+						RoomNum: 0,
+					},
+				},
+				// ----------- todo regroupe dir,delayBeforeChangeDir,diramplitude
+				// dirx: {
+				// 	cur: _T.tools.rand(0, 360),
+				// 	amplitude: 45,
+				// 	delayChange: { cur: 0, max: 10 },
+				// },
+				dir: _T.tools.rand(0, 360),
+				delayBeforeChangeDir: { cur: 0, max: 30 },
+				diramplitude: 45,
+				// -------------------------
+				status: { cur: 0, old: 0 },
+				mouse: this.mouse,
+				sheat:
+					_W.worldDatas.mobSheatsArray[
+						Math.floor(Math.random() * _W.worldDatas.mobSheatsArray.length)
+					],
+				test: _W.worldDatas.mobSheatsArray[self.test],
+			},
+			initiate: function () {
+				_M.mobFunctions.setFuturPosAndRoom(this);
+				_F.frontFunctions.updateMobDivElementPos(this);
+				_F.frontFunctions.setMobDivElementsAndAddToDom(this);
+				this.alive = setInterval(() => {
+					this.mobUpdate();
+				}, this._.perso.updateInterval);
+			},
+			removefromIndexes: function (mob) {
+				console.log(mob);
+				delete _O.indexedMobsBymobIds[mob._.perso.id];
+			},
+			removefromDom: function (mob) {
+				mob.mobDivElement.remove();
+			},
+			die: function (mob) {
+				clearInterval(mob.alive);
+				_R.roomFunctions.exitCase(mob);
+				if (!mob.mobDivElement.classList.contains("thisistheend")) {
+					mob.mobDivElement.classList.add("thisistheend");
+				}
+				mob.removefromIndexes(mob);
+				console.log(mob._.perso.immat + " is on the dev paradise way !!!");
+				setTimeout(
+					(dom) => {
+						this.removefromDom(this);
+					},
+					_W.worldDatas.mobDeleteTimeout,
+					"dom"
+				);
+			},
+			createNewMobDiv: function () {
+				_M.mobFunctions.setNewImmat(this);
+				// init some datas
+				this._.s.actual.RoomNum = _R.roomFunctions.getRoomNumberFromXY(
+					this._.s.actual.x,
+					this._.s.actual.y
+				);
+
+				this.mobDivElement.title = this._.perso.id + " " + this._.perso.immat;
+				this.mobDivElement.className =
+					this._.sheat.model +
+					" mob" +
+					(mob._.perso.id != 0 ? " ia" : " me") +
+					(mob._.perso.parentId ? " clone" : "");
+
+				_W.worldDatas.mobIds++;
+				_W.worldDatas.mobCounter++;
+			},
+			applynextPos: function () {
+				this._.s.past = structuredClone(this._.s.actual);
+				this._.s.actual = structuredClone(this._.s.futur);
+			},
+			changedir: function () {
+				if (this._.delayBeforeChangeDir.cur === 0) {
+					// let choix = _T.tools.rand(0, 1) === 1 ? -1 : 1;
+					this._.dir += _T.tools.rand(0, 1) === 1 ? -1 : 1;
+					if (this._.dir > 360) this._.dir = 360 - this._.dir;
+					if (this._.dir < 0) this._.dir = this._.dir + 360;
+				}
+				this._.delayBeforeChangeDir.cur < this._.delayBeforeChangeDir.max
+					? this._.delayBeforeChangeDir.cur++
+					: (this._.delayBeforeChangeDir.cur = 0);
+			},
+			setFatigueOrNot: function (mob) {
+				let fat = mob._.stats.fatigue;
+				if (fat.cur <= fat.min) {
+					if (fat.needrest) fat.needrest = false;
+					if (fat.active) fat.active = false;
+					if (!fat.rested) fat.rested = true;
+				} else {
+					// fat.active = false;
+					fat.sens = 5;
+				}
+			},
+			setFaimOrNot: function (mob) {
+				let faim = mob._.stats.faim;
+				if (faim.cur > faim.max * 0.8) {
+					if (faim.active) faim.active = true;
+				} else {
+					faim.active = false;
+				}
+
+				if (faim.active && !mob.blocs.starving.classList.contains("up")) {
+					mob.mobDivElement.classList.add("up");
+				}
+				if (!faim.active && mob.mobDivElement.classList.contains("up")) {
+					mob.mobDivElement.classList.remove("up");
+				}
+			},
+			doAction: function (mob) {
+				switch (mob.actionsTodo[0]) {
+					case "rest":
+						if (!mob.mobDivElement.classList.contains("exhausted")) {
+							mob.mobDivElement.classList.add("exhausted");
+						}
+						if (mob.mobDivElement.classList.contains("move")) {
+							mob.mobDivElement.classList.remove("move");
+						}
+						break;
+					case "move":
+						mob.changedir();
+						_M.mobFunctions.setFuturPosAndRoom(mob);
+						this.applynextPos();
+
+						mob._.stats.fatigue.sens = -3;
+						_F.frontFunctions.updateMobDivElementPos(mob);
+
+						if (mob.mobDivElement.classList.contains("exhausted")) {
+							mob.mobDivElement.classList.remove("exhausted");
+						}
+						if (!mob.mobDivElement.classList.contains("move")) {
+							mob.mobDivElement.classList.add("move");
+						}
+						break;
+					case "die":
+						// todo
+						mob.die(mob);
+						_O.mobCounter++;
+						break;
+
+					default:
+						break;
+				}
+			},
+			_step: function () {
+				_R.roomFunctions.siJeChangeDeCase(this);
+				_R.roomFunctions.isThereAnyOne(mob);
+				let fati = this._.stats.fatigue;
+				let faim = this._.stats.faim;
+				this.setFatigueOrNot(this);
+				this.setFaimOrNot(this);
+				if (faim.cur >= faim.max) {
+					this.actionsTodo[0] = "die";
+				} else {
+					// pas reposé et fatigué
+					if (fati.needrest) {
+						this.actionsTodo[0] = "rest";
+					} else {
+						fati.needrest = fati.cur >= fati.max * 0.8; // >80%
+					}
+					if (!fati.needrest) {
+						this.actionsTodo[0] = "move";
+					}
+				}
+
+				this.doAction(this);
+				_M.mobFunctions.regenvalue(this, "fatigue");
+				if (!fati.needrest) _M.mobFunctions.regenvalue(this, "faim");
+				// _M.mobFunctions.regenvalue(this, "energie");
+				if (fati.needrest) _M.mobFunctions.regen_energie(this, "energie");
+
+				_M.mobFunctions.siJeMeReplique(this);
+			},
+			mobUpdate: function () {
+				this._step();
+			},
+		};
+		return { ...mob };
+	},
+	mobFunctions: {
+		setNewImmat: function (mob, parent = false) {
+			// i am the One ! i mean the Zero !
+			mob._.perso.id = _W.worldDatas.mobIds + 0;
+			let immat = "";
+			// ---------------------------------
+			if (mob._.perso.id === 0) {
+				mob._.perso.IA = false;
+				mob._.perso.immat = 'Patobeur'
+			} else {
+				for (let i = 0; i < 7; i++) {
+					immat =
+						immat +
+						(i === 5
+							? "_"
+							: _J.jsons.charactersForImmat.charAt(
+									Math.floor(Math.random() * _J.jsons.charactersForImmat.length)
+							  ));
+				}
+				mob._.perso.immat = !parent
+					? immat
+					: parent._.perso.id + "" + parent._.perso.immat;
+			}
+		},
+		// isvalueunder: function (mob,valuename, value) {
+		// 	return mob._.stats[valuename].cur < value;
+		// },
+		replicate: function (mob) {
+			//todo (a revoir)
+			let mobx = _O.mob();
+
+			mobx._.s = structuredClone(mob._.s);
+			mobx._.stats = structuredClone(mob._.stats);
+			mobx._.sheat = structuredClone(mob._.sheat);
+			mobx._.perso = structuredClone(mob._.perso);
+
+			mobx._.perso.xp = +10;
+			mobx._.stats.fatigue.cur = mob._.stats.fatigue.max * 0.7;
+			mob._.stats.energie.cur = 0;
+			mob._.stats.fatigue.cur = mob._.stats.fatigue.max;
+
+			mobx._.stats.energie.cur = 0;
+			mobx._.perso.clones = 0;
+			mobx._.perso.dicoveredCase = [];
+			mobx._.perso.xp = 0;
+			mobx._.stats.faim.cur = 0;
+			// mobx._.perso.updateInterval = _W.worldDatas.updateInterval + 50;
+			mobx._.perso.parentId = mob._.perso.id;
+			mobx.createNewMobDiv();
+
+			mobx.initiate();
+
+			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
+
+			mob._.perso.clones++;
+
+			// _M.rewardBonus.replication(mob);
+		},
+		regen_energie: function (mob, valuename) {
+			let v = mob._.stats[valuename];
+			v.cur += v.regen * v.sens;
+			if (v.cur > v.max) v.cur = v.max;
+			if (v.cur < v.min) v.cur = v.min;
+			let centage = Math.floor((Math.floor((v.cur / v.max) * 100) / 100) * 100);
+
+			// let v = mob._.stats[valuename];
+			mob.blocs[valuename].setAttribute(
+				"stroke-dashoffset",
+				mob._.stats[valuename].strokedashoffset +
+					(Math.floor((v.cur / v.max) * 100) / 100) *
+						mob._.stats[valuename].strokedasharray
+			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
+
+			// _F.frontFunctions.refreshSvgJauge(mob, valuename);
+		},
+		regenvalue: function (mob, valuename) {
+			let v = mob._.stats[valuename];
+			v.cur += v.regen * v.sens;
+			if (v.cur > v.max) v.cur = v.max;
+			if (v.cur < v.min) v.cur = v.min;
+			let centage = Math.floor((Math.floor((v.cur / v.max) * 100) / 100) * 100);
+			// refresh jauge
+			mob.blocs[valuename].setAttribute(
+				"stroke-dashoffset",
+				mob._.stats[valuename].strokedashoffset +
+					(Math.floor((v.cur / v.max) * 100) / 100) *
+						mob._.stats[valuename].strokedasharray
+			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
+		},
+		siJeMeReplique: function (mob) {
+			// replication ???
+			if (
+				mob._.stats.energie.cur > 90 &&
+				mob._.stats.fatigue.max > 100 &&
+				_W.worldDatas.mobCounter < _W.worldDatas.maxreplicaton
+				// && this._.stats.fatigue.cur < 50
+				// && this._.stats.faim.cur < 20
+				// && mob personal max cloning
+			) {
+				_M.mobFunctions.replicate(mob);
+			}
+		},
+		setFuturPosAndRoom: function (mob) {
+			let next = {
+				x: mob._.s.actual.x - Math.sin(mob._.dir) * mob._.perso.speed,
+				y: mob._.s.actual.y + Math.cos(mob._.dir) * mob._.perso.speed,
+			};
+			if (_W.worldFunctions.isXYInWorld(next.x, next.y)) {
+				// add room to next
+				(next.RoomNum = _R.roomFunctions.getRoomNumberFromXY(next.x, next.y)),
+					(mob._.s.futur = next);
+			} else {
+				// reset changeDir delay if x,y is out the world
+				mob._.delayBeforeChangeDir.cur = 0;
+			}
+		},
+	},
+	rewardBonus: {
+		newRoomdiscovered: function (mob) {
+			mob._.perso.xp += 50;
+			mob._.stats.fatigue.max += 2;
+			mob._.stats.energie.max += 2;
+			// if (mob._.perso.updateInterval >= _W.worldDatas.updateInterval + 5)
+			// 	mob._.perso.updateInterval -= 5;
+			// add Room to personal list
+			mob._.perso.dicoveredCase.push(mob._.s.actual.RoomNum);
+		},
+		// replication: function (mob) {
+		// 	// mob._.perso.updateInterval += 2;
+		// },
+	},
+};
