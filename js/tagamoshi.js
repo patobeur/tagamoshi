@@ -1,67 +1,25 @@
 "use strict";
-const _O = {
-	// MOB : mobile object behaviour
-	mouse: { x: 0, y: 0, isDragging: false },
+// what else ?
+const _O = { // Ordinator
 	indexedRoomsByCaseNumber: {}, //all Rooms by it number
 	indexedconsumableByIds: {}, //all fruits by it number
 	indexedtreeByIds: {}, //all tree by it number
 	indexedMobsBymobIds: {}, //all mobs by its ids
 	arrayRoomsIds: [], //all RoomsIds by arrival
 	arrayTreesByIds: [], //all TreesIds by arrival
-	worldDatas: {
-		lifeNumber: 2,
-		updateInterval: 10,
-		maxreplicaton: 20,
-		mobDeleteTimeout: 5000, // 5000ms -> 5sec
-		scale: 1,
-		roomSideLength: 100, //Math.floor(window.innerWidth / 5),
-		sizes: {
-			size: {
-				w: Math.floor(window.innerWidth / 1.05),
-				h: Math.floor(window.innerHeight / 1.1),
-			},
-			origine: {
-				w: Math.floor(window.innerWidth / 1.05),
-				h: Math.floor(window.innerHeight / 1.1),
-			},
-		},
-		roomIds: 0,
-		// ----------------
-		consumableIds: 0,
-		consumableCounter: 0,
-		consumableSheatsArray: [],
-		consumablechance: 0.5,
-		consumabledatas: {
-			w: 12, // collateral display damages if changed
-			h: 12, // collateral display damages if changed
-			fontrem: 0.8,
-		},
-		// ----------------
-		mobIds: 0,
-		mobCounter: 0,
-		mobSheatsArray: [],
-		// ----------------
-		treeIds: 0,
-		treeCounter: 0,
-		treeSheatsArray: [],
-		threechance: 0.6,
-		treedatas: {
-			w: 48, // collateral display damages if changed
-			h: 48, // collateral display damages if changed
-			fontrem: 0.8,
-		},
-	},
+	mouse: { x: 0, y: 0, isDragging: false },
+	// MOB : mobile object behaviour
 	mob: function () {
 		let mob = {
 			mobDivElement: document.createElement("div"),
 			blocs: {},
 			actionsTodo: [],
-			test: Math.floor(Math.random() * _O.worldDatas.mobSheatsArray.length),
+			test: Math.floor(Math.random() * _W.worldDatas.mobSheatsArray.length),
 			_: {
 				alive: null,
 				stats: {
 					energie: {
-						color: _O.worldDatas.mobdatas.colors.energie,
+						color: _W.worldDatas.mobdatas.colors.energie,
 						cur: 0,
 						min: 0,
 						max: 100,
@@ -75,11 +33,11 @@ const _O = {
 						whenactive: "dying",
 						svg: {
 							type: "circle",
-							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 10,
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 10,
 						},
 					},
 					faim: {
-						color: _O.worldDatas.mobdatas.colors.faim,
+						color: _W.worldDatas.mobdatas.colors.faim,
 						cur: 25,
 						min: 0,
 						max: 100,
@@ -93,11 +51,11 @@ const _O = {
 						whenactive: "starving",
 						svg: {
 							type: "circle",
-							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 6,
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 6,
 						},
 					},
 					fatigue: {
-						color: _O.worldDatas.mobdatas.colors.fatigue,
+						color: _W.worldDatas.mobdatas.colors.fatigue,
 						cur: _O.tools.rand(10, 20),
 						min: 0,
 						max: 100,
@@ -111,7 +69,7 @@ const _O = {
 						whenactive: "exhausted",
 						svg: {
 							type: "circle",
-							r: _O.worldDatas.mobdatas.svgSideLength / 2 - 2,
+							r: _W.worldDatas.mobdatas.svgSideLength / 2 - 2,
 						},
 					},
 				},
@@ -124,14 +82,14 @@ const _O = {
 					dicoveredCase: [],
 					clones: 0,
 					speed: 1,
-					updateInterval: _O.worldDatas.updateInterval+25,// + _O.tools.rand(0, 50),
+					updateInterval: _W.worldDatas.updateInterval + 25, // + _O.tools.rand(0, 50),
 					alone: true,
 					parentId: null,
 				},
 				s: {
 					actual: {
-						x: _O.tools.rand(0, this.worldDatas.sizes.size.w),
-						y: _O.tools.rand(0, this.worldDatas.sizes.size.h),
+						x: _O.tools.rand(0, _W.worldDatas.sizes.size.w),
+						y: _O.tools.rand(0, _W.worldDatas.sizes.size.h),
 						z: _O.tools.rand(-1, 1),
 						RoomNum: 0,
 					},
@@ -161,10 +119,10 @@ const _O = {
 				status: { cur: 0, old: 0 },
 				mouse: this.mouse,
 				sheat:
-					_O.worldDatas.mobSheatsArray[
-						Math.floor(Math.random() * _O.worldDatas.mobSheatsArray.length)
+					_W.worldDatas.mobSheatsArray[
+						Math.floor(Math.random() * _W.worldDatas.mobSheatsArray.length)
 					],
-				test: _O.worldDatas.mobSheatsArray[self.test],
+				test: _W.worldDatas.mobSheatsArray[self.test],
 			},
 			initiate: function () {
 				_O.mobFunctions.setFuturPosAndRoom(this);
@@ -193,7 +151,7 @@ const _O = {
 					(dom) => {
 						this.removefromDom(this);
 					},
-					_O.worldDatas.mobDeleteTimeout,
+					_W.worldDatas.mobDeleteTimeout,
 					"dom"
 				);
 			},
@@ -212,8 +170,8 @@ const _O = {
 					(mob._.perso.id != 0 ? " ia" : " me") +
 					(mob._.perso.parentId ? " clone" : "");
 
-				_O.worldDatas.mobIds++;
-				_O.worldDatas.mobCounter++;
+				_W.worldDatas.mobIds++;
+				_W.worldDatas.mobCounter++;
 			},
 			applynextPos: function () {
 				this._.s.past = structuredClone(this._.s.actual);
@@ -298,10 +256,10 @@ const _O = {
 
 				this.doAction(this);
 				_O.mobFunctions.regenvalue(this, "fatigue");
-				
-				if(!fati.needrest) _O.mobFunctions.regenvalue(this, "faim");
+
+				if (!fati.needrest) _O.mobFunctions.regenvalue(this, "faim");
 				// _O.mobFunctions.regenvalue(this, "energie");
-				if(fati.needrest) _O.mobFunctions.regen_energie(this, "energie");
+				if (fati.needrest) _O.mobFunctions.regen_energie(this, "energie");
 
 				_O.mobFunctions.siJeMeReplique(this);
 			},
@@ -317,7 +275,7 @@ const _O = {
 				"http://www.w3.org/2000/svg",
 				"svg"
 			);
-			let svgSideLength = _O.worldDatas.mobdatas.svgSideLength;
+			let svgSideLength = _W.worldDatas.mobdatas.svgSideLength;
 			mob.blocs.svg.setAttribute("class", name);
 			mob.blocs.svg.setAttribute("title", "Change Profil");
 			mob.blocs.svg.setAttribute(
@@ -350,11 +308,11 @@ const _O = {
 			mob.blocs[name].setAttribute("r", r);
 			mob.blocs[name].setAttribute(
 				"cx",
-				_O.worldDatas.mobdatas.svgSideLength / 2
+				_W.worldDatas.mobdatas.svgSideLength / 2
 			);
 			mob.blocs[name].setAttribute(
 				"cy",
-				_O.worldDatas.mobdatas.svgSideLength / 2
+				_W.worldDatas.mobdatas.svgSideLength / 2
 			);
 			mob.blocs[name].setAttribute("fill", "none");
 			mob.blocs[name].setAttribute("stroke-width", "4");
@@ -374,7 +332,7 @@ const _O = {
 			mob._.perso.xp += 50;
 			mob._.stats.fatigue.max += 2;
 			mob._.stats.energie.max += 2;
-			// if (mob._.perso.updateInterval >= _O.worldDatas.updateInterval + 5)
+			// if (mob._.perso.updateInterval >= _W.worldDatas.updateInterval + 5)
 			// 	mob._.perso.updateInterval -= 5;
 			// add Room to personal list
 			mob._.perso.dicoveredCase.push(mob._.s.actual.RoomNum);
@@ -399,13 +357,13 @@ const _O = {
 				_O.rewardBonus.newRoomdiscovered(mob);
 				// mob.svgtextgridNum.textContent = mob._.s.actual.RoomNum;
 
-				if (_O.worldDatas.roomIds > _O.worldDatas.mobIds * 2) {
+				if (_W.worldDatas.roomIds > _W.worldDatas.mobIds * 2) {
 					let maxroom = Math.floor(
-						(_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength) *
-							(_O.worldDatas.sizes.size.h / _O.worldDatas.roomSideLength)
+						(_W.worldDatas.sizes.size.w / _W.worldDatas.roomSideLength) *
+							(_W.worldDatas.sizes.size.h / _W.worldDatas.roomSideLength)
 					);
 
-					if (_O.worldDatas.treeCounter < maxroom) {
+					if (_W.worldDatas.treeCounter < maxroom) {
 						_O.decorationFunctions.addtree(
 							"addtree",
 							false,
@@ -421,7 +379,7 @@ const _O = {
 							false,
 							mob._.s.actual.RoomNum
 						);
-						console.log(_O.worldDatas.treeCounter, maxroom, " arbre !??");
+						console.log(_W.worldDatas.treeCounter, maxroom, " arbre !??");
 					} else {
 						console.log("trop d'arbre !??");
 					}
@@ -518,7 +476,7 @@ const _O = {
 			};
 			_O.indexedRoomsByCaseNumber[caseNumber] = room;
 			_O.arrayRoomsIds.push(caseNumber);
-			_O.worldDatas.roomIds++;
+			_W.worldDatas.roomIds++;
 			_O.worldRoomsDiv.prepend(_O.indexedRoomsByCaseNumber[caseNumber].div);
 		},
 		exitCase: function (mob) {
@@ -560,35 +518,35 @@ const _O = {
 			const col =
 				((caseNumber - 1) %
 					Math.ceil(
-						_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength
+						_W.worldDatas.sizes.size.w / _W.worldDatas.roomSideLength
 					)) +
 				1;
 			const row = Math.ceil(
 				caseNumber /
-					Math.ceil(_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength)
+					Math.ceil(_W.worldDatas.sizes.size.w / _W.worldDatas.roomSideLength)
 			);
 			return {
-				x: (col - 1) * _O.worldDatas.roomSideLength,
-				y: (row - 1) * _O.worldDatas.roomSideLength,
+				x: (col - 1) * _W.worldDatas.roomSideLength,
+				y: (row - 1) * _W.worldDatas.roomSideLength,
 				col: col,
 				row: row,
 			};
 		},
 		getRoomNumberFromXY: function (x, y) {
-			const col = Math.floor(x / _O.worldDatas.roomSideLength);
-			const row = Math.floor(y / _O.worldDatas.roomSideLength);
+			const col = Math.floor(x / _W.worldDatas.roomSideLength);
+			const row = Math.floor(y / _W.worldDatas.roomSideLength);
 			return (
 				row *
-					Math.ceil(_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength) +
+					Math.ceil(_W.worldDatas.sizes.size.w / _W.worldDatas.roomSideLength) +
 				col +
 				1
 			);
 		},
 		getAllThe9RoomsAroundXY: function (x, y) {
-			const col = Math.floor(x / _O.worldDatas.roomSideLength);
-			const row = Math.floor(y / _O.worldDatas.roomSideLength);
+			const col = Math.floor(x / _W.worldDatas.roomSideLength);
+			const row = Math.floor(y / _W.worldDatas.roomSideLength);
 			const cols = Math.ceil(
-				_O.worldDatas.sizes.size.w / _O.worldDatas.roomSideLength
+				_W.worldDatas.sizes.size.w / _W.worldDatas.roomSideLength
 			);
 			const rooms = [];
 			const offsets = [
@@ -621,10 +579,10 @@ const _O = {
 					className: "world",
 				},
 				style: {
-					top: window.innerHeight / 2 - _O.worldDatas.sizes.size.h / 2 + "px",
-					left: window.innerWidth / 2 - _O.worldDatas.sizes.size.w / 2 + "px",
-					height: _O.worldDatas.sizes.size.h + "px",
-					width: _O.worldDatas.sizes.size.w + "px",
+					top: window.innerHeight / 2 - _W.worldDatas.sizes.size.h / 2 + "px",
+					left: window.innerWidth / 2 - _W.worldDatas.sizes.size.w / 2 + "px",
+					height: _W.worldDatas.sizes.size.h + "px",
+					width: _W.worldDatas.sizes.size.w + "px",
 					position: "absolute",
 				},
 			});
@@ -647,30 +605,30 @@ const _O = {
 			document.body.prepend(_O.worldDiv);
 		},
 		createtreeSheatsArray: function () {
-			for (const key in _O.jsons.indexedFlora.tree) {
-				if (Object.hasOwnProperty.call(_O.jsons.indexedFlora.tree, key)) {
-					_O.worldDatas.treeSheatsArray.push(_O.jsons.indexedFlora.tree[key]);
+			for (const key in _J.jsons.indexedFlora.tree) {
+				if (Object.hasOwnProperty.call(_J.jsons.indexedFlora.tree, key)) {
+					_W.worldDatas.treeSheatsArray.push(_J.jsons.indexedFlora.tree[key]);
 				}
 			}
 		},
 		createconsumableSheatsArray: function () {
-			for (const key in _O.jsons.indexedFlora.consumable) {
-				if (Object.hasOwnProperty.call(_O.jsons.indexedFlora.consumable, key)) {
-					_O.worldDatas.consumableSheatsArray.push(
-						_O.jsons.indexedFlora.consumable[key]
+			for (const key in _J.jsons.indexedFlora.consumable) {
+				if (Object.hasOwnProperty.call(_J.jsons.indexedFlora.consumable, key)) {
+					_W.worldDatas.consumableSheatsArray.push(
+						_J.jsons.indexedFlora.consumable[key]
 					);
 				}
 			}
 		},
 		createMobSheatsArray: function () {
-			for (const key in _O.jsons.indexedFauna) {
-				if (Object.hasOwnProperty.call(_O.jsons.indexedFauna, key)) {
-					_O.worldDatas.mobSheatsArray.push(_O.jsons.indexedFauna[key]);
+			for (const key in _J.jsons.indexedFauna) {
+				if (Object.hasOwnProperty.call(_J.jsons.indexedFauna, key)) {
+					_W.worldDatas.mobSheatsArray.push(_J.jsons.indexedFauna[key]);
 				}
 			}
 		},
 		hydrateWorld: function () {
-			for (let i = 0; i < _O.worldDatas.lifeNumber; i++) {
+			for (let i = 0; i < _W.worldDatas.lifeNumber; i++) {
 				let mob = _O.mob();
 				mob.createNewMobDiv();
 				mob.initiate();
@@ -680,9 +638,9 @@ const _O = {
 		isXYInWorld: function (x, y) {
 			return (
 				x > 0 &&
-				x < _O.worldDatas.sizes.size.w &&
+				x < _W.worldDatas.sizes.size.w &&
 				y > 0 &&
-				y < _O.worldDatas.sizes.size.h
+				y < _W.worldDatas.sizes.size.h
 			);
 		},
 	},
@@ -706,7 +664,8 @@ const _O = {
 			return element;
 		},
 		addCss: function () {
-			let stringcss = _O.jsons.cssString();
+			let stringcss = _J.jsons.cssString();
+			// let stringcss = _J.jsons.abc;
 			let style = document.createElement("style");
 			style.textContent = _O.tools.sanitize(stringcss);
 			style.id = "css";
@@ -726,9 +685,9 @@ const _O = {
 				"resize",
 				(e) => {
 					_O.worldDiv.style.top =
-						window.innerHeight / 2 - _O.worldDatas.sizes.size.h / 2 + "px";
+						window.innerHeight / 2 - _W.worldDatas.sizes.size.h / 2 + "px";
 					_O.worldDiv.style.left =
-						window.innerWidth / 2 - _O.worldDatas.sizes.size.w / 2 + "px";
+						window.innerWidth / 2 - _W.worldDatas.sizes.size.w / 2 + "px";
 				},
 				{ passive: true }
 			);
@@ -738,8 +697,8 @@ const _O = {
 				_O.mouse.isDragging = true;
 				_O.mouse.x = e.clientX;
 				_O.mouse.y = e.clientY;
-				_O.worldDatas.sizes.origine.w = _O.worldDiv.offsetLeft;
-				_O.worldDatas.sizes.origine.h = _O.worldDiv.offsetTop;
+				_W.worldDatas.sizes.origine.w = _O.worldDiv.offsetLeft;
+				_W.worldDatas.sizes.origine.h = _O.worldDiv.offsetTop;
 				_O.worldDiv.classList.add("grab");
 				// }
 			});
@@ -748,8 +707,8 @@ const _O = {
 				if (_O.mouse.isDragging) {
 					const deltaX = e.clientX - _O.mouse.x;
 					const deltaY = e.clientY - _O.mouse.y;
-					const newWorldX = _O.worldDatas.sizes.origine.w + deltaX;
-					const newWorldY = _O.worldDatas.sizes.origine.h + deltaY;
+					const newWorldX = _W.worldDatas.sizes.origine.w + deltaX;
+					const newWorldY = _W.worldDatas.sizes.origine.h + deltaY;
 
 					// pour pas dépasser les limites du monde mais c'est pas top !!
 					// if (newWorldX >= 0 && newWorldX <= window.innerWidth - _O.worldDiv.clientWidth) {_O.worldDiv.style.left = newWorldX + "px";}
@@ -779,22 +738,22 @@ const _O = {
 				// if(event.target.className==="allrooms"){
 				// 	console.info(event);
 				// 	console.info(event.deltaY);
-				// 	_O.worldDatas.scale += 1 * (event.deltaY > 0 ? -.2 : .2);
+				// 	_W.worldDatas.scale += 1 * (event.deltaY > 0 ? -.2 : .2);
 				// 	let rect = _O.worldDiv.getBoundingClientRect();
 				// 	console.log(rect.top,rect.left)
-				// 	_O.worldDiv.style.transform= "scale("+_O.worldDatas.scale+")"
-				// 	_O.worldDiv.style.top = Math.floor(_O.worldDiv.style.left*(-1*_O.worldDatas.scale))+'px'
-				// 	_O.worldDiv.style.left = Math.floor(_O.worldDiv.style.left*(-1*_O.worldDatas.scale))+'px'
+				// 	_O.worldDiv.style.transform= "scale("+_W.worldDatas.scale+")"
+				// 	_O.worldDiv.style.top = Math.floor(_O.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
+				// 	_O.worldDiv.style.left = Math.floor(_O.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
 				// }
 			}
 		},
 		updateMobDivElementPos: function (mob) {
 			if (mob._.s.actual.x != mob._.s.past.x)
 				mob.mobDivElement.style.left =
-					mob._.s.actual.x - _O.worldDatas.mobdatas.mobw / 2 + "px";
+					mob._.s.actual.x - _W.worldDatas.mobdatas.mobw / 2 + "px";
 			if (mob._.s.actual.y != mob._.s.past.y)
 				mob.mobDivElement.style.top =
-					mob._.s.actual.y - _O.worldDatas.mobdatas.mobh / 2 + "px";
+					mob._.s.actual.y - _W.worldDatas.mobdatas.mobh / 2 + "px";
 		},
 		setMobDivElementsAndAddToDom: function (mob) {
 			_O.svgfunctions.setSvg(mob, "svg");
@@ -923,12 +882,12 @@ const _O = {
 						immat: null, // name
 						type: null, // type of trees
 						updateInterval:
-							_O.worldDatas.updateInterval + _O.tools.rand(10000, 15000),
+							_W.worldDatas.updateInterval + _O.tools.rand(10000, 15000),
 					},
 					s: {
 						actual: {
-							x: _O.tools.rand(0, _O.worldDatas.roomSideLength),
-							y: _O.tools.rand(0, _O.worldDatas.roomSideLength),
+							x: _O.tools.rand(0, _W.worldDatas.roomSideLength),
+							y: _O.tools.rand(0, _W.worldDatas.roomSideLength),
 							z: _O.tools.rand(-1, 1),
 							RoomNum: 0,
 						},
@@ -951,7 +910,7 @@ const _O = {
 
 					_O.communsFunctions.setNewPosInThisRoom(
 						tree,
-						_O.worldDatas.treedatas,
+						_W.worldDatas.treedatas,
 						(parent = false)
 					);
 
@@ -978,8 +937,8 @@ const _O = {
 		addtree: function (help = "vide", parent = false, caseNumber) {
 			// console.log(help, parent, caseNumber);
 			if (!(parent === false && caseNumber === false)) {
-				if (_O.tools.rand(0, 100) <= _O.worldDatas.threechance * 100) {
-					if (_O.worldDatas.treeIds < _O.worldDatas.roomIds * 2) {
+				if (_O.tools.rand(0, 100) <= _W.worldDatas.threechance * 100) {
+					if (_W.worldDatas.treeIds < _W.worldDatas.roomIds * 2) {
 						let tree = _O.decorationFunctions.tree();
 						tree.initiate(tree, caseNumber);
 					}
@@ -1004,23 +963,23 @@ const _O = {
 			});
 		},
 		setNewIDS: function (tree) {
-			tree._.perso.id = _O.worldDatas.treeIds + 0;
+			tree._.perso.id = _W.worldDatas.treeIds + 0;
 			tree._.perso.type = Math.floor(
-				Math.random() * _O.worldDatas.treeSheatsArray.length
+				Math.random() * _W.worldDatas.treeSheatsArray.length
 			);
-			tree._.sheat = _O.worldDatas.treeSheatsArray[tree._.perso.type];
+			tree._.sheat = _W.worldDatas.treeSheatsArray[tree._.perso.type];
 			// ---------------------------------
 			let immat = "";
 			for (let i = 0; i < 5; i++) {
 				immat =
 					immat +
-					_O.jsons.charactersForImmat.charAt(
-						Math.floor(Math.random() * _O.jsons.charactersForImmat.length)
+					_J.jsons.charactersForImmat.charAt(
+						Math.floor(Math.random() * _J.jsons.charactersForImmat.length)
 					);
 			}
 			tree._.perso.immat = immat;
 			_O.treeCounter++;
-			_O.worldDatas.treeIds++;
+			_W.worldDatas.treeIds++;
 		},
 	},
 	communsFunctions: {
@@ -1074,13 +1033,13 @@ const _O = {
 						id: null,
 						immat: null, // name
 						type: null, // type of consumable
-						updateInterval: _O.worldDatas.updateInterval + _O.tools.rand(0, 50),
+						updateInterval: _W.worldDatas.updateInterval + _O.tools.rand(0, 50),
 						parent: null,
 					},
 					s: {
 						actual: {
-							x: _O.tools.rand(0, _O.worldDatas.roomSideLength),
-							y: _O.tools.rand(0, _O.worldDatas.roomSideLength),
+							x: _O.tools.rand(0, _W.worldDatas.roomSideLength),
+							y: _O.tools.rand(0, _W.worldDatas.roomSideLength),
 							z: _O.tools.rand(-1, 1),
 							RoomNum: 0,
 						},
@@ -1096,10 +1055,10 @@ const _O = {
 					}
 					_O.consumableFunctions.setNewIDS(this);
 					_O.consumableFunctions.createNewDiv(this);
-					// _O.communsFunctions.setPos(this, _O.worldDatas.consumabledatas);
+					// _O.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
 					_O.communsFunctions.setNewPosInThisRoom(
 						this,
-						_O.worldDatas.consumabledatas,
+						_W.worldDatas.consumabledatas,
 						parent
 					);
 					_O.indexedconsumableByIds[consumable._.perso.id] = this;
@@ -1113,8 +1072,8 @@ const _O = {
 		},
 		dropconsumable: function (help = "", parent = false, caseNumber = false) {
 			if (!(parent === false && caseNumber === false)) {
-				if (_O.tools.rand(0, 100) <= _O.worldDatas.consumablechance * 100) {
-					if (_O.worldDatas.consumableIds < _O.worldDatas.roomIds / 3) {
+				if (_O.tools.rand(0, 100) <= _W.worldDatas.consumablechance * 100) {
+					if (_W.worldDatas.consumableIds < _W.worldDatas.roomIds / 3) {
 						let consumable = _O.consumableFunctions.consumable();
 						consumable.initiate(parent, caseNumber);
 
@@ -1145,30 +1104,30 @@ const _O = {
 				consumable._.sheat.className + " " + consumable._.sheat.model;
 		},
 		setNewIDS: function (consumable) {
-			consumable._.perso.id = _O.worldDatas.consumableIds + 0;
+			consumable._.perso.id = _W.worldDatas.consumableIds + 0;
 			consumable._.perso.type = Math.floor(
-				Math.random() * _O.worldDatas.consumableSheatsArray.length
+				Math.random() * _W.worldDatas.consumableSheatsArray.length
 			);
 			consumable._.sheat =
-				_O.worldDatas.consumableSheatsArray[consumable._.perso.type];
+				_W.worldDatas.consumableSheatsArray[consumable._.perso.type];
 			// ---------------------------------
 			let immat = "";
 			for (let i = 0; i < 5; i++) {
 				immat =
 					immat +
-					_O.jsons.charactersForImmat.charAt(
-						Math.floor(Math.random() * _O.jsons.charactersForImmat.length)
+					_J.jsons.charactersForImmat.charAt(
+						Math.floor(Math.random() * _J.jsons.charactersForImmat.length)
 					);
 			}
 			consumable._.perso.immat = immat;
-			_O.worldDatas.consumableIds++;
+			_W.worldDatas.consumableIds++;
 		},
 	},
 	mobFunctions: {
 		setNewImmat: function (mob, parent = false) {
 			// i am the One ! i mean the Zero !
 			if (mob._.perso.id === 0 && !parent) mob._.perso.IA = false;
-			mob._.perso.id = _O.worldDatas.mobIds + 0;
+			mob._.perso.id = _W.worldDatas.mobIds + 0;
 			let immat = "";
 			// ---------------------------------
 			for (let i = 0; i < 7; i++) {
@@ -1176,8 +1135,8 @@ const _O = {
 					immat +
 					(i === 5
 						? "_"
-						: _O.jsons.charactersForImmat.charAt(
-								Math.floor(Math.random() * _O.jsons.charactersForImmat.length)
+						: _J.jsons.charactersForImmat.charAt(
+								Math.floor(Math.random() * _J.jsons.charactersForImmat.length)
 						  ));
 			}
 			mob._.perso.immat = !parent
@@ -1197,7 +1156,7 @@ const _O = {
 			mobx._.perso = structuredClone(mob._.perso);
 
 			mobx._.perso.xp = +10;
-			mobx._.stats.fatigue.cur = mob._.stats.fatigue.max * .70;
+			mobx._.stats.fatigue.cur = mob._.stats.fatigue.max * 0.7;
 			mob._.stats.energie.cur = 0;
 			mob._.stats.fatigue.cur = mob._.stats.fatigue.max;
 
@@ -1206,7 +1165,7 @@ const _O = {
 			mobx._.perso.dicoveredCase = [];
 			mobx._.perso.xp = 0;
 			mobx._.stats.faim.cur = 0;
-			// mobx._.perso.updateInterval = _O.worldDatas.updateInterval + 50;
+			// mobx._.perso.updateInterval = _W.worldDatas.updateInterval + 50;
 			mobx._.perso.parentId = mob._.perso.id;
 			mobx.createNewMobDiv();
 
@@ -1215,7 +1174,6 @@ const _O = {
 			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
 
 			mob._.perso.clones++;
-			
 
 			// _O.rewardBonus.replication(mob);
 		},
@@ -1225,12 +1183,13 @@ const _O = {
 			if (v.cur > v.max) v.cur = v.max;
 			if (v.cur < v.min) v.cur = v.min;
 			let centage = Math.floor((Math.floor((v.cur / v.max) * 100) / 100) * 100);
-			
+
 			// let v = mob._.stats[valuename];
 			mob.blocs[valuename].setAttribute(
 				"stroke-dashoffset",
 				mob._.stats[valuename].strokedashoffset +
-					(Math.floor((v.cur / v.max) * 100) / 100) * mob._.stats[valuename].strokedasharray
+					(Math.floor((v.cur / v.max) * 100) / 100) *
+						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 
 			// _O.frontFunctions.refreshSvgJauge(mob, valuename);
@@ -1245,7 +1204,8 @@ const _O = {
 			mob.blocs[valuename].setAttribute(
 				"stroke-dashoffset",
 				mob._.stats[valuename].strokedashoffset +
-					(Math.floor((v.cur / v.max) * 100) / 100) * mob._.stats[valuename].strokedasharray
+					(Math.floor((v.cur / v.max) * 100) / 100) *
+						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 		},
 		siJeMeReplique: function (mob) {
@@ -1253,7 +1213,7 @@ const _O = {
 			if (
 				mob._.stats.energie.cur > 90 &&
 				mob._.stats.fatigue.max > 100 &&
-				_O.worldDatas.mobCounter < _O.worldDatas.maxreplicaton
+				_W.worldDatas.mobCounter < _W.worldDatas.maxreplicaton
 				// && this._.stats.fatigue.cur < 50
 				// && this._.stats.faim.cur < 20
 				// && mob personal max cloning
@@ -1277,27 +1237,26 @@ const _O = {
 		},
 	},
 	setdatas: function () {
-		console.log(_O);
-		let size = 52
-		_O.worldDatas.mobdatas={
+		let size = 52;
+		_W.worldDatas.mobdatas = {
 			svgSideLength: size,
-			mobw: size/2,
-			mobh: size/2,
-			mobwrestin: size/1.5,
-			mobhresting: size/1.5, 
+			mobw: size / 2,
+			mobh: size / 2,
+			mobwrestin: size / 1.5,
+			mobhresting: size / 1.5,
 			case: "rgba(155, 155, 55,.2)",
 			cssfontsize: 5, //rem
 			cssfonticosize: 1.2, //rem
 			colors: {
-				energie:  "#ffffffDD", //blanc
-				faim: "#ff0000",//rouge
-				fatigue:"#00ff00",//vert
+				energie: "#ffffffDD", //blanc
+				faim: "#ff0000", //rouge
+				fatigue: "#00ff00", //vert
 			},
 			// svgfontsize: 24,
 			// svgfontposX: 24,
 			// svgfontposY: 24,
 			// svgfontcolor: "white",
-		}
+		};
 	},
 	start: function () {
 		this.setdatas();
@@ -1326,511 +1285,8 @@ const _O = {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		},
 	},
-	jsons: {
-		cssString: function () {
-			return (
-				`*,.world,.world ::before,.world ::after{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;-webkit-touch-callout:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}` +
-				`` +
-				// ---------- world ----------------------
-				`.world{cursor:grab;` +
-				`border-radius: 1rem;` +
-				`-webkit-box-shadow: 0px 0px 16px 15px rgba(97, 97, 97, 0.84);` +
-				`box-shadow: 0px 0px 16px 15px rgba(53, 53, 53, 0.84);` +
-				`outline: none;` +
-				`background: rgb(67, 69, 112);` +
-				`background: radial-gradient(circle, rgba(67, 69, 112, 1) 3%, rgba(35, 36, 57, 1) 60%);` +
-				`}` +
-				`.world.grab{cursor:grabbing}` +
-				// ----------------------------------------
-				`.unselectable{}` +
-				// world allrooms -------------------------
-				`.world .allrooms {position: absolute;width: 100%;height: 100%;overflow: hidden;border-radius: 1rem;-webkit-box-shadow: inset 0px 0px 35px 11px rgba(39, 39, 39, 0.84);box-shadow: inset 0px 0px 35px 11px rgba(46, 46, 46, 0.84);background-color: #fffafa25;` +
-				`}` +
-				// room -------------------------
-				`.room{padding:5px;color:white;font-size:.5rem;position:absolute;` +
-				// `outline:1px solid rgba(0,255,0,0.1);` +
-				`height:${_O.worldDatas.roomSideLength}px;` +
-				`width:${_O.worldDatas.roomSideLength}px;` +
-				`align-content:flex-start;` +
-				`}` +
-				// ----------------------------------------
-				`.room.up{background-color:${_O.worldDatas.mobdatas.case};border-radius:9px;` +
-				`}` +
-				// ----------------------------------------
-				`.room.done{background-color:rgba(68,58,155,.3);` +
-				`}` +
-				// ----------------------------------------
-				`.room:hover{border-radius:0;` +
-				`}` +
-				// room by lv ----------------------------------------
-				`.room.lv1{background-color:rgba(155, 200, 155,.2);}` +
-				`.room.lv2{background-color:rgba(200, 200, 155,.2);}` +
-				`.room.lv3{background-color:rgba(250, 250, 200,.2);}` +
-				`.room.lv4{background-color:rgba(155, 155, 55,.2);}` +
-				// -------------consumable--------------------
-				`.consumable {` +
-				`position:absolute;` +
-				`color:white;` +
-				`font-size:${_O.worldDatas.consumabledatas.fontrem}rem;` +
-				`text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
-				// `outline:2px solid rgba(255,255,255,1);` +
-				`width:${_O.worldDatas.consumabledatas.w}px;` +
-				`height:${_O.worldDatas.consumabledatas.h}px;` +
-				`display:flex;` +
-				`align-items:center;` +
-				`justify-content:center;` +
-				`transition-duration:1s;` +
-				`transition-property:transform,opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				`opacity:1;` +
-				`transform:scale(1);` +
-				`}` +
-				// consumable new --------------------
-				`.consumable.new {` +
-				`opacity:0.3;` +
-				`transition-duration:1s;` +
-				`transition-property:transform,opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				`transform:scale(0.1);` +
-				`}` +
-				// -------------tree--------------------
-				`.tree {` +
-				`position:absolute;` +
-				`color:white;` +
-				`font-size:${_O.worldDatas.treedatas.fontrem}rem;` +
-				//`text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
-				// `outline:2px solid rgba(255,255,255,.3);` +
-				`width:${_O.worldDatas.treedatas.w}px;` +
-				`height:${_O.worldDatas.treedatas.h}px;` +
-				`display:flex;` +
-				`align-items:center;` +
-				`justify-content:center;` +
-				`border-radius:50%;` +
-				`background: none;` +
-				`background: radial-gradient(circle, rgba(62,232,2,.5) 0%, rgba(16,112,31,0) 50%);` +
-				`}` +
-				`.tree.visited {` +
-				`background: radial-gradient(circle, rgba(32,200,2,.7) 0%, rgba(16,112,31,0) 50%);` +
-				`}` +
-				`.tree.onfruits {` +
-				`filter: hue-rotate(180deg);` +
-				// `background: radial-gradient(circle, rgba(2,32,20,.7) 0%, rgba(31,16,112,0) 50%);` +
-
-				`}` +
-				// ----------------------------------------
-				`.room2{align-content:flex-start;transform-origin:top left;` +
-				`height:${_O.worldDatas.roomSideLength / 10}px;` +
-				`width:${_O.worldDatas.roomSideLength / 10}px;` +
-				`}` +
-				// -------------world----------------------
-				`.world {position:absolute;width:100%;height:100%;` +
-				`}` +
-				// -------------allmobs--------------------
-				`.world .mob{transition-duration:500ms;transition-property:width,height,color,margin;transition-timing-function:ease-in-out;border-radius:50%;cursor:pointer;position:absolute;` +
-				`display:flex;align-items:center;justify-content:center;` +
-				// `border:2px dotted ${_O.worldDatas.mobdatas.colors[`energie`]};` +
-				`width:${_O.worldDatas.mobdatas.mobh}px;` +
-				`height:${_O.worldDatas.mobdatas.mobw}px;` +
-				`}` +
-				`.world .mob:hover{` +
-				`transform-orign : 0 0;` +
-				`transform : scale(2);` +
-				`}` +
-				// ----------------------------------------
-				`.mob.move{opacity:1;` +
-				`}` +
-				// exhausted ------------------------------
-				`.world .mob.exhausted{` +
-				`opacity:.7;` +
-				`font-size:.5rem;` +
-				`border:2px dotted ${_O.worldDatas.mobdatas.colors[`energie`]};` +
-				`width: ${_O.worldDatas.mobdatas.mobwrestin}px;` +
-				`height: ${_O.worldDatas.mobdatas.mobhresting}px;` +
-				`margin-left: -7px;` +
-				`margin-top: -7px;` +
-				`}` +
-				// thisistheend ------------------------------
-				`.world .mob.thisistheend{` +
-				`opacity:0;` +
-				`transition-duration:${_O.worldDatas.mobDeleteTimeout};` +
-				`transition-property:opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				`}` +
-				// mobdisplay------------------------------
-				`.mob .mobdisplay {position: absolute;left: 105%;width:max-content; paddind:.5rem;background-color: #0000FFFF;border-radius: .5rem;display: none;` +
-				`}` +
-				// alldis------------------------------
-				`.mob .alldis {` +
-				`display:flex;align-items:center;justify-content:center;` +
-				`position: absolute;` +
-				`width: ${_O.worldDatas.mobdatas.mobh}px;` +
-				`height: ${_O.worldDatas.mobdatas.mobh}px;` +
-				`font-size:${_O.worldDatas.mobdatas.cssfonticosize}rem;` +
-				// `background-color: #FFFFFF65;` +
-				`}` +
-				// disstarving ---------------------------------
-				`.mob .starving {` +
-				`position: absolute;` +
-				// `top: 103%;left: 103%;` +
-
-				`width:max-content;position: absolute;bottom:100%;left:100%;padding: 0 3px;` +
-				`font-size: .6rem;` +
-				`transition-duration:500ms;` +
-				`transition-property:top,left,opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				`display: none;` +
-				`opacity:0;` +
-				`}` +
-				`.mob .starving.up {display: initial;` +
-				`bottom:103%;left:103%;` +
-				`opacity:1;` +
-				`}` +
-				// disalerte ------------------------------
-				`.mob .disalerte {` +
-				`position: absolute;` +
-				// `top: 103%;left: 103%;` +
-				`top: 70%;left: 70%;` +
-				`z-index: +1;font-size: .6rem;` +
-				`transition-duration:500ms;` +
-				`transition-property:top,left,opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				// `display: none;` +
-				`opacity:0;` +
-				`}` +
-				`.mob .disalerte.up {display: initial;` +
-				`top: 98%;left: 98%;` +
-				`opacity:1;` +
-				`}` +
-				// disico ---------------------------------
-				`.mob .disico {border-radius: 50%;
-					width:max-content` +
-				`}` +
-				// dismyid ---------------------------------
-				`.mob .dismyid {font-size: .6rem;` +
-				`border-radius: .5rem;` +
-				`background-color:rgba(255,255,255,.5);` +
-				`width:max-content;position: absolute;bottom:103%;right:103%;padding: 0 3px;` +
-				`}` +
-				// --------------- me ----------------------
-				`.mob.me .dismyid{` +
-				`background-color:rgba(0,255,0,.7);` +
-				`color:black;` +
-				`}` +
-				`.mob.clone .dismyid{` +
-				`background-color:rgba(0,0,255,.7);` +
-				`color:white;` +
-				`}` +
-				// disvoisins ---------------------------------
-				`.mob .disvoisins {font-size: .6rem;` +
-				`background-color: #FFFFFF;` +
-				`border-radius: .5rem;` +
-				`width:max-content;` +
-				`position: absolute;` +
-				`top: 103%;` +
-				`padding: 0 3px;` +
-				`}` +
-				// infomob------------------------------
-				`.mob .disinfomob {position: absolute;left: 98%;top: 2%;width: max-content;border-radius: .5rem;padding: .5rem;` +
-				`background-color: #f0f0f0a8;` +
-				`display: none;` +
-				`}` +
-				`.mob .disinfomob.up {display: initial;}` +
-				// all exhausted ---------------------------------
-				`.mob.exhausted .disvoisins {background-color: black;opacity:.3;` +
-				`` +
-				`}` +
-				// `.mob.exhausted .dismyid {background-color: black;` +
-				// `bottom:50%;right:50%;` +
-				// `}` +
-				// -------------allsvg---------------------
-				`.mob svg{` +
-				`position:absolute;` +
-				`width:${_O.worldDatas.mobdatas.svgSideLength}px;` +
-				`height:${_O.worldDatas.mobdatas.svgSideLength}px;` +
-				`}` +
-				`.mob svg circle{stroke-linecap:round;}`
-				// mobdisplay-------------- JS ------------
-				// `.mob:hover .mobdisplay {display: initial;}`
-			);
-		},
-		charactersForImmat: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-		indexedFlora: {
-			tree: {
-				"Deciduous Tree": {
-					ico: "🌳",
-					description: "Deciduous Tree",
-					model: "tree",
-					className: "tree",
-					stats: {},
-				},
-				"Evergreen Tree": {
-					ico: "🌲",
-					description: "Evergreen Tree",
-					model: "tree",
-					className: "tree",
-					stats: {},
-				},
-				"Palm Tree": {
-					ico: "🌴",
-					description: "Palm Tree",
-					model: "tree",
-					className: "tree",
-					stats: {},
-					drop: {
-						indexedFlora: {
-							consumable: ["Coconut"],
-						},
-					},
-				},
-			},
-			consumable: {
-				Grapes: {
-					ico: "🍇",
-					description: "Grapes",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 10,
-						fatigue: -5,
-						faim: -20,
-					},
-				},
-				Melon: {
-					ico: "🍈",
-					description: "Melon",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 15,
-						fatigue: -3,
-						faim: -25,
-					},
-				},
-				Watermelon: {
-					ico: "🍉",
-					description: "Watermelon",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 20,
-						fatigue: -5,
-						faim: -30,
-					},
-				},
-				Orange: {
-					ico: "🍊",
-					description: "Orange",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 12,
-						fatigue: -6,
-						faim: -15,
-					},
-				},
-				Lemon: {
-					ico: "🍋",
-					description: "Lemon",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 8,
-						fatigue: -4,
-						faim: -10,
-					},
-				},
-				Banana: {
-					ico: "🍌",
-					description: "Banana",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 25,
-						fatigue: -8,
-						faim: -30,
-					},
-				},
-				Pineapple: {
-					ico: "🍍",
-					description: "Pineapple",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 18,
-						fatigue: -7,
-						faim: -25,
-					},
-				},
-				Mango: {
-					ico: "🥭",
-					description: "Mango",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 22,
-						fatigue: -6,
-						faim: -28,
-					},
-				},
-				Apple: {
-					ico: "🍎",
-					description: "Apple",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 13,
-						fatigue: -5,
-						faim: -18,
-					},
-				},
-				Pear: {
-					ico: "🍏",
-					description: "Pear",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 14,
-						fatigue: -4,
-						faim: -20,
-					},
-				},
-				"Green Apple": {
-					ico: "🍐",
-					description: "Green Apple",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 14,
-						fatigue: -5,
-						faim: -19,
-					},
-				},
-				Peach: {
-					ico: "🍑",
-					description: "Peach",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 16,
-						fatigue: -6,
-						faim: -22,
-					},
-				},
-				Cherries: {
-					ico: "🍒",
-					description: "Cherries",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 12,
-						fatigue: -4,
-						faim: -15,
-					},
-				},
-				Strawberry: {
-					ico: "🍓",
-					description: "Strawberry",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 9,
-						fatigue: -3,
-						faim: -12,
-					},
-				},
-				Kiwi: {
-					ico: "🥝",
-					description: "Kiwi",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 10,
-						fatigue: -4,
-						faim: -14,
-					},
-				},
-				Tomato: {
-					ico: "🍅",
-					description: "Tomato",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 7,
-						fatigue: -2,
-						faim: -10,
-					},
-				},
-				Coconut: {
-					ico: "🥥",
-					description: "Coconut",
-					model: "fruit",
-					className: "consumable",
-					stats: {
-						energie: 30,
-						fatigue: -10,
-						faim: -40,
-					},
-				},
-			},
-		},
-		indexedFauna: {
-			girl: {
-				ico: "👧",
-				description: "Girl",
-				model: "human",
-			},
-			woman: {
-				ico: "👩",
-				description: "Woman",
-				model: "human",
-			},
-			oldWoman: {
-				ico: "👴",
-				description: "Old Woman",
-				model: "human",
-			},
-			boy: {
-				ico: "👦",
-				description: "Boy",
-				model: "human",
-			},
-			man: {
-				ico: "👨",
-				description: "Man",
-				model: "human",
-			},
-			oldMan: {
-				ico: "🧓",
-				description: "Old Man",
-				model: "human",
-			},
-			lion: {
-				ico: "🦁",
-				description: "Lion",
-				model: "animal",
-			},
-			tiger: {
-				ico: "🐯",
-				description: "Tiger",
-				model: "animal",
-			},
-			rabbit: {
-				ico: "🐰",
-				description: "Rabbit",
-				model: "animal",
-			},
-			bat: {
-				ico: "🦇",
-				description: "Bat",
-				model: "animal",
-			},
-			bear: {
-				ico: "🐻",
-				description: "Bear",
-				model: "animal",
-			},
-		},
-	},
+};
+const _C = {
 };
 window.addEventListener("DOMContentLoaded", () => {
 	_O.start();
