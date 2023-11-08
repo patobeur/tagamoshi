@@ -117,8 +117,8 @@ const _M = {
 			},
 			initiate: function () {
 				_M.mobFunctions.setFuturPosAndRoom(this);
-				_F.frontFunctions.updateMobDivElementPos(this);
-				_F.frontFunctions.setMobDivElementsAndAddToDom(this);
+				_M.mobFunctions.updateMobDivElementPos(this);
+				_M.mobFunctions.setMobDivElementsAndAddToDom(this);
 				this.alive = setInterval(() => {
 					this.mobUpdate();
 				}, this._.perso.updateInterval);
@@ -221,7 +221,7 @@ const _M = {
 						this.applynextPos();
 
 						mob._.stats.fatigue.sens = -3;
-						_F.frontFunctions.updateMobDivElementPos(mob);
+						_M.mobFunctions.updateMobDivElementPos(mob);
 
 						if (mob.mobDivElement.classList.contains("exhausted")) {
 							mob.mobDivElement.classList.remove("exhausted");
@@ -233,7 +233,7 @@ const _M = {
 					case "die":
 						// todo
 						mob.die(mob);
-						_O.mobCounter++;
+						_W.worldDatas.mobcounter++;
 						break;
 
 					default:
@@ -304,7 +304,7 @@ const _M = {
 		// },
 		replicate: function (mob) {
 			//todo (a revoir)
-			let mobx = _O.mob();
+			let mobx = _M.mob();
 
 			mobx._.s = structuredClone(mob._.s);
 			mobx._.stats = structuredClone(mob._.stats);
@@ -348,7 +348,7 @@ const _M = {
 						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 
-			// _F.frontFunctions.refreshSvgJauge(mob, valuename);
+			// _S.svgfunctions.refreshSvgJauge(mob, valuename);
 		},
 		regenvalue: function (mob, valuename) {
 			let v = mob._.stats[valuename];
@@ -391,6 +391,142 @@ const _M = {
 				mob._.delayBeforeChangeDir.cur = 0;
 			}
 		},
+		updateMobDivElementPos: function (mob) {
+			if (mob._.s.actual.x != mob._.s.past.x)
+				mob.mobDivElement.style.left =
+					mob._.s.actual.x - _W.worldDatas.mobdatas.mobw / 2 + "px";
+			if (mob._.s.actual.y != mob._.s.past.y)
+				mob.mobDivElement.style.top =
+					mob._.s.actual.y - _W.worldDatas.mobdatas.mobh / 2 + "px";
+		},
+		setMobDivElementsAndAddToDom: function (mob) {
+			_S.svgfunctions.setSvg(mob, "svg");
+			mob.mobDivElement.appendChild(mob.blocs.svg);
+			//-------------------------------------
+			mob.mobDisplayDiv = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "mobdisplay" },
+			});
+			mob.mobDatasDiv = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "datasdiv" },
+			});
+			mob.mobDisplayDiv.appendChild(mob.mobDatasDiv);
+			mob.mobDivElement.appendChild(mob.mobDisplayDiv);
+			//-------------------------------------
+			mob.blocs.alldis = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "alldis" },
+			});
+			//-------------------------------------
+			mob.blocs.starving = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "dis disstarving", textContent: "💭" },
+			}); //
+			//-------------------------------------
+			mob.blocs.resting = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "dis disresting", textContent: "💤" },
+			}); //
+			//-------------------------------------
+			mob.blocs.alerte = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: { className: "dis disalerte", textContent: "☠️" },
+			}); //🎲💭
+			mob.blocs.ico = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis disico",
+					textContent: _T.tools.sanitize(mob._.sheat.ico),
+				},
+			});
+			mob.blocs.voisins = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis disvoisins",
+					textContent: "...",
+				},
+			});
+			mob.blocs.myid = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis dismyid",
+					textContent: mob._.perso.id,
+				},
+			});
+			mob.blocs.alldis.prepend(mob.blocs.myid);
+			mob.blocs.alldis.prepend(mob.blocs.starving);
+			mob.blocs.alldis.prepend(mob.blocs.resting);
+			mob.blocs.alldis.prepend(mob.blocs.alerte);
+			mob.blocs.alldis.prepend(mob.blocs.ico);
+			mob.blocs.alldis.prepend(mob.blocs.voisins);
+			//-------------------------------------
+
+			mob.blocs.infomob = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "disinfomob",
+					textContent: "disinfomob",
+				},
+			});
+			mob.blocs.alldis.appendChild(mob.blocs.infomob);
+			_M.mobFunctions.setInfoMobListener(mob);
+
+			mob.mobDivElement.appendChild(mob.blocs.alldis);
+			//-------------------------------------
+			_O.worldMobsDiv.appendChild(mob.mobDivElement);
+			// _O.worldRoomsDiv.appendChild(mob.mobDivElement);
+		},
+		setInfoMobListener: function (mob) {
+			mob.blocs.alldis.addEventListener("mouseout", () => {
+				mob.blocs.infomob.classList.remove("up");
+			});
+			mob.blocs.alldis.addEventListener("mouseover", () => {
+				mob.blocs.infomob.classList.add("up");
+				mob.blocs.infomob.textContent = "";
+
+				let immat = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disimmat",
+						textContent: "Name: " + mob._.perso.immat,
+					},
+				});
+				let xp = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disxp",
+						textContent: "Xp: " + mob._.perso.xp,
+					},
+				});
+				let faim = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disfaim",
+						textContent: "Faim: " + Math.floor(mob._.stats.faim.cur) + '/' + mob._.stats.faim.max,
+					},
+				});
+				let energie = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disenergie",
+						textContent: "Energie: " + Math.floor(mob._.stats.energie.cur) + '/' + mob._.stats.energie.max,
+					},
+				});
+				let fatigue = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disfatigue",
+						textContent: "Fatigue: " + Math.floor(mob._.stats.fatigue.cur) + '/' + mob._.stats.fatigue.max,
+					},
+				});
+				mob.blocs.infomob.appendChild(immat);
+				mob.blocs.infomob.appendChild(xp);
+				mob.blocs.infomob.appendChild(faim);
+				mob.blocs.infomob.appendChild(energie);
+				mob.blocs.infomob.appendChild(fatigue);
+			});
+		},
 	},
 	rewardBonus: {
 		newRoomdiscovered: function (mob) {
@@ -406,4 +542,5 @@ const _M = {
 		// 	// mob._.perso.updateInterval += 2;
 		// },
 	},
+	
 };

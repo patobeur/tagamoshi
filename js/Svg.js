@@ -56,5 +56,14 @@ const _S = {
 			); //63max
 			mob.blocs.svg.appendChild(mob.blocs[name]);
 		},
+		refreshSvgJauge: function (mob, valuename) {
+			let v = mob._.stats[valuename];
+			mob.blocs[valuename].setAttribute(
+				"stroke-dashoffset",
+				mob._.stats[valuename].strokedashoffset +
+					(Math.floor((v.cur / v.max) * 100) / 100) *
+						mob._.stats[valuename].strokedasharray
+			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
+		},
 	},
 };

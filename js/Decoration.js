@@ -42,7 +42,7 @@ const _D = {
 					_D.decorationFunctions.createNewDiv(tree);
 					tree._.s.actual.RoomNum = caseNumber;
 
-					_O.communsFunctions.setNewPosInThisRoom(
+					_W.communsFunctions.setNewPosInThisRoom(
 						tree,
 						_W.worldDatas.treedatas,
 						(parent = false)

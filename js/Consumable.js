@@ -37,8 +37,8 @@ const _C = {
 					}
 					_C.consumableFunctions.setNewIDS(this);
 					_C.consumableFunctions.createNewDiv(this);
-					// _O.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
-					_O.communsFunctions.setNewPosInThisRoom(
+					// _W.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
+					_W.communsFunctions.setNewPosInThisRoom(
 						this,
 						_W.worldDatas.consumabledatas,
 						parent

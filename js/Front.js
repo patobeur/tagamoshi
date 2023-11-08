@@ -35,70 +35,18 @@ const _F = {
 						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 		},
-		addWorldListerner: function () {
-			window.addEventListener(
-				"resize",
-				(e) => {
-					_O.worldDiv.style.top =
-						window.innerHeight / 2 - _W.worldDatas.sizes.size.h / 2 + "px";
-					_O.worldDiv.style.left =
-						window.innerWidth / 2 - _W.worldDatas.sizes.size.w / 2 + "px";
-				},
-				{ passive: true }
-			);
 
-			window.addEventListener("mousedown", (e) => {
-				// if (e.target === _O.worldDiv) {
-				_O.mouse.isDragging = true;
-				_O.mouse.x = e.clientX;
-				_O.mouse.y = e.clientY;
-				_W.worldDatas.sizes.origine.w = _O.worldDiv.offsetLeft;
-				_W.worldDatas.sizes.origine.h = _O.worldDiv.offsetTop;
-				_O.worldDiv.classList.add("grab");
-				// }
-			});
-
-			window.addEventListener("mousemove", (e) => {
-				if (_O.mouse.isDragging) {
-					const deltaX = e.clientX - _O.mouse.x;
-					const deltaY = e.clientY - _O.mouse.y;
-					const newWorldX = _W.worldDatas.sizes.origine.w + deltaX;
-					const newWorldY = _W.worldDatas.sizes.origine.h + deltaY;
-
-					// pour pas dépasser les limites du monde mais c'est pas top !!
-					// if (newWorldX >= 0 && newWorldX <= window.innerWidth - _O.worldDiv.clientWidth) {_O.worldDiv.style.left = newWorldX + "px";}
-					// if (newWorldY >= 0 && newWorldY <= window.innerHeight - _O.worldDiv.clientHeight) {_O.worldDiv.style.top = newWorldY + "px";}
-
-					_O.worldDiv.style.left = newWorldX + "px";
-					_O.worldDiv.style.top = newWorldY + "px";
-				}
-			});
-
-			window.addEventListener("mouseup", () => {
-				_O.mouse.isDragging = false;
-				_O.worldDiv.classList.remove("grab");
-			});
-
-			document.documentElement.oncontextmenu = (event) => {
-				console.log("right click");
-				if (this._preventDefaultRightClick) event.preventDefault();
-			};
-			// document.documentElement.onwheel = (event) => {
-			// 	// event.preventDefault();
-			// 	this._handleMouseWheel(event);
-			// };
-		},
 		_handleMouseWheel: function (event) {
 			if (event.ctrlKey === false && event.altKey === false) {
 				// if(event.target.className==="allrooms"){
 				// 	console.info(event);
 				// 	console.info(event.deltaY);
 				// 	_W.worldDatas.scale += 1 * (event.deltaY > 0 ? -.2 : .2);
-				// 	let rect = _O.worldDiv.getBoundingClientRect();
+				// 	let rect = _W.worldDiv.getBoundingClientRect();
 				// 	console.log(rect.top,rect.left)
-				// 	_O.worldDiv.style.transform= "scale("+_W.worldDatas.scale+")"
-				// 	_O.worldDiv.style.top = Math.floor(_O.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
-				// 	_O.worldDiv.style.left = Math.floor(_O.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
+				// 	_W.worldDiv.style.transform= "scale("+_W.worldDatas.scale+")"
+				// 	_W.worldDiv.style.top = Math.floor(_W.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
+				// 	_W.worldDiv.style.left = Math.floor(_W.worldDiv.style.left*(-1*_W.worldDatas.scale))+'px'
 				// }
 			}
 		},
