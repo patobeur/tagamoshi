@@ -243,6 +243,7 @@ const _M = {
 			_step: function () {
 				_R.roomFunctions.siJeChangeDeCase(this);
 				_R.roomFunctions.isThereAnyOne(mob);
+				_R.roomFunctions.isThereAnyConsumable(mob);
 				let fati = this._.stats.fatigue;
 				let faim = this._.stats.faim;
 				this.setFatigueOrNot(this);
@@ -306,17 +307,14 @@ const _M = {
 			//todo (a revoir)
 			let mobx = _M.mob();
 
+			mob._.stats.energie.cur = 0;
+			mob._.stats.fatigue.cur = mob._.stats.fatigue.max * 0.7;
+
 			mobx._.s = structuredClone(mob._.s);
 			mobx._.stats = structuredClone(mob._.stats);
 			mobx._.sheat = structuredClone(mob._.sheat);
 			mobx._.perso = structuredClone(mob._.perso);
 
-			mobx._.perso.xp = +10;
-			mobx._.stats.fatigue.cur = mob._.stats.fatigue.max * 0.7;
-			mob._.stats.energie.cur = 0;
-			mob._.stats.fatigue.cur = mob._.stats.fatigue.max;
-
-			mobx._.stats.energie.cur = 0;
 			mobx._.perso.clones = 0;
 			mobx._.perso.dicoveredCase = [];
 			mobx._.perso.xp = 0;
@@ -329,6 +327,7 @@ const _M = {
 
 			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
 
+			mob._.perso.xp = +10;
 			mob._.perso.clones++;
 
 			// _M.rewardBonus.replication(mob);
@@ -432,7 +431,7 @@ const _M = {
 			mob.blocs.alerte = _F.frontFunctions.createDiv({
 				tag: "div",
 				attributes: { className: "dis disalerte", textContent: "☠️" },
-			}); //🎲💭
+			}); //💭
 			mob.blocs.ico = _F.frontFunctions.createDiv({
 				tag: "div",
 				attributes: {
@@ -447,6 +446,13 @@ const _M = {
 					textContent: "...",
 				},
 			});
+			mob.blocs.consumable = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis disconsumable",
+					textContent: "🥝",
+				},
+			});
 			mob.blocs.myid = _F.frontFunctions.createDiv({
 				tag: "div",
 				attributes: {
@@ -458,6 +464,7 @@ const _M = {
 			mob.blocs.alldis.prepend(mob.blocs.starving);
 			mob.blocs.alldis.prepend(mob.blocs.resting);
 			mob.blocs.alldis.prepend(mob.blocs.alerte);
+			mob.blocs.alldis.prepend(mob.blocs.consumable);
 			mob.blocs.alldis.prepend(mob.blocs.ico);
 			mob.blocs.alldis.prepend(mob.blocs.voisins);
 			//-------------------------------------

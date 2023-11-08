@@ -168,13 +168,25 @@ const _J = {
 					`border-radius: 50%;` +
 					`opacity:0;` +
 				`}` +
+				// consumable ---------------------------------
+				`.mob .disconsumable {` +
+					`padding: 0;` +
+					`font-size: .6rem;` +
+					`background-color:rgba(255,255,255,.5);` +
+					`right:50%;` +
+					`opacity:0;` +
+				`}` +
+				`.mob .disconsumable.up {` +
+					`opacity:1;` +
+					`right:103%;` +
+				`}` +
 				// disstarving ---------------------------------
 				`.mob .disstarving {` +
 					`bottom:103%;left:30%;` +
 				`}` +
 				`.mob .disstarving.up {display: initial;` +
 					`bottom:103%;left:80%;` +
-				`opacity:1;` +
+					`opacity:1;` +
 				`}` +
 				// resting ---------------------------------
 				`.mob .disresting {` +
@@ -189,6 +201,7 @@ const _J = {
 				// disalerte ------------------------------
 				`.mob .disalerte {` +
 					`bottom:103%;left: 50%;` +
+					`opacity:0;` +
 				`}` +
 				`.mob .disalerte.up {display: initial;` +
 					`bottom:103%;left: 103%;` +
@@ -220,6 +233,9 @@ const _J = {
 					`background-color: #FFFFFF;` +
 					`border-radius: .5rem;` +
 					`top: 103%;` +
+					`opacity:0;` +
+				`}` +
+				`.mob .disvoisins.up {` +
 					`opacity:1;` +
 				`}` +
 				// infomob------------------------------

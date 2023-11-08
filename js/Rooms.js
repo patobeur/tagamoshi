@@ -46,6 +46,7 @@ const _R = {
 				}
 			}
 		},
+		isThereAnyConsumable: function (mob) {},
 		isThereAnyOne: function (mob) {
 			mob._.perso.alone = true;
 			let enemies = [];
@@ -66,10 +67,15 @@ const _R = {
 					if (currentcase.habitants) {
 						for (const key in currentcase.habitants) {
 							if (Object.hasOwnProperty.call(currentcase.habitants, key)) {
-								enemies.push(currentcase.habitants[key]);
-								stringEnemies =
-									stringEnemies + (habitantscount > 0 ? "," : "") + key;
-								habitantscount++;
+								if (mob._.perso.id != currentcase.habitants[key].mobid) {
+									enemies.push(currentcase.habitants[key]);
+									stringEnemies =
+										stringEnemies + (habitantscount > 0 ? "," : "") + key;
+									// ------------------------
+									// is colliding ??
+									// ------------------------
+									habitantscount++;
+								}
 							}
 						}
 					}
@@ -77,6 +83,9 @@ const _R = {
 						for (const key in currentcase.consumables) {
 							if (Object.hasOwnProperty.call(currentcase.consumables, key)) {
 								consumables.push(currentcase.consumables[key]);
+								// ------------------------
+								// is colliding ??
+								// ------------------------
 								consumablescount++;
 							}
 						}
@@ -85,6 +94,9 @@ const _R = {
 						for (const key in currentcase.trees) {
 							if (Object.hasOwnProperty.call(currentcase.trees, key)) {
 								trees.push(currentcase.trees[key]);
+								// ------------------------
+								// is colliding ??
+								// ------------------------
 								treescount++;
 							}
 						}
@@ -92,13 +104,22 @@ const _R = {
 				}
 				roomscount++;
 			});
+
 			mob.blocs.voisins.textContent = stringEnemies;
-			if (habitantscount > 1) {
+			if (habitantscount > 0) {
 				mob._.perso.alone = false;
 				mob.blocs.alerte.classList.add("up");
+				mob.blocs.voisins.classList.add("up");
 			} else {
 				mob._.perso.alone = true;
 				mob.blocs.alerte.classList.remove("up");
+				mob.blocs.voisins.classList.remove("up");
+			}
+			if (consumablescount > 0) {
+				mob.blocs.consumable.classList.add("up");
+				mob.blocs.consumable.textContent = consumables[0]._.sheat.ico
+			} else {
+				mob.blocs.consumable.classList.remove("up");
 			}
 		},
 		setRoomLevel: function (room) {
