@@ -1,6 +1,6 @@
 const _W = {
 	worldDatas: {
-		updateInterval: 10,
+		updateInterval: 1,
 		maxreplicaton: 20,
 		mobDeleteTimeout: 5000, // 5000ms -> 5sec
 		scale: 1,

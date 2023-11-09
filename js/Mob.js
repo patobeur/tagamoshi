@@ -196,11 +196,8 @@ const _M = {
 				_MobActions.selectAction(this)
 				_MobActions.doAction(this);
 
-
-
 				_M.mobFunctions.regenvalue(this, "fatigue");
 				if (!this._.stats.fatigue.needrest) _M.mobFunctions.regenvalue(this, "faim");
-				// _M.mobFunctions.regenvalue(this, "energie");
 				if (this._.stats.fatigue.needrest) _M.mobFunctions.regen_energie(this, "energie");
 
 				_M.mobFunctions.siJeMeReplique(this);
@@ -302,12 +299,14 @@ const _M = {
 			// replication ???
 			if (
 				mob._.stats.energie.cur > 90 &&
-				mob._.stats.fatigue.max > 100 &&
+				mob._.stats.faim.cur > mob._.stats.faim.max * .5  &&
+				mob._.stats.fatigue.cur < mob._.stats.fatigue.max * .5 &&
 				_W.worldDatas.mobCounter < _W.worldDatas.maxreplicaton
 				// && this._.stats.fatigue.cur < 50
 				// && this._.stats.faim.cur < 20
 				// && mob personal max cloning
 			) {
+				_W.worldDatas.mobCounter++
 				_M.mobFunctions.replicate(mob);
 			}
 		},

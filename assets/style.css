@@ -226,8 +226,8 @@ html {
 /* --------------------------------------- */
 .resociaux {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    bottom: 20px;
+    left: 20px;
     padding: 3px;
     background: rgba(63, 62, 62, 0.904);
     border-radius: .5rem;

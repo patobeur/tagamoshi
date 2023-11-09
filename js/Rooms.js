@@ -172,13 +172,12 @@ const _R = {
 			if (consumablescount > 0) {
 				mob._.targets.consumable.stack = consumables;
 				if (mob._.targets.consumable.nearest === null){
-					mob._.targets.consumable.nearest = nearestConsumable;
-
 					// console.log("++", mob._.targets.consumable.nearest);
 					mob.blocs.consumable.classList.add("up");
 					// mob.blocs.consumable.textContent = consumables[0]._.sheat.ico;
 				}
-					mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
+				mob._.targets.consumable.nearest = nearestConsumable;
+				mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
 			} else {
 				mob._.targets.consumable.stack = null;
 				mob.blocs.consumable.classList.remove("up");

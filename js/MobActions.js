@@ -59,10 +59,11 @@ const _MobActions = {
 					Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
 						Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
 				);
-				if (distance <=5) {
+				if (distance <= 24) {
 					target.divElement.remove();
 
 					mob._.stats.faim.cur += target._.sheat.stats.faim;
+					mob._.stats.fatigue.cur = -25;
 					// mob._.stats.fatigue.cur += target._.sheat.stats.fatigue
 					mob._.stats.energie.cur += target._.sheat.stats.energie
 
