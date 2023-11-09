@@ -162,45 +162,39 @@ const _J = {
 					`width:max-content;` +
 					`padding: 0 3px;` +
 					`transition-duration:500ms;` +
-					`transition-property:top,left,opacity;` +
+					`transition-property:top,left,right,bottom,opacity;` +
 					`transition-timing-function:ease-in-out;` +
 					`font-size: .6rem;` +
 					`border-radius: 50%;` +
 					`opacity:0;` +
+					`background-color:rgba(255,255,255,1);` +
+					`padding: 2px;` +
+					`min-width: .9rem;` +
+					`display:flex;align-items:center;justify-content:center;` +
 				`}` +
 				// consumable ---------------------------------
 				`.mob .disconsumable {` +
 					`padding: 0;` +
-					`font-size: .6rem;` +
 					`background-color:rgba(255,255,255,.5);` +
-					`right:50%;` +
-					`opacity:0;` +
 				`}` +
 				`.mob .disconsumable.up {` +
 					`opacity:1;` +
-					`right:103%;` +
+					`bottom:50%;right:103%;` +
 				`}` +
 				// disstarving ---------------------------------
 				`.mob .disstarving {` +
-					`bottom:103%;left:30%;` +
 				`}` +
 				`.mob .disstarving.up {display: initial;` +
-					`bottom:103%;left:80%;` +
+					`bottom:103%;right:33%;` +
 					`opacity:1;` +
 				`}` +
 				// resting ---------------------------------
 				`.mob .disresting {` +
-					`bottom:50%;` +
-				`}` +
-				`.mob.exhausted .disresting {` +
-				`font-size: .9rem;` +
-					`background-color:rgba(255,255,255,1);` +
-					`bottom:103%;` +
-					`opacity:1;` +
+					// `bottom:50%;bottom:50%;` +
 				`}` +
 				// disalerte ------------------------------
 				`.mob .disalerte {` +
-					`bottom:103%;left: 50%;` +
+					`bottom:103%;left: 60%;` +
 					`opacity:0;` +
 				`}` +
 				`.mob .disalerte.up {display: initial;` +
@@ -216,17 +210,20 @@ const _J = {
 				// dismyid ---------------------------------
 				`.mob .dismyid {` +
 					`font-size: .6rem;` +
-					`background-color:rgba(255,255,255,.5);` +
-					`bottom:103%;right:103%;` +
+					`background-color:rgba(255,255,255,1);` +
 					`opacity:1;` +
+					`right:103%;bottom: 103%;` +
 				`}` +
 				`.mob.me .dismyid{` +
-					`background-color:rgba(0,255,0,.7);` +
+					`background-color:rgba(0,255,0,1);` +
 					`color:black;` +
 				`}` +
 				`.mob.clone .dismyid{` +
-					`background-color:rgba(0,0,255,.7);` +
+					`background-color:rgba(0,0,255,1);` +
 					`color:white;` +
+				`}` +
+				`.mob .distexte.up {` +
+					`opacity:1;` +
 				`}` +
 				// disvoisins ---------------------------------
 				`.mob .disvoisins {` +
@@ -250,9 +247,35 @@ const _J = {
 				`}` +
 				`.mob .disinfomob.up {display: initial;}` +
 				// all exhausted ---------------------------------
-				`.mob.exhausted .disvoisins {` +
-					`background-color: black;opacity:.3;` +
-				`` +
+				// `.mob.exhausted .disvoisins {` +
+				// 	`background-color: black;` +
+				// 	`opacity:.3;` +
+				// 	`` +
+				// `}` +
+				`.mob.exhausted .dis {` +
+					// `bottom:initial;left:initial;right:initial;top:initial;` +
+				`}` +
+				`.mob.exhausted .disresting {` +
+					`font-size: .9rem;` +
+					`background-color:rgba(255,255,255,1);` +
+					`padding:2px;` +
+					// `bottom:103%;` +
+					`opacity:1;` +
+				`}` +
+				`.mob.exhausted .dismyid {` +
+
+				`}` +
+				// distexte ---------------------------------
+				`.mob .distexte {` +
+					`background-color: #FFFFFF;` +
+					`border-radius: .5rem;` +
+					`top: 103%;` +
+					`opacity:1;` +
+				`}` +
+				// distexte ---------------------------------
+				`.mob.exhausted .distexte {` +
+					`top: 103%;` +
+					`opacity:0.5;` +
 				`}` +
 				// `.mob.exhausted .dismyid {background-color: black;` +
 				// `bottom:50%;right:50%;` +
@@ -269,6 +292,37 @@ const _J = {
 			);
 		},
 		charactersForImmat: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		indexedDecor: {
+			bloc: {
+				volcano: {
+					ico: "🗻",
+					description: "Volcano",
+					model: "bloc",
+				},
+				volcanoactive: {
+					ico: "🌋",
+					description: "Active Volcano",
+					model: "bloc",
+				},
+				camp: {
+					ico: "🏕️",
+					description: "Camp",
+					model: "bloc",
+				},
+				camp: {
+					ico: "🏕️",
+					description: "Camp",
+					model: "bloc",
+				},				
+			},
+			item:{
+				map: {
+					ico: "🗺️",
+					description: "a Map",
+					model: "item",
+				},	
+			}
+		},
 		indexedFlora: {
 			tree: {
 				"Deciduous Tree": {

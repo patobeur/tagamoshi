@@ -12,10 +12,10 @@ class FullScreenManager {
     #addDiv(){
         this.#fullScreenDiv = document.createElement('div')
         this.#fullScreenDiv.id = 'fullscreen'
-        let css = '#fullscreen {position: absolute;height: 40px;width: 40px;right: 5px;top: 5px;background-image: url(./gameCore/htmlAssets/svg/resize_large.svg);background-position: center;background-size: cover;background-repeat: no-repeat;border-radius: 50%;display: flex;align-items: center;justify-content: center;font-size: 35px;line-height: 35px;cursor: pointer;}' +
-        '#fullscreen.full{background-image: url(./gameCore/htmlAssets/svg/resize_small.svg);}';
+        let css = '#fullscreen {position: absolute;height: 40px;width: 40px;right: 5px;top: 5px;background-image: url(./addon/FullScreenManager/resize_large.svg);background-position: center;background-size: cover;background-repeat: no-repeat;border-radius: 50%;display: flex;align-items: center;justify-content: center;font-size: 35px;line-height: 35px;cursor: pointer;z-index:9999}' +
+        '#fullscreen.full{background-image: url(./addon/FullScreenManager/resize_small.svg);z-index:9999}';
         this.addCss(css,'FullScreenManager');
-        document.body.prepend(this.#fullScreenDiv)
+        document.body.appendChild(this.#fullScreenDiv)
 
     }
     
@@ -61,4 +61,3 @@ class FullScreenManager {
         })
     }
 }
-export {FullScreenManager}

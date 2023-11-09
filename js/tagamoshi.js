@@ -1,4 +1,6 @@
+
 "use strict";
+const _WA = new FullScreenManager()
 // what else ?
 const _O = { // Ordinator
 	indexedRoomsByCaseNumber: {}, //all Rooms by it number
@@ -76,5 +78,7 @@ const _O = { // Ordinator
 	},
 };
 window.addEventListener("DOMContentLoaded", () => {
+
 	_O.start();
+	_WA.init()
 });

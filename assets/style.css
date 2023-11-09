@@ -12,18 +12,6 @@
     text-decoration: none
 }
 
-/* @font-face {
-	font-family: 'TheBlacklist';
-	src: local('TheBlacklist'), url('./TheBlacklist.woff') format('woff');
-} */
-@font-face {
-    font-family: 'TheBlacklist';
-    src: local('TheBlacklist'), url('./BigNoodleTitling-Oblique.ttf.woff') format('woff');
-}
-
-.fontsforweb_fontid_79299 {
-    font-family: 'TheBlacklist' !important;
-}
 
 body {
     background: var(--bodybackground);

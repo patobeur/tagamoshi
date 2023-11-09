@@ -15,5 +15,6 @@ const _T = {
 		rand: (min, max) => {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		},
+		get_DegreeWithTwoPos:function(x, y, X, Y) { return (Math.atan2(Y - y, X - x) * 180) / Math.PI; },
 	},
 };

@@ -29,7 +29,7 @@ const _M = {
 					},
 					faim: {
 						color: _W.worldDatas.mobdatas.colors.faim,
-						cur: 25,
+						cur: 60,
 						min: 0,
 						max: 100,
 						regen: -0.01,
@@ -69,6 +69,7 @@ const _M = {
 					immat: null, // name
 					type: null, // type of mob
 					IA: true,
+					IAActive: true,
 					xp: 0,
 					dicoveredCase: [],
 					clones: 0,
@@ -95,6 +96,20 @@ const _M = {
 						y: 0,
 						z: 0,
 						RoomNum: 0,
+					},
+				},
+				targets: {
+					mob: {
+						stack: [],
+						current: null,
+						last: null,
+						nearest: null,
+					},
+					consumable: {
+						stack: [],
+						current: null,
+						last: null,
+						nearest: null,
 					},
 				},
 				// ----------- todo regroupe dir,delayBeforeChangeDir,diramplitude
@@ -130,22 +145,6 @@ const _M = {
 			removefromDom: function (mob) {
 				mob.mobDivElement.remove();
 			},
-			die: function (mob) {
-				clearInterval(mob.alive);
-				_R.roomFunctions.exitCase(mob);
-				if (!mob.mobDivElement.classList.contains("thisistheend")) {
-					mob.mobDivElement.classList.add("thisistheend");
-				}
-				mob.removefromIndexes(mob);
-				console.log(mob._.perso.immat + " is on the dev paradise way !!!");
-				setTimeout(
-					(dom) => {
-						this.removefromDom(this);
-					},
-					_W.worldDatas.mobDeleteTimeout,
-					"dom"
-				);
-			},
 			createNewMobDiv: function () {
 				_M.mobFunctions.setNewImmat(this);
 				// init some datas
@@ -179,66 +178,14 @@ const _M = {
 					? this._.delayBeforeChangeDir.cur++
 					: (this._.delayBeforeChangeDir.cur = 0);
 			},
-			setFatigueOrNot: function (mob) {
-				let fat = mob._.stats.fatigue;
-				if (fat.cur <= fat.min) {
-					if (fat.needrest) fat.needrest = false;
-					if (fat.active) fat.active = false;
-					if (!fat.rested) fat.rested = true;
-				} else {
-					// fat.active = false;
-					fat.sens = 5;
-				}
-			},
-			setFaimOrNot: function (mob) {
-				let faim = mob._.stats.faim;
-				if (faim.cur > faim.max * 0.8) {
-					if (faim.active) faim.active = true;
-				} else {
-					faim.active = false;
-				}
 
-				if (faim.active && !mob.blocs.starving.classList.contains("up")) {
-					mob.mobDivElement.classList.add("up");
-				}
-				if (!faim.active && mob.mobDivElement.classList.contains("up")) {
-					mob.mobDivElement.classList.remove("up");
-				}
-			},
-			doAction: function (mob) {
-				switch (mob.actionsTodo[0]) {
-					case "rest":
-						if (!mob.mobDivElement.classList.contains("exhausted")) {
-							mob.mobDivElement.classList.add("exhausted");
-						}
-						if (mob.mobDivElement.classList.contains("move")) {
-							mob.mobDivElement.classList.remove("move");
-						}
-						break;
-					case "move":
-						mob.changedir();
-						_M.mobFunctions.setFuturPosAndRoom(mob);
-						this.applynextPos();
-
-						mob._.stats.fatigue.sens = -3;
-						_M.mobFunctions.updateMobDivElementPos(mob);
-
-						if (mob.mobDivElement.classList.contains("exhausted")) {
-							mob.mobDivElement.classList.remove("exhausted");
-						}
-						if (!mob.mobDivElement.classList.contains("move")) {
-							mob.mobDivElement.classList.add("move");
-						}
-						break;
-					case "die":
-						// todo
-						mob.die(mob);
-						_W.worldDatas.mobcounter++;
-						break;
-
-					default:
-						break;
-				}
+			changedirtotarget: function (target) {
+				this._.dir = _T.tools.get_DegreeWithTwoPos(
+					mob._.s.actual.x,
+					mob._.s.actual.y,
+					target._.s.actual.x,
+					target._.s.actual.y,
+				);
 			},
 			_step: function () {
 				_R.roomFunctions.siJeChangeDeCase(this);
@@ -246,8 +193,8 @@ const _M = {
 				_R.roomFunctions.isThereAnyConsumable(mob);
 				let fati = this._.stats.fatigue;
 				let faim = this._.stats.faim;
-				this.setFatigueOrNot(this);
-				this.setFaimOrNot(this);
+				_MobActions.setFatigueOrNot(this);
+				_MobActions.setFaimOrNot(this);
 				if (faim.cur >= faim.max) {
 					this.actionsTodo[0] = "die";
 				} else {
@@ -257,12 +204,18 @@ const _M = {
 					} else {
 						fati.needrest = fati.cur >= fati.max * 0.8; // >80%
 					}
-					if (!fati.needrest) {
-						this.actionsTodo[0] = "move";
+					if(mob._.perso.IAActive){
+						if (!fati.needrest) {
+							this.actionsTodo[0] = "move";
+						}
+						if (faim.active) {
+							this.actionsTodo[0] = "fooding";
+						}
+
 					}
 				}
 
-				this.doAction(this);
+				_MobActions.doAction(this);
 				_M.mobFunctions.regenvalue(this, "fatigue");
 				if (!fati.needrest) _M.mobFunctions.regenvalue(this, "faim");
 				// _M.mobFunctions.regenvalue(this, "energie");
@@ -284,7 +237,7 @@ const _M = {
 			// ---------------------------------
 			if (mob._.perso.id === 0) {
 				mob._.perso.IA = false;
-				mob._.perso.immat = 'Patobeur'
+				mob._.perso.immat = "Patobeur";
 			} else {
 				for (let i = 0; i < 7; i++) {
 					immat =
@@ -420,7 +373,7 @@ const _M = {
 			//-------------------------------------
 			mob.blocs.starving = _F.frontFunctions.createDiv({
 				tag: "div",
-				attributes: { className: "dis disstarving", textContent: "💭" },
+				attributes: { className: "dis disstarving", textContent: "💔" }, //❤️
 			}); //
 			//-------------------------------------
 			mob.blocs.resting = _F.frontFunctions.createDiv({
@@ -443,7 +396,14 @@ const _M = {
 				tag: "div",
 				attributes: {
 					className: "dis disvoisins",
-					textContent: "...",
+					textContent: "🧭",
+				},
+			});
+			mob.blocs.texte = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis distexte",
+					textContent: "",
 				},
 			});
 			mob.blocs.consumable = _F.frontFunctions.createDiv({
@@ -460,13 +420,14 @@ const _M = {
 					textContent: mob._.perso.id,
 				},
 			});
+			mob.blocs.alldis.prepend(mob.blocs.resting);
 			mob.blocs.alldis.prepend(mob.blocs.myid);
 			mob.blocs.alldis.prepend(mob.blocs.starving);
-			mob.blocs.alldis.prepend(mob.blocs.resting);
 			mob.blocs.alldis.prepend(mob.blocs.alerte);
 			mob.blocs.alldis.prepend(mob.blocs.consumable);
 			mob.blocs.alldis.prepend(mob.blocs.ico);
 			mob.blocs.alldis.prepend(mob.blocs.voisins);
+			mob.blocs.alldis.prepend(mob.blocs.texte);
 			//-------------------------------------
 
 			mob.blocs.infomob = _F.frontFunctions.createDiv({
@@ -510,21 +471,33 @@ const _M = {
 					tag: "div",
 					attributes: {
 						className: "disfaim",
-						textContent: "Faim: " + Math.floor(mob._.stats.faim.cur) + '/' + mob._.stats.faim.max,
+						textContent:
+							"Faim: " +
+							Math.floor(mob._.stats.faim.cur) +
+							"/" +
+							mob._.stats.faim.max,
 					},
 				});
 				let energie = _F.frontFunctions.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disenergie",
-						textContent: "Energie: " + Math.floor(mob._.stats.energie.cur) + '/' + mob._.stats.energie.max,
+						textContent:
+							"Energie: " +
+							Math.floor(mob._.stats.energie.cur) +
+							"/" +
+							mob._.stats.energie.max,
 					},
 				});
 				let fatigue = _F.frontFunctions.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disfatigue",
-						textContent: "Fatigue: " + Math.floor(mob._.stats.fatigue.cur) + '/' + mob._.stats.fatigue.max,
+						textContent:
+							"Fatigue: " +
+							Math.floor(mob._.stats.fatigue.cur) +
+							"/" +
+							mob._.stats.fatigue.max,
 					},
 				});
 				mob.blocs.infomob.appendChild(immat);
@@ -549,5 +522,4 @@ const _M = {
 		// 	// mob._.perso.updateInterval += 2;
 		// },
 	},
-	
 };

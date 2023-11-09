@@ -47,5 +47,18 @@ const _L = {
 				element.style.cursor = "grab";
 			});
 		},
+		// a tester
+		getEventX: function (event = false) {
+			if (event == false) {
+				return 0;
+			}
+			if (event.clientX) {
+				return event.clientX;
+			} else if (event.touches) {
+				return event.touches[0].clientX;
+			}
+
+			return 0;
+		},
 	},
 };

@@ -5,6 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dev. Web.</title>
+        <script src="./addon/FullScreenManager/FullScreenManager.js"></script>
+        <script src="./js/MobActions.js"></script>
         <script src="./js/Listeners.js"></script>
         <script src="./js/Svg.js"></script>
         <script src="./js/Decoration.js"></script>
@@ -23,14 +25,6 @@
         <div class="brand">
             <div class="p">T</div>
             <div class="texte">agamoshi
-                <!-- <svg class="svg" width="24px" width="24px" title="Change Profil" viewBox="0 0 52 52" enable-background="new 0 0 52 52">
-                    <circle class="energie" stroke="#ff1f87" r="16" cx="26" cy="26" fill="none" stroke-width="4"
-                        stroke-dasharray="100" stroke-dashoffset="100"></circle>
-                    <circle class="faim" stroke="#87ff1f" r="20" cx="26" cy="26" fill="none" stroke-width="4"
-                        stroke-dasharray="124" stroke-dashoffset="186"></circle>
-                    <circle class="fatigue" stroke="#1f87ff" r="24" cx="26" cy="26" fill="none" stroke-width="4"
-                        stroke-dasharray="150" stroke-dashoffset="250"></circle>
-                </svg> -->
             </div>
         </div>
 
@@ -67,19 +61,13 @@
                 href="https://codepen.io/Patobeur"></a>
             <a class="github" target="github" title="nouvelle page sur Github !" href="https://github.com/patobeur"></a>
         </div>
-        <!-- <div id="message" class="message">Message ?</div> -->
         <script>
-            // let message = document.getElementById('message')
             let contact = document.getElementById('contact')
             let fusee = document.getElementById('fusee')
             contact.addEventListener("click", (e) => {
                 console.log('Vous souhaitez prendre contact ?')
-                // message.classList.add('message-on')
                 fusee.classList.add('fusee-on')
-                // setTimeout(() => {}, 2000);
             }, true);
-            // fusee.addEventListener("transitionrun", (e)=>{console.log('run')}, true);
-            // fusee.addEventListener("transitionstart", (e)=>{console.log('start')}, true);
             fusee.addEventListener("transitionend", (e) => { fusee.classList.remove('fusee-on') }, true);
         </script>
     </body>

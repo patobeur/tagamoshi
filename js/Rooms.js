@@ -1,4 +1,5 @@
 const _R = {
+	displayEnemiesOnMob: false,
 	roomFunctions: {
 		siJeChangeDeCase: function (mob) {
 			if (mob._.s.past.RoomNum != mob._.s.actual.RoomNum) {
@@ -46,6 +47,16 @@ const _R = {
 				}
 			}
 		},
+		getNearest: function (mob, target, lowestDistance, nearest) {
+			const distance = Math.sqrt(
+				Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
+					Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
+			);
+			if (distance < lowestDistance) {
+				lowestDistance = distance;
+				nearest = target;
+			}
+		},
 		isThereAnyConsumable: function (mob) {},
 		isThereAnyOne: function (mob) {
 			mob._.perso.alone = true;
@@ -57,24 +68,41 @@ const _R = {
 				mob._.s.actual.x,
 				mob._.s.actual.y
 			);
-			let habitantscount = 0;
+			let otherMobscount = 0;
 			let roomscount = 0;
 			let consumablescount = 0;
 			let treescount = 0;
+			let lowestMobDist = 9999;
+			let nearestMob = null;
+			let lowestConsumableDist = 9999;
+			let nearestConsumable = null;
 			roomes.forEach((RoomNum) => {
 				let currentcase = _O.indexedRoomsByCaseNumber[RoomNum];
 				if (currentcase) {
-					if (currentcase.habitants) {
-						for (const key in currentcase.habitants) {
-							if (Object.hasOwnProperty.call(currentcase.habitants, key)) {
-								if (mob._.perso.id != currentcase.habitants[key].mobid) {
-									enemies.push(currentcase.habitants[key]);
-									stringEnemies =
-										stringEnemies + (habitantscount > 0 ? "," : "") + key;
+					if (currentcase.otherMobs) {
+						for (const key in currentcase.otherMobs) {
+							if (Object.hasOwnProperty.call(currentcase.otherMobs, key)) {
+								// if not me
+								if (mob._.perso.id != currentcase.otherMobs[key].mobid) {
+									let target =
+										_O.indexedMobsBymobIds[currentcase.otherMobs[key].mobid];
 									// ------------------------
+									enemies.push(target);
+									// ------------------------
+									if (_R.displayEnemiesOnMob) {stringEnemies = stringEnemies + (otherMobscount > 0 ? "," : "") + key; }
+									// ------------------------
+									const distance = Math.sqrt(
+										Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
+											Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
+									);
+									if (distance < lowestMobDist) {
+										lowestMobDist = distance;
+										nearestMob = target;
+									}
 									// is colliding ??
+
 									// ------------------------
-									habitantscount++;
+									otherMobscount++;
 								}
 							}
 						}
@@ -82,9 +110,27 @@ const _R = {
 					if (currentcase.consumables) {
 						for (const key in currentcase.consumables) {
 							if (Object.hasOwnProperty.call(currentcase.consumables, key)) {
-								consumables.push(currentcase.consumables[key]);
 								// ------------------------
+								let target = currentcase.consumables[key];
+								consumables.push(target);
+
+								const distance = Math.sqrt(
+									Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
+										Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
+								);
+								if (distance < lowestConsumableDist) {
+									lowestConsumableDist = distance;
+									nearestConsumable = target;
+								}
+
+								// _R.roomFunctions.getNearest(
+								// 	mob,
+								// 	target,
+								// 	lowestConsumableDist,
+								// 	nearestConsumable
+								// )
 								// is colliding ??
+
 								// ------------------------
 								consumablescount++;
 							}
@@ -105,20 +151,33 @@ const _R = {
 				roomscount++;
 			});
 
-			mob.blocs.voisins.textContent = stringEnemies;
-			if (habitantscount > 0) {
-				mob._.perso.alone = false;
-				mob.blocs.alerte.classList.add("up");
-				mob.blocs.voisins.classList.add("up");
+			if (_R.displayEnemiesOnMob) { mob.blocs.voisins.textContent = stringEnemies; }
+
+			if (otherMobscount > 0) {
+				mob._.targets.mob.stack = enemies;
+				mob._.targets.mob.nearest = nearestMob;
+				if (mob._.perso.alone) {
+					mob._.perso.alone = false;
+					mob.blocs.alerte.classList.add("up");
+					// mob.blocs.voisins.classList.add("up");
+				}
 			} else {
-				mob._.perso.alone = true;
+				mob._.targets.mob.stack = null;
 				mob.blocs.alerte.classList.remove("up");
-				mob.blocs.voisins.classList.remove("up");
+				// mob.blocs.voisins.classList.remove("up");
 			}
 			if (consumablescount > 0) {
-				mob.blocs.consumable.classList.add("up");
-				mob.blocs.consumable.textContent = consumables[0]._.sheat.ico
+				mob._.targets.consumable.stack = consumables;
+				if (mob._.targets.consumable.nearest === null){
+					mob._.targets.consumable.nearest = nearestConsumable;
+
+					// console.log("++", mob._.targets.consumable.nearest);
+					mob.blocs.consumable.classList.add("up");
+					// mob.blocs.consumable.textContent = consumables[0]._.sheat.ico;
+				}
+					mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
 			} else {
+				mob._.targets.consumable.stack = null;
 				mob.blocs.consumable.classList.remove("up");
 			}
 		},
@@ -148,7 +207,7 @@ const _R = {
 				roomNum: caseNumber,
 				lv: 0,
 				div: newgrid,
-				habitants: {},
+				otherMobs: {},
 				trees: {},
 				consumables: {},
 				coords: { x: newRoomPos.x, y: newRoomPos.y },
@@ -161,13 +220,13 @@ const _R = {
 		exitCase: function (mob) {
 			let pastCase = _O.indexedRoomsByCaseNumber[mob._.s.past.RoomNum];
 			if (pastCase) {
-				delete pastCase.habitants[mob._.perso.id];
+				delete pastCase.otherMobs[mob._.perso.id];
 				let i = 0;
 				let mobstring = "";
-				for (const key in pastCase.habitants) {
-					if (Object.hasOwnProperty.call(pastCase.habitants, key)) {
+				for (const key in pastCase.otherMobs) {
+					if (Object.hasOwnProperty.call(pastCase.otherMobs, key)) {
 						mobstring =
-							mobstring + (i > 0 ? "," : "") + pastCase.habitants[key].mobid;
+							mobstring + (i > 0 ? "," : "") + pastCase.otherMobs[key].mobid;
 						i++;
 					}
 				}
@@ -177,14 +236,14 @@ const _R = {
 		enterCase: function (mob) {
 			let actualCase = _O.indexedRoomsByCaseNumber[mob._.s.actual.RoomNum];
 			if (actualCase) {
-				actualCase.habitants[mob._.perso.id] = { mobid: mob._.perso.id };
+				actualCase.otherMobs[mob._.perso.id] = { mobid: mob._.perso.id };
 				// -------------------------------
 				let mobstring = "";
 				let i = 0;
-				for (const key in actualCase.habitants) {
-					if (Object.hasOwnProperty.call(actualCase.habitants, key)) {
+				for (const key in actualCase.otherMobs) {
+					if (Object.hasOwnProperty.call(actualCase.otherMobs, key)) {
 						mobstring =
-							mobstring + (i > 0 ? "," : "") + actualCase.habitants[key].mobid;
+							mobstring + (i > 0 ? "," : "") + actualCase.otherMobs[key].mobid;
 						i++;
 					}
 				}
