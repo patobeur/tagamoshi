@@ -43,11 +43,20 @@ const _C = {
 						_W.worldDatas.consumabledatas,
 						parent
 					);
-					_O.indexedconsumableByIds[consumable._.perso.id] = this;
-					_O.indexedRoomsByCaseNumber[this._.s.actual.RoomNum].consumables[
-						this._.perso.id
-					] = this;
-					_O.worldRoomsDiv.append(this.divElement);
+					if (
+						_W.worldFunctions.isXYInWorld(this._.s.actual.x, this._.s.actual.y)
+					) {
+						_W.worldDatas.consumableIds++;
+						_O.indexedconsumableByIds[consumable._.perso.id] = this;
+						_O.indexedRoomsByCaseNumber[this._.s.actual.RoomNum].consumables[
+							this._.perso.id
+						] = this;
+						_O.worldRoomsDiv.append(this.divElement);
+					}
+					else {
+						console.log('out of world',this)
+						delete this
+					}
 				},
 			};
 			return { ...consumable };
@@ -102,7 +111,6 @@ const _C = {
 					);
 			}
 			consumable._.perso.immat = immat;
-			_W.worldDatas.consumableIds++;
 		},
-	}
+	},
 };

@@ -189,37 +189,19 @@ const _M = {
 			},
 			_step: function () {
 				_R.roomFunctions.siJeChangeDeCase(this);
-				_R.roomFunctions.isThereAnyOne(mob);
-				_R.roomFunctions.isThereAnyConsumable(mob);
+				_R.roomFunctions.isThereAnyOne(this);
+				_R.roomFunctions.isThereAnyConsumable(this);
 				_MobActions.setFatigueOrNot(this);
 				_MobActions.setFaimOrNot(this);
-				let fati = this._.stats.fatigue;
-				let faim = this._.stats.faim;
-				if (faim.cur >= faim.max) {
-					this.actionsTodo[0] = "die";
-				} else {
-					if (fati.needrest) {
-						this.actionsTodo[0] = "rest";
-					} else {
-						fati.needrest = fati.cur >= fati.max * 0.8; // >80%
-					}
-					// pas reposé et fatigué
-					if(mob._.perso.IAActive){
-						if (!fati.needrest) {
-							this.actionsTodo[0] = "move";
-						}
-						if (faim.active) {
-							this.actionsTodo[0] = "fooding";
-						}
-
-					}
-				}
-
+				_MobActions.selectAction(this)
 				_MobActions.doAction(this);
+
+
+
 				_M.mobFunctions.regenvalue(this, "fatigue");
-				if (!fati.needrest) _M.mobFunctions.regenvalue(this, "faim");
+				if (!this._.stats.fatigue.needrest) _M.mobFunctions.regenvalue(this, "faim");
 				// _M.mobFunctions.regenvalue(this, "energie");
-				if (fati.needrest) _M.mobFunctions.regen_energie(this, "energie");
+				if (this._.stats.fatigue.needrest) _M.mobFunctions.regen_energie(this, "energie");
 
 				_M.mobFunctions.siJeMeReplique(this);
 			},
