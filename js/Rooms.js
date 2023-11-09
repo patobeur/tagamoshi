@@ -57,6 +57,9 @@ const _R = {
 				nearest = target;
 			}
 		},
+		removeConsumable: function (target){
+			
+		},
 		isThereAnyConsumable: function (mob) {},
 		isThereAnyOne: function (mob) {
 			mob._.perso.alone = true;

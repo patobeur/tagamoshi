@@ -1,6 +1,5 @@
 const _W = {
 	worldDatas: {
-		lifeNumber: 2,
 		updateInterval: 10,
 		maxreplicaton: 20,
 		mobDeleteTimeout: 5000, // 5000ms -> 5sec
@@ -104,7 +103,7 @@ const _W = {
 			}
 		},
 		hydrateWorld: function () {
-			for (let i = 0; i < _W.worldDatas.lifeNumber; i++) {
+			for (let i = 0; i < _W.worldDatas.mobdatas.lifeNumber; i++) {
 				let mob = _M.mob();
 				mob.createNewMobDiv();
 				mob.initiate();

@@ -139,7 +139,7 @@ const _M = {
 				}, this._.perso.updateInterval);
 			},
 			removefromIndexes: function (mob) {
-				console.log(mob);
+				// console.log(mob);
 				delete _O.indexedMobsBymobIds[mob._.perso.id];
 			},
 			removefromDom: function (mob) {
@@ -191,19 +191,19 @@ const _M = {
 				_R.roomFunctions.siJeChangeDeCase(this);
 				_R.roomFunctions.isThereAnyOne(mob);
 				_R.roomFunctions.isThereAnyConsumable(mob);
-				let fati = this._.stats.fatigue;
-				let faim = this._.stats.faim;
 				_MobActions.setFatigueOrNot(this);
 				_MobActions.setFaimOrNot(this);
+				let fati = this._.stats.fatigue;
+				let faim = this._.stats.faim;
 				if (faim.cur >= faim.max) {
 					this.actionsTodo[0] = "die";
 				} else {
-					// pas reposé et fatigué
 					if (fati.needrest) {
 						this.actionsTodo[0] = "rest";
 					} else {
 						fati.needrest = fati.cur >= fati.max * 0.8; // >80%
 					}
+					// pas reposé et fatigué
 					if(mob._.perso.IAActive){
 						if (!fati.needrest) {
 							this.actionsTodo[0] = "move";

@@ -28,26 +28,37 @@ const _MobActions =  {
 			mob.blocs.texte.textContent = "Trop fatigué !";
 		},
 		fooding: function (mob) {
-			if (mob._.targets.consumable.nearest!=null){
-				let target = mob._.targets.consumable.nearest
-				mob.changedirtotarget(target);
-				const distance = Math.sqrt(
-					Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
-						Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
-				);
-				// console.log(distance)
-				if(distance<100){
-					console.log(target)}
-				if(distance<10){
-					mob._.stats.faim.cur = 60
-					// console.log(target._.perso.immat,target._.perso.id)
-					// console.log(target._.s.actual.RoomNum)
+			let target = mob._.targets.consumable.nearest
+			if (target!=null){
+				if (_O.indexedconsumableByIds[target._.perso.id] && target._.perso.id == _O.indexedconsumableByIds[target._.perso.id]._.perso.id){
+					mob.changedirtotarget(target);
+					const distance = Math.sqrt(
+						Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
+							Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
+					);
+					// console.log(distance)
+					if(distance<10){
+						// console.log(target)
+					mob._.stats.faim.cur += target._.sheat.stats.faim
+					mob._.stats.fatigue.cur += target._.sheat.stats.fatigue
+					mob._.stats.energie.cur += target._.sheat.stats.energie
+
+						target.divElement.remove();
+						delete _O.indexedRoomsByCaseNumber[target._.s.actual.RoomNum][target._.perso.id]
+						delete _O.indexedconsumableByIds[target._.perso.id]
+						
+						// console.log(target._.perso.immat,target._.perso.id)
+						// console.log(target._.s.actual.RoomNum)
+					}
+					// if distance < width/2 ?
+					// if collaps
+					// add to inventory ?
+					// remove from array
+					// remove from world
 				}
-				// if distance < width/2 ?
-				// if collaps
-				// add to inventory ?
-				// remove from array
-				// remove from world
+				else {
+					mob._.targets.consumable.nearest = null
+				}
 			}
 			else {
 				mob.changedir();
