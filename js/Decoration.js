@@ -11,13 +11,14 @@ const _D = {
 				}),
 				_: {
 					stats: {},
-					perso: {
-						id: null,
-						immat: null, // name
-						type: null, // type of trees
-						updateInterval:
-							_W.worldDatas.updateInterval + _T.tools.rand(10000, 15000),
-					},
+					perso: { 
+						id: null, 
+						immat: null, 
+						type: null, 
+						updateInterval: _W.worldDatas.updatetreeInterval + _T.tools.rand(
+							_W.worldDatas.updatetreeDropRatePlus-1000,
+							_W.worldDatas.updatetreeDropRatePlus
+					)},
 					s: {
 						actual: {
 							x: _T.tools.rand(0, _W.worldDatas.roomSideLength),
@@ -33,11 +34,13 @@ const _D = {
 
 					// console.log(tree._.sheat.description + " updating : " + rand);
 
-					if (rand > 8) {
+					if (rand > 1 * _W.worldDatas.treeConsumableDropChance) {
 						_C.consumableFunctions.dropconsumable("new fruit:", tree, false);
 					}
 				},
 				initiate: function (tree, caseNumber) {
+					tree._.perso.updateInterval  = _W.worldDatas.updatetreeInterval + _T.tools.rand( _W.worldDatas.updatetreeDropRatePlus-1000, _W.worldDatas.updatetreeDropRatePlus)
+
 					_D.decorationFunctions.setNewIDS(tree);
 					_D.decorationFunctions.createNewDiv(tree);
 					tree._.s.actual.RoomNum = caseNumber;

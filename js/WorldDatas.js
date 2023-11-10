@@ -1,10 +1,5 @@
 const _W = {
 	worldDatas: {
-		updateInterval: 1,
-		maxreplicaton: 20,
-		mobDeleteTimeout: 5000, // 5000ms -> 5sec
-		scale: 1,
-		roomSideLength: 100, //Math.floor(window.innerWidth / 5),
 		sizes: {
 			size: {
 				w: Math.floor(window.innerWidth),// / 1.05),
@@ -21,30 +16,22 @@ const _W = {
 		},
 		roomIds: 0,
 		// ----------------
-		consumableIds: 0,
-		consumableCounter: 0,
-		consumableSheatsArray: [],
-		consumablechance: 0.5,
-		consumabledatas: {
-			w: 12, // collateral display damages if changed
-			h: 12, // collateral display damages if changed
-			fontrem: 0.8,
-		},
-		// ----------------
 		mobIds: 0,
 		mobCounter: 0,
 		mobSheatsArray: [],
+		mobdatas: {},
 		// ----------------
 		treeIds: 0,
 		treeCounter: 0,
 		treeSheatsArray: [],
 		threechance: 0.6,
-		treedatas: {
-			w: 48, // collateral display damages if changed
-			h: 48, // collateral display damages if changed
-			fontrem: 0.8,
-		},
-		mobdatas: {},
+		treedatas: {},
+		// ----------------
+		consumableIds: 0,
+		consumableCounter: 0,
+		consumableSheatsArray: [],
+		consumabledatas: {},
+		
 	},
 	worldFunctions: {
 		createWorldDivsAndAddToDom: function () {
@@ -120,6 +107,39 @@ const _W = {
 		},
 	},
 	communsFunctions: {
+		setCenterPosInThisRoom: function (obj, objdatas, parent = false) {
+			if (parent) {
+				obj._.s.actual.RoomNum = parent._.s.actual.RoomNum;
+			}
+			let roomCoords =
+				_O.indexedRoomsByCaseNumber[obj._.s.actual.RoomNum].coords;
+
+			let next = {
+				x: roomCoords.x + _W.worldDatas.roomSideLength/2,
+				y: roomCoords.y + _W.worldDatas.roomSideLength/2,
+			};
+			obj._.s.actual.x = next.x;
+			obj._.s.actual.y = next.y;
+
+			obj.divElement.style.left = obj._.s.actual.x - objdatas.w / 2 + "px";
+			obj.divElement.style.top = obj._.s.actual.y - objdatas.h / 2 + "px";
+		},
+		
+		setAleaPosInThisRoom: function (obj,objdatas) {
+			
+			let roomCoords = _O.indexedRoomsByCaseNumber[obj._.s.actual.RoomNum].coords;
+
+			let next = {
+				x: roomCoords.x + _T.tools.rand(0, _W.worldDatas.roomSideLength),
+				y: roomCoords.y + + _T.tools.rand(0, _W.worldDatas.roomSideLength)
+			};
+			obj._.s.actual.x = next.x
+			obj._.s.actual.y = next.y
+
+			obj.divElement.style.left = obj._.s.actual.x - objdatas.w / 2 + "px";
+			obj.divElement.style.top = obj._.s.actual.y - objdatas.h / 2 + "px";
+		},
+		
 		setNewPosInThisRoom: function (obj, objdatas, parent = false) {
 			if (parent) {
 				obj._.s.actual.RoomNum = parent._.s.actual.RoomNum;

@@ -1,5 +1,5 @@
 const _R = {
-	displayEnemiesOnMob: false,
+	displayEnemiesUnderMob: false,
 	roomFunctions: {
 		siJeChangeDeCase: function (mob) {
 			if (mob._.s.past.RoomNum != mob._.s.actual.RoomNum) {
@@ -57,10 +57,6 @@ const _R = {
 				nearest = target;
 			}
 		},
-		removeConsumable: function (target){
-			
-		},
-		isThereAnyConsumable: function (mob) {},
 		isThereAnyOne: function (mob) {
 			mob._.perso.alone = true;
 			let enemies = [];
@@ -79,6 +75,7 @@ const _R = {
 			let nearestMob = null;
 			let lowestConsumableDist = 9999;
 			let nearestConsumable = null;
+			let target = null
 			roomes.forEach((RoomNum) => {
 				let currentcase = _O.indexedRoomsByCaseNumber[RoomNum];
 				if (currentcase) {
@@ -92,7 +89,10 @@ const _R = {
 									// ------------------------
 									enemies.push(target);
 									// ------------------------
-									if (_R.displayEnemiesOnMob) {stringEnemies = stringEnemies + (otherMobscount > 0 ? "," : "") + key; }
+									if (_W.worldDatas.displayEnemiesUnderMob) {
+										stringEnemies =
+											stringEnemies + (otherMobscount > 0 ? "," : "") + key;
+									}
 									// ------------------------
 									const distance = Math.sqrt(
 										Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
@@ -112,9 +112,10 @@ const _R = {
 					}
 					if (currentcase.consumables) {
 						for (const key in currentcase.consumables) {
+							target = null
 							if (Object.hasOwnProperty.call(currentcase.consumables, key)) {
 								// ------------------------
-								let target = currentcase.consumables[key];
+								target = currentcase.consumables[key];
 								consumables.push(target);
 
 								const distance = Math.sqrt(
@@ -124,16 +125,9 @@ const _R = {
 								if (distance < lowestConsumableDist) {
 									lowestConsumableDist = distance;
 									nearestConsumable = target;
+
 								}
-
-								// _R.roomFunctions.getNearest(
-								// 	mob,
-								// 	target,
-								// 	lowestConsumableDist,
-								// 	nearestConsumable
-								// )
 								// is colliding ??
-
 								// ------------------------
 								consumablescount++;
 							}
@@ -154,34 +148,46 @@ const _R = {
 				roomscount++;
 			});
 
-			if (_R.displayEnemiesOnMob) { mob.blocs.voisins.textContent = stringEnemies; }
-
+			if (_W.worldDatas.displayEnemiesUnderMob) {
+				mob.blocs.voisins.textContent = stringEnemies;
+			}
 			if (otherMobscount > 0) {
 				mob._.targets.mob.stack = enemies;
 				mob._.targets.mob.nearest = nearestMob;
 				if (mob._.perso.alone) {
 					mob._.perso.alone = false;
 					mob.blocs.alerte.classList.add("up");
-					// mob.blocs.voisins.classList.add("up");
+					mob.blocs.voisins.classList.add("up");
 				}
 			} else {
 				mob._.targets.mob.stack = null;
 				mob.blocs.alerte.classList.remove("up");
-				// mob.blocs.voisins.classList.remove("up");
+				mob.blocs.voisins.classList.remove("up");
 			}
+
+
+			
 			if (consumablescount > 0) {
+
 				mob._.targets.consumable.stack = consumables;
-				if (mob._.targets.consumable.nearest === null){
-					// console.log("++", mob._.targets.consumable.nearest);
+				if (mob._.targets.consumable.nearest === null) {
 					mob.blocs.consumable.classList.add("up");
-					// mob.blocs.consumable.textContent = consumables[0]._.sheat.ico;
 				}
-				mob._.targets.consumable.nearest = nearestConsumable;
-				mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
+					mob._.targets.consumable.nearest = nearestConsumable;
+					mob._.targets.consumable.last = nearestConsumable;
+					mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
+					_R.roomFunctions.setconsumablelastIcoAndText(mob)
 			} else {
 				mob._.targets.consumable.stack = null;
+				mob._.targets.consumable.nearest = null;
 				mob.blocs.consumable.classList.remove("up");
+				mob.blocs.consumable.textContent = '';
 			}
+		},
+		setconsumablelastIcoAndText: function (mob) {
+			// if (!mob._.targets.consumable.last && mob._.targets.consumable.nearest) mob._.targets.consumable.last = mob._.targets.consumable.nearest;
+			// if (!mob._.targets.consumable.last) mob.blocs.consumablelast.textContent = "🔍";
+			mob.blocs.consumablelast.textContent = (mob._.targets.consumable.last) ? mob._.targets.consumable.last._.sheat.ico : "🔍";
 		},
 		setRoomLevel: function (room) {
 			let oldmapname = "lv" + room.lv - 1;

@@ -237,11 +237,14 @@ html {
     display: flex;
     flex-direction: row;
     z-index: 5;
+    background: rgba(26, 25, 29, 0.904);
+    box-shadow: 0px 0px 10px rgb(32, 25, 25);
 }
 
 .resociaux:hover {
-    background: rgba(0, 0, 0, 0.904);
-    box-shadow: 0px 0px 10px green;
+    box-shadow: 0px 0px 8px rgb(32, 25, 25);
+    bottom: 19px;
+    left: 21px;
 }
 
 .resociaux .github,

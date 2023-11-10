@@ -40,56 +40,7 @@ const _J = {
 				`.room.lv2{background-color:rgba(200, 200, 155,.2);}` +
 				`.room.lv3{background-color:rgba(250, 250, 200,.2);}` +
 				`.room.lv4{background-color:rgba(155, 155, 55,.2);}` +
-				// -------------consumable--------------------
-				`.consumable {` +
-					`position:absolute;` +
-					// `color:white;` +
-					`font-size:${_W.worldDatas.consumabledatas.fontrem}rem;` +
-					// `text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
-					// `outline:2px solid rgba(255,255,255,1);` +
-					`width:${_W.worldDatas.consumabledatas.w}px;` +
-					`height:${_W.worldDatas.consumabledatas.h}px;` +
-					`display:flex;` +
-					`align-items:center;` +
-					`justify-content:center;` +
-					`transition-duration:1s;` +
-					`transition-property:transform,opacity;` +
-					`transition-timing-function:ease-in-out;` +
-					`opacity:1;` +
-					`transform:scale(1);` +
-				`}` +
-				// consumable new --------------------
-				`.consumable.new {` +
-				`opacity:0.3;` +
-				`transition-duration:1s;` +
-				`transition-property:transform,opacity;` +
-				`transition-timing-function:ease-in-out;` +
-				`transform:scale(0.1);` +
-				`}` +
-				// -------------tree--------------------
-				`.tree {` +
-				`position:absolute;` +
-				// `color:white;` +
-				`font-size:${_W.worldDatas.treedatas.fontrem}rem;` +
-				// `text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
-				// `outline:2px solid rgba(255,255,255,.3);` +
-				`width:${_W.worldDatas.treedatas.w}px;` +
-				`height:${_W.worldDatas.treedatas.h}px;` +
-				`display:flex;` +
-				`align-items:center;` +
-				`justify-content:center;` +
-				// `border-radius:50%;` +
-				`background: none;` +
-				// `background: radial-gradient(circle, rgba(62,232,2,.5) 0%, rgba(16,112,31,0) 50%);` +
-				`}` +
-				`.tree.visited {` +
-				`background: radial-gradient(circle, rgba(32,200,2,.7) 0%, rgba(16,112,31,0) 50%);` +
-				`}` +
-				`.tree.onfruits {` +
-				// `filter: hue-rotate(180deg);` +
-				`background: radial-gradient(circle, rgba(2,32,20,.7) 0%, rgba(31,16,112,0) 50%);` +
-
-				`}` +
+				
 				// ----------------------------------------
 				`.room2{` +
 					`align-content:flex-start;` +
@@ -114,11 +65,6 @@ const _J = {
 					`width:${_W.worldDatas.mobdatas.mobh}px;` +
 					`height:${_W.worldDatas.mobdatas.mobw}px;` +
 				`}` +
-				`.world .mob:hover{` +
-					`transform-orign : 0 0;` +
-					`transform : scale(1.2);` +
-					`z-index:2;` +
-				`}` +
 				// ----------------------------------------
 				`.mob.move{` +
 					`opacity:1;` +
@@ -138,7 +84,7 @@ const _J = {
 					`transition-property:opacity;` +
 					`transition-timing-function:ease-in-out;` +
 				`}` +
-				// mobdisplay------------------------------
+				// mobdisplay------------EMPTY --------
 				`.mob .mobdisplay {` +
 					`position: absolute;` +
 					`left: 105%;` +
@@ -154,9 +100,9 @@ const _J = {
 					`position: absolute;` +
 					`width: ${_W.worldDatas.mobdatas.mobh}px;` +
 					`height: ${_W.worldDatas.mobdatas.mobh}px;` +
-					`font-size:${_W.worldDatas.mobdatas.cssfonticosize}rem;` +
+					// `font-size:${_W.worldDatas.alldisfontsize}rem;` +
 				`}` +
-				// alldis------------------------------
+				// dis------------------------------
 				`.mob .dis {` +
 					`position: absolute;` +
 					`width:max-content;` +
@@ -171,18 +117,32 @@ const _J = {
 					`padding: 2px;` +
 					`min-width: .9rem;` +
 					`display:flex;align-items:center;justify-content:center;` +
+					`font-size:${_W.worldDatas.disfontsize}rem;` +
 				`}` +
-				// consumable ---------------------------------
+				// disconsumable ---------------------------------
 				`.mob .disconsumable {` +
-					`padding: 0;` +
+					`font-size:${_W.worldDatas.disconsumablefontsize}rem;` +
+					`padding: .5;` +
 					`background-color:rgba(255,255,255,.5);` +
 				`}` +
 				`.mob .disconsumable.up {` +
 					`opacity:1;` +
 					`bottom:50%;right:103%;` +
 				`}` +
+				// consumablelast ---------------------------------
+				`.mob .disconsumablelast {` +
+					`font-size:${_W.worldDatas.disconsumablefontsize}rem;` +
+					`bottom:50%;left:103%;` +
+					`opacity:1;` +
+					`background-color:rgba(255,255,255,.5);` +
+				`}` +
+				`.mob .disconsumablelast.up {` +
+					`opacity:1;` +
+					`bottom:50%;left:103%;` +
+				`}` +
 				// disstarving ---------------------------------
 				`.mob .disstarving {` +
+					`font-size:${_W.worldDatas.disstarvingfontsize}rem;` +
 				`}` +
 				`.mob .disstarving.up {display: initial;` +
 					`bottom:103%;right:33%;` +
@@ -204,12 +164,13 @@ const _J = {
 				// disico ---------------------------------
 				`.mob .disico {` +
 					`border-radius: 50%;` +
-					`font-size: 1rem;` +
+					`font-size:${_W.worldDatas.mobEmojiFontSize}rem;` +
 					`opacity:1;` +
 				`}` +
 				// dismyid ---------------------------------
 				`.mob .dismyid {` +
-					`font-size: .6rem;` +
+					// `font-size: .6rem;` +
+					`font-size:${_W.worldDatas.dismyidfontsize}rem;` +
 					`background-color:rgba(255,255,255,1);` +
 					`opacity:1;` +
 					`right:103%;bottom: 103%;` +
@@ -222,11 +183,9 @@ const _J = {
 					`background-color:rgba(0,0,255,1);` +
 					`color:white;` +
 				`}` +
-				`.mob .distexte.up {` +
-					`opacity:1;` +
-				`}` +
 				// disvoisins ---------------------------------
 				`.mob .disvoisins {` +
+					`font-size:${_W.worldDatas.disvoisinsfontsize}rem;` +
 					`background-color: #FFFFFF;` +
 					`border-radius: .5rem;` +
 					`top: 103%;` +
@@ -237,15 +196,28 @@ const _J = {
 				`}` +
 				// infomob------------------------------
 				`.mob .disinfomob {` +
+					`font-size:${_W.worldDatas.disinfomobfontsize}rem;` +
 					`position: absolute;` +
 					`left: 98%;top: 2%;` +
 					`width: max-content;` +
 					`border-radius: .5rem;` +
+					`border-top-right-radius:0;` +
 					`padding: .5rem;` +
 					`background-color: #f0f0f0a8;` +
 					`display: none;` +
 				`}` +
 				`.mob .disinfomob.up {display: initial;}` +
+				`.mob .disinfomobtag {display: initial;` +
+					`background-color: #FFf0f0a8;` +
+					`position:absolute;` +
+					`font-size:${_W.worldDatas.disinfomobtagfontsize}rem;` +
+					`bottom:100%;` +
+					`right:0;` +
+					`padding: .1rem .3rem;` +
+					`border-radius: .5rem;` +
+					`border-bottom-right-radius:0;` +
+					`border-bottom-left-radius:0;` +
+				`}` +
 				// all exhausted ---------------------------------
 				// `.mob.exhausted .disvoisins {` +
 				// 	`background-color: black;` +
@@ -263,13 +235,16 @@ const _J = {
 					`opacity:1;` +
 				`}` +
 				`.mob.exhausted .dismyid {` +
-
 				`}` +
 				// distexte ---------------------------------
 				`.mob .distexte {` +
+					`font-size:${_W.worldDatas.distextefontsize}rem;` +
 					`background-color: #FFFFFF;` +
 					`border-radius: .5rem;` +
 					`top: 103%;` +
+					`opacity:0;` +
+				`}` +
+				`.mob .distexte.up {` +
 					`opacity:1;` +
 				`}` +
 				// distexte ---------------------------------
@@ -285,8 +260,72 @@ const _J = {
 					`position:absolute;` +
 					`width:${_W.worldDatas.mobdatas.svgSideLength}px;` +
 					`height:${_W.worldDatas.mobdatas.svgSideLength}px;` +
+					// `display:none;` +
+					`opacity:0.3;` +
 				`}` +
-				`.mob svg circle{stroke-linecap:round;}`
+				`.mob svg circle{stroke-linecap:round;}` +
+				
+				// -------------consumable--------------------
+				`.consumable {` +
+					`position:absolute;` +
+					// `color:white;` +
+					`font-size:${_W.worldDatas.consumabledatas.fontSize}rem;` +
+					// `text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
+					// `outline:2px solid rgba(255,255,255,1);` +
+					`width:${_W.worldDatas.consumabledatas.w}px;` +
+					`height:${_W.worldDatas.consumabledatas.h}px;` +
+					`display:flex;` +
+					`align-items:center;` +
+					`justify-content:center;` +
+					`transition-duration:1s;` +
+					`transition-property:top,left,transform,opacity;` +
+					`transition-timing-function:ease-in-out;` +
+					`opacity:1;` +
+					`transform:scale(1);` +
+				`}` +
+				// consumable new --------------------
+				`.consumable.new {` +
+					`opacity:0;` +
+					`transition-duration:1s;` +
+					`transition-property:transform,opacity;` +
+					`transition-timing-function:ease-in-out;` +
+					`transform:scale(3);` +
+				`}` +
+								// -------------tree--------------------
+								`.tree {` +
+								`position:absolute;` +
+								// `color:white;` +
+								`font-size:${_W.worldDatas.treedatas.fontSize}rem;` +
+								// `text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
+								// `outline:2px solid rgba(255,255,255,.3);` +
+								`width:${_W.worldDatas.treedatas.w}px;` +
+								`height:${_W.worldDatas.treedatas.h}px;` +
+								`background-color:${_W.worldDatas.treedatas.backgroundColor};` +
+								`display:flex;` +
+								`align-items:center;` +
+								`justify-content:center;` +
+								// `border-radius:50%;` +
+								`background: none;` +
+								// `background: radial-gradient(circle, rgba(62,232,2,.5) 0%, rgba(16,112,31,0) 50%);` +
+								`}` +
+								`.tree.visited {` +
+									`background: radial-gradient(circle, rgba(32,200,2,.7) 0%, rgba(16,112,31,0) 50%);` +
+								`}` +
+								`.tree.onfruits {` +
+								// `filter: hue-rotate(180deg);` +
+									`background: radial-gradient(circle, rgba(2,32,20,.7) 0%, rgba(31,16,112,0) 50%);` +
+
+								`}` +
+				// -------------allsvg---------------------
+				`.world .mob:hover{` +
+					`transform-orign : 0 0;` +
+					`transform : scale(1.2);` +
+					`z-index:2;` +
+				`}` +
+				`.world .mob:hover svg{` +
+					`display:initial;` +
+					`opacity:1;` +
+				`}`
 				// mobdisplay-------------- JS ------------
 				// `.mob:hover .mobdisplay {display: initial;}`
 			);
@@ -320,7 +359,13 @@ const _J = {
 					ico: "🗺️",
 					description: "a Map",
 					model: "item",
-				},	
+				},
+				bow: {
+					ico: "🏹",
+					description: "a Bow",
+					model: "item",
+				},
+				
 			}
 		},
 		indexedFlora: {

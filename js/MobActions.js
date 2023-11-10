@@ -16,8 +16,14 @@ const _MobActions = {
 				if (!fati.needrest) {
 					mob.actionsTodo[0] = "move";
 				}
-				if (faim.active && mob._.targets.consumable.nearest) {
+				if (faim.active && mob._.targets.consumable.last!=false ) {
 					mob.actionsTodo[0] = "fooding";
+				}
+				if (faim.active && !mob._.targets.consumable.last) {
+					mob.actionsTodo[0] = "move";
+				}
+				if (fati.needrest) {
+					mob.actionsTodo[0] = "rest";
 				}
 			}
 		}
@@ -30,16 +36,17 @@ const _MobActions = {
 		if (!mob.mobDivElement.classList.contains("thisistheend")) {
 			mob.mobDivElement.classList.add("thisistheend");
 		}
-		mob.removefromIndexes(mob);
+		mob.removefromIndexes();
 		console.log(mob._.perso.immat + " is on the dev paradise way !!!");
+					mob.mobDivElement.style.backgroundColor = '#000000'
 		setTimeout(
 			() => {
-				mob.removefromDom(this);
+					mob.mobDivElement.remove();
 			},
 			_W.worldDatas.mobDeleteTimeout,
 			"dom"
 		);
-		_W.worldDatas.mobcounter++;
+		_W.worldDatas.mobcounter--;
 	},
 	rest: function (mob) {
 		if (!mob.mobDivElement.classList.contains("exhausted")) {
@@ -51,34 +58,43 @@ const _MobActions = {
 		mob.blocs.texte.textContent = "Trop fatigué !";
 	},
 	fooding: function (mob) {
-		let target = mob._.targets.consumable.nearest;
-		if (target!=null) {
-			if (_O.indexedconsumableByIds[target._.perso.id]) {
-				mob.changedirtotarget(target);
+		// let target = mob._.targets.consumable.nearest;
+		let last = mob._.targets.consumable.last;
+		if (last) {
+			if (_O.indexedconsumableByIds[last._.perso.id]) {
+				mob.changedirtotarget(last);
 				const distance = Math.sqrt(
-					Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
-						Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
+					Math.pow(mob._.s.actual.x - last._.s.actual.x, 2) +
+						Math.pow(mob._.s.actual.y - last._.s.actual.y, 2)
 				);
+				// eat food
 				if (distance <= 24) {
-					target.divElement.remove();
-
-					mob._.stats.faim.cur += target._.sheat.stats.faim;
+					last.divElement.remove();
+					mob._.stats.faim.cur += last._.sheat.stats.faim;
 					mob._.stats.fatigue.cur = -25;
-					// mob._.stats.fatigue.cur += target._.sheat.stats.fatigue
-					mob._.stats.energie.cur += target._.sheat.stats.energie
+					// mob._.stats.fatigue.cur += last._.sheat.stats.fatigue
+					mob._.stats.energie.cur += last._.sheat.stats.energie
 
-					delete _O.indexedRoomsByCaseNumber[target._.s.actual.RoomNum].consumables[
-						target._.perso.id
+					// if(target._.perso.id === last._.perso.id) {
+						mob._.targets.consumable.last = false
+						_R.roomFunctions.setconsumablelastIcoAndText(mob)
+					// }
+
+					delete _O.indexedRoomsByCaseNumber[last._.s.actual.RoomNum].consumables[
+						last._.perso.id
 					];
-					delete _O.indexedconsumableByIds[target._.perso.id];
-					delete target;
-					
-					mob._.targets.consumable.nearest = null;
+					delete _O.indexedconsumableByIds[last._.perso.id];
+					delete last;
+					_W.worldDatas.consumableIds--
 				}
 			} else {
-				mob._.targets.consumable.nearest = null;
+				console.log('Cible perdu')
+				mob._.targets.consumable.last = null;
 			}
-		} 
+		}
+		else {
+
+		}
 
 		_M.mobFunctions.setFuturPosAndRoom(mob);
 		mob.applynextPos();

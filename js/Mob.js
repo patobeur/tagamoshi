@@ -138,12 +138,9 @@ const _M = {
 					this.mobUpdate();
 				}, this._.perso.updateInterval);
 			},
-			removefromIndexes: function (mob) {
+			removefromIndexes: function () {
 				// console.log(mob);
-				delete _O.indexedMobsBymobIds[mob._.perso.id];
-			},
-			removefromDom: function (mob) {
-				mob.mobDivElement.remove();
+				delete _O.indexedMobsBymobIds[this._.perso.id];
 			},
 			createNewMobDiv: function () {
 				_M.mobFunctions.setNewImmat(this);
@@ -157,8 +154,8 @@ const _M = {
 				this.mobDivElement.className =
 					this._.sheat.model +
 					" mob" +
-					(mob._.perso.id != 0 ? " ia" : " me") +
-					(mob._.perso.parentId ? " clone" : "");
+					(this._.perso.id != 0 ? " ia" : " me") +
+					(this._.perso.parentId ? " clone" : "");
 
 				_W.worldDatas.mobIds++;
 				_W.worldDatas.mobCounter++;
@@ -181,8 +178,8 @@ const _M = {
 
 			changedirtotarget: function (target) {
 				this._.dir = _T.tools.get_DegreeWithTwoPos(
-					mob._.s.actual.x,
-					mob._.s.actual.y,
+					this._.s.actual.x,
+					this._.s.actual.y,
 					target._.s.actual.x,
 					target._.s.actual.y,
 				);
@@ -190,7 +187,6 @@ const _M = {
 			_step: function () {
 				_R.roomFunctions.siJeChangeDeCase(this);
 				_R.roomFunctions.isThereAnyOne(this);
-				_R.roomFunctions.isThereAnyConsumable(this);
 				_MobActions.setFatigueOrNot(this);
 				_MobActions.setFaimOrNot(this);
 				_MobActions.selectAction(this)
@@ -377,7 +373,7 @@ const _M = {
 				tag: "div",
 				attributes: {
 					className: "dis disvoisins",
-					textContent: "🧭",
+					textContent: "...",
 				},
 			});
 			mob.blocs.texte = _F.frontFunctions.createDiv({
@@ -387,13 +383,6 @@ const _M = {
 					textContent: "",
 				},
 			});
-			mob.blocs.consumable = _F.frontFunctions.createDiv({
-				tag: "div",
-				attributes: {
-					className: "dis disconsumable",
-					textContent: "🥝",
-				},
-			});
 			mob.blocs.myid = _F.frontFunctions.createDiv({
 				tag: "div",
 				attributes: {
@@ -401,13 +390,28 @@ const _M = {
 					textContent: mob._.perso.id,
 				},
 			});
+			mob.blocs.consumable = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis disconsumable",
+					textContent: "🔍",
+				},
+			});
+			mob.blocs.consumablelast = _F.frontFunctions.createDiv({
+				tag: "div",
+				attributes: {
+					className: "dis disconsumablelast",
+					textContent: "🔍",
+				},
+			});
 			mob.blocs.alldis.prepend(mob.blocs.resting);
 			mob.blocs.alldis.prepend(mob.blocs.myid);
 			mob.blocs.alldis.prepend(mob.blocs.starving);
 			mob.blocs.alldis.prepend(mob.blocs.alerte);
 			mob.blocs.alldis.prepend(mob.blocs.consumable);
+			mob.blocs.alldis.prepend(mob.blocs.consumablelast);
 			mob.blocs.alldis.prepend(mob.blocs.ico);
-			mob.blocs.alldis.prepend(mob.blocs.voisins);
+			if (_W.worldDatas.displayEnemiesUnderMob) mob.blocs.alldis.prepend(mob.blocs.voisins);
 			mob.blocs.alldis.prepend(mob.blocs.texte);
 			//-------------------------------------
 
@@ -481,6 +485,14 @@ const _M = {
 							mob._.stats.fatigue.max,
 					},
 				});
+				let infomobtag = _F.frontFunctions.createDiv({
+					tag: "div",
+					attributes: {
+						className: "disinfomobtag",
+						textContent: "disinfomob",
+					},
+				});
+				mob.blocs.infomob.appendChild(infomobtag);
 				mob.blocs.infomob.appendChild(immat);
 				mob.blocs.infomob.appendChild(xp);
 				mob.blocs.infomob.appendChild(faim);

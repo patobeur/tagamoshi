@@ -38,7 +38,7 @@ const _C = {
 					_C.consumableFunctions.setNewIDS(this);
 					_C.consumableFunctions.createNewDiv(this);
 					// _W.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
-					_W.communsFunctions.setNewPosInThisRoom(
+					_W.communsFunctions.setCenterPosInThisRoom(
 						this,
 						_W.worldDatas.consumabledatas,
 						parent
@@ -46,34 +46,59 @@ const _C = {
 					if (
 						_W.worldFunctions.isXYInWorld(this._.s.actual.x, this._.s.actual.y)
 					) {
-						_W.worldDatas.consumableIds++;
-						_O.indexedconsumableByIds[consumable._.perso.id] = this;
-						_O.indexedRoomsByCaseNumber[this._.s.actual.RoomNum].consumables[
-							this._.perso.id
-						] = this;
 						_O.worldRoomsDiv.append(this.divElement);
+						return true
 					}
 					else {
-						console.log('out of world',this)
 						delete this
+						return false
 					}
 				},
 			};
 			return { ...consumable };
 		},
-		dropconsumable: function (help = "", parent = false, caseNumber = false) {
+		dropconsumable: function (help = "###", parent = false, caseNumber = false) {
+			
 			if (!(parent === false && caseNumber === false)) {
-				if (_T.tools.rand(0, 100) <= _W.worldDatas.consumablechance * 100) {
-					if (_W.worldDatas.consumableIds < _W.worldDatas.roomIds / 3) {
-						let consumable = _C.consumableFunctions.consumable();
-						consumable.initiate(parent, caseNumber);
+				let rand = _T.tools.rand(0, 100)
+				if (rand <= _W.worldDatas.consumabledropchance * 100) {
+					if (_W.worldDatas.consumableIds < _W.worldDatas.maxconsumable) {
 
-						parent.divElement.classList.add("onfruits");
-						consumable.divElement.classList.add("new");
-						setTimeout(() => {
-							consumable.divElement.classList.remove("new");
-							parent.divElement.classList.remove("onfruits");
-						}, 2000);
+						let consumable = _C.consumableFunctions.consumable();
+
+						let ok = consumable.initiate(parent, caseNumber);
+						if (ok){
+							
+							_W.worldDatas.consumableIds++;
+							parent.divElement.classList.add("onfruits");
+							consumable.divElement.classList.add("new");
+
+
+
+							setTimeout(function() {
+								// _W.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
+								_W.communsFunctions.setAleaPosInThisRoom(
+									consumable,
+									_W.worldDatas.consumabledatas
+								);
+								consumable.divElement.classList.remove("new");
+								parent.divElement.classList.remove("onfruits");
+							}, _W.worldDatas.consumableTimeout/3);
+							setTimeout(function() {
+								
+								_O.indexedconsumableByIds[consumable._.perso.id] = consumable;
+								_O.indexedRoomsByCaseNumber[consumable._.s.actual.RoomNum].consumables[
+									consumable._.perso.id
+								] = consumable;
+	
+							}, _W.worldDatas.consumableTimeout);
+						}
+						else {
+							console.log('consumable out of world',_W.worldDatas.consumableIds,_W.worldDatas.maxconsumable)
+						}
+					}
+					else {
+						console.log('max consumableIds ',_W.worldDatas.consumableIds,_W.worldDatas.maxconsumable)
 					}
 				}
 			} else {
