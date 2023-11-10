@@ -332,72 +332,72 @@ const _M = {
 			_S.svgfunctions.setSvg(mob, "svg");
 			mob.mobDivElement.appendChild(mob.blocs.svg);
 			//-------------------------------------
-			mob.mobDisplayDiv = _F.frontFunctions.createDiv({
+			mob.mobDisplayDiv = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "mobdisplay" },
 			});
-			mob.mobDatasDiv = _F.frontFunctions.createDiv({
+			mob.mobDatasDiv = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "datasdiv" },
 			});
 			mob.mobDisplayDiv.appendChild(mob.mobDatasDiv);
 			mob.mobDivElement.appendChild(mob.mobDisplayDiv);
 			//-------------------------------------
-			mob.blocs.alldis = _F.frontFunctions.createDiv({
+			mob.blocs.alldis = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "alldis" },
 			});
 			//-------------------------------------
-			mob.blocs.starving = _F.frontFunctions.createDiv({
+			mob.blocs.starving = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "dis disstarving", textContent: "💔" }, //❤️
 			}); //
 			//-------------------------------------
-			mob.blocs.resting = _F.frontFunctions.createDiv({
+			mob.blocs.resting = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "dis disresting", textContent: "💤" },
 			}); //
 			//-------------------------------------
-			mob.blocs.alerte = _F.frontFunctions.createDiv({
+			mob.blocs.alerte = _T.tools.createDiv({
 				tag: "div",
 				attributes: { className: "dis disalerte", textContent: "☠️" },
 			}); //💭
-			mob.blocs.ico = _F.frontFunctions.createDiv({
+			mob.blocs.ico = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis disico",
 					textContent: _T.tools.sanitize(mob._.sheat.ico),
 				},
 			});
-			mob.blocs.voisins = _F.frontFunctions.createDiv({
+			mob.blocs.voisins = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis disvoisins",
 					textContent: "...",
 				},
 			});
-			mob.blocs.texte = _F.frontFunctions.createDiv({
+			mob.blocs.texte = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis distexte",
 					textContent: "",
 				},
 			});
-			mob.blocs.myid = _F.frontFunctions.createDiv({
+			mob.blocs.myid = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis dismyid",
 					textContent: mob._.perso.id,
 				},
 			});
-			mob.blocs.consumable = _F.frontFunctions.createDiv({
+			mob.blocs.consumable = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis disconsumable",
 					textContent: "🔍",
 				},
 			});
-			mob.blocs.consumablelast = _F.frontFunctions.createDiv({
+			mob.blocs.consumablelast = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "dis disconsumablelast",
@@ -415,7 +415,7 @@ const _M = {
 			mob.blocs.alldis.prepend(mob.blocs.texte);
 			//-------------------------------------
 
-			mob.blocs.infomob = _F.frontFunctions.createDiv({
+			mob.blocs.infomob = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "disinfomob",
@@ -438,21 +438,21 @@ const _M = {
 				mob.blocs.infomob.classList.add("up");
 				mob.blocs.infomob.textContent = "";
 
-				let immat = _F.frontFunctions.createDiv({
+				let immat = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disimmat",
 						textContent: "Name: " + mob._.perso.immat,
 					},
 				});
-				let xp = _F.frontFunctions.createDiv({
+				let xp = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disxp",
 						textContent: "Xp: " + mob._.perso.xp,
 					},
 				});
-				let faim = _F.frontFunctions.createDiv({
+				let faim = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disfaim",
@@ -463,7 +463,7 @@ const _M = {
 							mob._.stats.faim.max,
 					},
 				});
-				let energie = _F.frontFunctions.createDiv({
+				let energie = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disenergie",
@@ -474,7 +474,7 @@ const _M = {
 							mob._.stats.energie.max,
 					},
 				});
-				let fatigue = _F.frontFunctions.createDiv({
+				let fatigue = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disfatigue",
@@ -485,7 +485,7 @@ const _M = {
 							mob._.stats.fatigue.max,
 					},
 				});
-				let infomobtag = _F.frontFunctions.createDiv({
+				let infomobtag = _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "disinfomobtag",

@@ -200,7 +200,7 @@ const _R = {
 		createNewRoom: function (caseNumber) {
 			// case jamais découverte
 			let newRoomPos = _R.roomFunctions.getRoomXYFromNumber(caseNumber);
-			let newgrid = _F.frontFunctions.createDiv({
+			let newgrid = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "c_" + caseNumber + " room up",

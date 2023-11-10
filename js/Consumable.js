@@ -2,7 +2,7 @@ const _C = {
 	consumableFunctions: {
 		consumable: function () {
 			let consumable = {
-				divElement: _F.frontFunctions.createDiv({
+				divElement: _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "consumable",
@@ -106,7 +106,7 @@ const _C = {
 			}
 		},
 		createNewDiv: function (consumable) {
-			consumable.divElement = _F.frontFunctions.createDiv({
+			consumable.divElement = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: consumable._.sheat.className + " new",

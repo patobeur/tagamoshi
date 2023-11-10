@@ -35,7 +35,7 @@ const _W = {
 	},
 	worldFunctions: {
 		createWorldDivsAndAddToDom: function () {
-			_W.worldDiv = _F.frontFunctions.createDiv({
+			_W.worldDiv = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "world",
@@ -48,14 +48,14 @@ const _W = {
 					position: "absolute",
 				},
 			});
-			_O.worldRoomsDiv = _F.frontFunctions.createDiv({
+			_O.worldRoomsDiv = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "allrooms",
 				},
 			});
 
-			_O.worldMobsDiv = _F.frontFunctions.createDiv({
+			_O.worldMobsDiv = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "allmobs",

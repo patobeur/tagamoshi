@@ -2,7 +2,7 @@ const _D = {
 	decorationFunctions: {
 		tree: function () {
 			let tree = {
-				divElement: _F.frontFunctions.createDiv({
+				divElement: _T.tools.createDiv({
 					tag: "div",
 					attributes: {
 						className: "tree",
@@ -88,7 +88,7 @@ const _D = {
 			}
 		},
 		createNewDiv: function (tree) {
-			tree.divElement = _F.frontFunctions.createDiv({
+			tree.divElement = _T.tools.createDiv({
 				tag: "div",
 				attributes: {
 					className: "three " + tree._.sheat.model,

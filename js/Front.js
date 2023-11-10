@@ -1,23 +1,5 @@
 const _F = {
 	frontFunctions: {
-		createDiv: function (params) {
-			let element = document.createElement(params.tag);
-			if (params.attributes) {
-				for (const key in params.attributes) {
-					if (Object.hasOwnProperty.call(params.attributes, key)) {
-						element[key] = params.attributes[key];
-					}
-					if (params.style) {
-						for (const key2 in params.style) {
-							if (Object.hasOwnProperty.call(params.style, key2)) {
-								element.style[key2] = params.style[key2];
-							}
-						}
-					}
-				}
-			}
-			return element;
-		},
 		addCss: function () {
 			let stringcss = _J.jsons.cssString();
 			// let stringcss = _J.jsons.abc;
@@ -35,7 +17,6 @@ const _F = {
 						mob._.stats[valuename].strokedasharray
 			); //+ (v.regen < 0 ? -_O.strokeOffset : 0);
 		},
-
 		_handleMouseWheel: function (event) {
 			if (event.ctrlKey === false && event.altKey === false) {
 				// if(event.target.className==="allrooms"){

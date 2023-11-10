@@ -1,5 +1,23 @@
 const _T = {
 	tools: {
+		createDiv: function (params) {
+			let element = document.createElement(params.tag);
+			if (params.attributes) {
+				for (const key in params.attributes) {
+					if (Object.hasOwnProperty.call(params.attributes, key)) {
+						element[key] = params.attributes[key];
+					}
+					if (params.style) {
+						for (const key2 in params.style) {
+							if (Object.hasOwnProperty.call(params.style, key2)) {
+								element.style[key2] = params.style[key2];
+							}
+						}
+					}
+				}
+			}
+			return element;
+		},
 		sanitize: function (string) {
 			const map = {
 				"&": "&amp;",
