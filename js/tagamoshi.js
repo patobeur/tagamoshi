@@ -75,6 +75,7 @@ const _O = { // Ordinator
 		this.setdatas();
 		_F.frontFunctions.addCss();
 		_W.worldFunctions.createWorldDivsAndAddToDom();
+		_W.worldFunctions.createCountersDivsAndAddToDom();
 		_W.worldFunctions.createMobSheatsArray();
 		_W.worldFunctions.createconsumableSheatsArray();
 		_W.worldFunctions.createtreeSheatsArray();

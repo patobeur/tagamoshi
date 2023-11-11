@@ -5,7 +5,7 @@ const _L = {
 			let isDragging = false;
 			let offsetX, offsetY;
 
-			document.addEventListener("mousedown", (e) => {
+			element.addEventListener("mousedown", (e) => {
 				isDragging = true;
 				const rect = element.getBoundingClientRect();
 				offsetX = e.clientX - rect.left;
@@ -13,7 +13,7 @@ const _L = {
 				element.style.cursor = "grabbing";
 			});
 
-			document.addEventListener("touchstart", (e) => {
+			element.addEventListener("touchstart", (e) => {
 				isDragging = true;
 				const rect = element.getBoundingClientRect();
 				const touch = e.touches[0];
@@ -29,7 +29,7 @@ const _L = {
 				}
 			});
 
-			document.addEventListener("touchmove", (e) => {
+			element.addEventListener("touchmove", (e) => {
 				if (isDragging) {
 					const touch = e.touches[0];
 					element.style.left = touch.clientX - offsetX + "px";

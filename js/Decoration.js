@@ -115,8 +115,9 @@ const _D = {
 					);
 			}
 			tree._.perso.immat = immat;
-			_O.treeCounter++;
+
 			_W.worldDatas.treeIds++;
+			_W.worldFunctions.refreshCounter('treeCounter',1)
 		},
 	},
 };

@@ -158,7 +158,11 @@ const _M = {
 					(this._.perso.parentId ? " clone" : "");
 
 				_W.worldDatas.mobIds++;
-				_W.worldDatas.mobCounter++;
+				// _W.worldDatas.mobCounter++;
+				_W.worldFunctions.refreshCounter('mobCounter',1)
+
+
+
 			},
 			applynextPos: function () {
 				this._.s.past = structuredClone(this._.s.actual);

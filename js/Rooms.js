@@ -223,6 +223,7 @@ const _R = {
 			_O.indexedRoomsByCaseNumber[caseNumber] = room;
 			_O.arrayRoomsIds.push(caseNumber);
 			_W.worldDatas.roomIds++;
+			_W.worldFunctions.refreshCounter('roomCounter',1)
 			_O.worldRoomsDiv.prepend(_O.indexedRoomsByCaseNumber[caseNumber].div);
 		},
 		exitCase: function (mob) {

@@ -47,6 +47,7 @@ const _MobActions = {
 			"dom"
 		);
 		_W.worldDatas.mobcounter--;
+		_W.worldFunctions.refreshCounter('mobCounter',-1)
 	},
 	rest: function (mob) {
 		if (!mob.mobDivElement.classList.contains("exhausted")) {
@@ -86,6 +87,7 @@ const _MobActions = {
 					delete _O.indexedconsumableByIds[last._.perso.id];
 					delete last;
 					_W.worldDatas.consumableIds--
+					_W.worldFunctions.refreshCounter('consumableCounter',-1)
 				}
 			} else {
 				console.log('Cible perdu')

@@ -66,30 +66,23 @@ const _C = {
 
 						let consumable = _C.consumableFunctions.consumable();
 
-						let ok = consumable.initiate(parent, caseNumber);
-						if (ok){
-							
+						let isconsumableok = consumable.initiate(parent, caseNumber);
+						if (isconsumableok){
+
 							_W.worldDatas.consumableIds++;
 							parent.divElement.classList.add("onfruits");
 							consumable.divElement.classList.add("new");
 
-
-
 							setTimeout(function() {
 								// _W.communsFunctions.setPos(this, _W.worldDatas.consumabledatas);
-								_W.communsFunctions.setAleaPosInThisRoom(
-									consumable,
-									_W.worldDatas.consumabledatas
-								);
+								_W.communsFunctions.setAleaPosInThisRoom(consumable,_W.worldDatas.consumabledatas);
 								consumable.divElement.classList.remove("new");
 								parent.divElement.classList.remove("onfruits");
 							}, _W.worldDatas.consumableTimeout/3);
 							setTimeout(function() {
-								
+								_W.worldFunctions.refreshCounter('consumableCounter',1)
 								_O.indexedconsumableByIds[consumable._.perso.id] = consumable;
-								_O.indexedRoomsByCaseNumber[consumable._.s.actual.RoomNum].consumables[
-									consumable._.perso.id
-								] = consumable;
+								_O.indexedRoomsByCaseNumber[consumable._.s.actual.RoomNum].consumables[consumable._.perso.id] = consumable;
 	
 							}, _W.worldDatas.consumableTimeout);
 						}

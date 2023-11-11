@@ -325,6 +325,16 @@ const _J = {
 				`.world .mob:hover svg{` +
 					`display:initial;` +
 					`opacity:1;` +
+				`}`+
+				`.divcounter{` +
+					// `height:3rem;` +
+					// `display:initial;` +
+					// `font-size:2rem;` +
+					// // `text-shadow: 0px 0px 5px 5px rgba(53, 53, 53, 0.84);` +
+					// // `outline:2px solid rgba(255,255,255,.3);` +
+					// `width:50%;` +
+					// // `height:${_W.worldDatas.treedatas.h}px;` +
+					// `opacity:1;` +
 				`}`
 				// mobdisplay-------------- JS ------------
 				// `.mob:hover .mobdisplay {display: initial;}`
