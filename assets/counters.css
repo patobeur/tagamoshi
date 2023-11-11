@@ -61,7 +61,6 @@
 .counters .counter .counterico.up {
     animation: icoup 500ms linear;
 }
-.counters .counter:hover .counterico,
 .counters .counter .counterico.down {
     animation: icodown 500ms linear;
 }
