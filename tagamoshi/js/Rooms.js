@@ -12,6 +12,19 @@ const _R = {
 		checkIfRoomeExiste: function (mob) {
 			let actualRoom = _O.indexedRoomsByCaseNumber[mob._.s.actual.RoomNum];
 			if (typeof actualRoom === "undefined") {
+				// room rules here
+				
+	
+	
+	
+	
+	
+	
+	
+	
+	
+				
+				// end room rules here
 				_R.roomFunctions.createNewRoom(mob._.s.actual.RoomNum);
 				_M.rewardBonus.newRoomdiscovered(mob);
 				// mob.svgtextgridNum.textContent = mob._.s.actual.RoomNum;
@@ -39,9 +52,10 @@ const _R = {
 							mob._.s.actual.RoomNum
 						);
 						// console.log(_W.worldDatas.treeCounter, maxroom, " arbre !??");
-					} else {
-						console.log("trop d'arbre !??");
-					}
+					} 
+					// else {
+					// 	console.log("trop d'arbre !??");
+					// }
 
 					// _C.consumableFunctions.dropconsumable("pop consumable",false, mob._.s.actual.RoomNum);
 				}
@@ -103,7 +117,6 @@ const _R = {
 										nearestMob = target;
 									}
 									// is colliding ??
-
 									// ------------------------
 									otherMobscount++;
 								}
@@ -117,7 +130,6 @@ const _R = {
 								// ------------------------
 								target = currentcase.consumables[key];
 								consumables.push(target);
-
 								const distance = Math.sqrt(
 									Math.pow(mob._.s.actual.x - target._.s.actual.x, 2) +
 										Math.pow(mob._.s.actual.y - target._.s.actual.y, 2)
@@ -125,7 +137,6 @@ const _R = {
 								if (distance < lowestConsumableDist) {
 									lowestConsumableDist = distance;
 									nearestConsumable = target;
-
 								}
 								// is colliding ??
 								// ------------------------
@@ -148,9 +159,6 @@ const _R = {
 				roomscount++;
 			});
 
-			if (_W.worldDatas.displayEnemiesUnderMob) {
-				mob.blocs.voisins.textContent = stringEnemies;
-			}
 			if (otherMobscount > 0) {
 				mob._.targets.mob.stack = enemies;
 				mob._.targets.mob.nearest = nearestMob;
@@ -159,17 +167,18 @@ const _R = {
 					mob.blocs.alerte.classList.add("up");
 					mob.blocs.voisins.classList.add("up");
 				}
+				if (_W.worldDatas.displayEnemiesUnderMob) {
+					mob.blocs.voisins.textContent = stringEnemies;
+				}
 			} else {
 				mob._.targets.mob.stack = null;
 				mob.blocs.alerte.classList.remove("up");
 				mob.blocs.voisins.classList.remove("up");
 			}
-
-
 			
 			if (consumablescount > 0) {
-
 				mob._.targets.consumable.stack = consumables;
+				
 				if (mob._.targets.consumable.nearest === null) {
 					mob.blocs.consumable.classList.add("up");
 				}
@@ -177,12 +186,18 @@ const _R = {
 					mob._.targets.consumable.last = nearestConsumable;
 					mob.blocs.consumable.textContent = nearestConsumable._.sheat.ico;
 					_R.roomFunctions.setconsumablelastIcoAndText(mob)
-			} else {
+			}
+			else {
 				mob._.targets.consumable.stack = null;
 				mob._.targets.consumable.nearest = null;
 				mob.blocs.consumable.classList.remove("up");
 				mob.blocs.consumable.textContent = '';
 			}
+			
+			if(!mob._.targets.consumable.last && mob._.targets.consumable.stack && mob._.targets.consumable.stack.length>0) {
+				mob._.targets.consumable.last = mob._.targets.consumable.stack[0]
+			}
+
 		},
 		setconsumablelastIcoAndText: function (mob) {
 			// if (!mob._.targets.consumable.last && mob._.targets.consumable.nearest) mob._.targets.consumable.last = mob._.targets.consumable.nearest;
@@ -199,6 +214,22 @@ const _R = {
 		},
 		createNewRoom: function (caseNumber) {
 			// case jamais découverte
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// -----------------------------------
 			let newRoomPos = _R.roomFunctions.getRoomXYFromNumber(caseNumber);
 			let newgrid = _T.tools.createDiv({
 				tag: "div",
@@ -223,7 +254,7 @@ const _R = {
 			_O.indexedRoomsByCaseNumber[caseNumber] = room;
 			_O.arrayRoomsIds.push(caseNumber);
 			_W.worldDatas.roomIds++;
-			_W.worldFunctions.refreshCounter('roomCounter',1)
+			_Co.countersFunctions.refreshCounter('roomCounter',1,false)
 			_O.worldRoomsDiv.prepend(_O.indexedRoomsByCaseNumber[caseNumber].div);
 		},
 		exitCase: function (mob) {

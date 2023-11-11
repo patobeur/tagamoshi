@@ -80,9 +80,8 @@ const _J = {
 				// thisistheend ------------------------------
 				`.world .mob.thisistheend{` +
 					`opacity:0;` +
-					`transition-duration:${_W.worldDatas.mobDeleteTimeout};` +
+					`transition-duration:${_W.worldDatas.mobDeleteTimeout}s;` +
 					`transition-property:opacity;` +
-					`transition-timing-function:ease-in-out;` +
 				`}` +
 				// mobdisplay------------EMPTY --------
 				`.mob .mobdisplay {` +

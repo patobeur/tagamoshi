@@ -33,21 +33,25 @@ const _MobActions = {
 		mob.blocs.texte.textContent = "adieu !";
 		clearInterval(mob.alive);
 		_R.roomFunctions.exitCase(mob);
+
 		if (!mob.mobDivElement.classList.contains("thisistheend")) {
 			mob.mobDivElement.classList.add("thisistheend");
 		}
 		mob.removefromIndexes();
-		console.log(mob._.perso.immat + " is on the dev paradise way !!!");
-					mob.mobDivElement.style.backgroundColor = '#000000'
+		// console.log(mob._.perso.immat + " is on the dev paradise way !!!");
+
+		mob.mobDivElement.style.backgroundColor = '#000000'
+
+		_Co.countersFunctions.refreshCounter('mobCounter',-1,mob)
+
 		setTimeout(
 			() => {
+					mob.addRIP()
 					mob.mobDivElement.remove();
 			},
 			_W.worldDatas.mobDeleteTimeout,
 			"dom"
 		);
-		_W.worldDatas.mobcounter--;
-		_W.worldFunctions.refreshCounter('mobCounter',-1)
 	},
 	rest: function (mob) {
 		if (!mob.mobDivElement.classList.contains("exhausted")) {
@@ -76,6 +80,8 @@ const _MobActions = {
 					// mob._.stats.fatigue.cur += last._.sheat.stats.fatigue
 					mob._.stats.energie.cur += last._.sheat.stats.energie
 
+					_Co.countersFunctions.refreshCounter('consumableCounter',-1,last)
+
 					// if(target._.perso.id === last._.perso.id) {
 						mob._.targets.consumable.last = false
 						_R.roomFunctions.setconsumablelastIcoAndText(mob)
@@ -85,12 +91,10 @@ const _MobActions = {
 						last._.perso.id
 					];
 					delete _O.indexedconsumableByIds[last._.perso.id];
-					delete last;
-					_W.worldDatas.consumableIds--
-					_W.worldFunctions.refreshCounter('consumableCounter',-1)
+					last = false;
 				}
 			} else {
-				console.log('Cible perdu')
+				// console.log('Cible perdu')
 				mob._.targets.consumable.last = null;
 			}
 		}
@@ -119,6 +123,7 @@ const _MobActions = {
 			mob.mobDivElement.classList.add("move");
 		}
 		mob.blocs.texte.textContent = "Roaming !";
+		mob.addSpot()
 	},
 	doAction: function (mob) {
 		switch (mob.actionsTodo[0]) {

@@ -31,10 +31,8 @@ const _D = {
 				},
 				treeUpdate: function (tree) {
 					let rand = _T.tools.rand(0, 100);
-
-					// console.log(tree._.sheat.description + " updating : " + rand);
-
-					if (rand > 1 * _W.worldDatas.treeConsumableDropChance) {
+					// chance to get fruits
+					if (rand <= _W.worldDatas.treeConsumableDropChance * 100) {
 						_C.consumableFunctions.dropconsumable("new fruit:", tree, false);
 					}
 				},
@@ -117,7 +115,7 @@ const _D = {
 			tree._.perso.immat = immat;
 
 			_W.worldDatas.treeIds++;
-			_W.worldFunctions.refreshCounter('treeCounter',1)
+			_Co.countersFunctions.refreshCounter('treeCounter',1,tree)
 		},
 	},
 };

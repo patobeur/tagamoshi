@@ -1,0 +1,14 @@
+.console {
+    font-size: 1.5rem;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    bottom:15rem;
+    right:1rem;
+    border-radius: 17px;
+    padding:.3rem;
+    width:200px;
+    background-color: blueviolet;
+}

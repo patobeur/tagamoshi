@@ -2,6 +2,7 @@ const _M = {
 	// MOB : mobile object behaviour
 	mob: function () {
 		let mob = {
+			spots: { cur: 0, max: 10, step: 1 },
 			mobDivElement: document.createElement("div"),
 			blocs: {},
 			actionsTodo: [],
@@ -14,7 +15,7 @@ const _M = {
 						cur: 0,
 						min: 0,
 						max: 100,
-						regen: 0.05,
+						regen: 0.02,
 						sens: 1,
 						active: false,
 						rested: false,
@@ -29,10 +30,10 @@ const _M = {
 					},
 					faim: {
 						color: _W.worldDatas.mobdatas.colors.faim,
-						cur: 60,
+						cur: 80,
 						min: 0,
 						max: 100,
-						regen: -0.01,
+						regen: -0.02,
 						sens: -1,
 						active: false,
 						rested: false,
@@ -50,7 +51,7 @@ const _M = {
 						cur: _T.tools.rand(10, 20),
 						min: 0,
 						max: 100,
-						regen: -0.04,
+						regen: -0.03,
 						sens: 1,
 						active: false,
 						rested: false,
@@ -158,11 +159,8 @@ const _M = {
 					(this._.perso.parentId ? " clone" : "");
 
 				_W.worldDatas.mobIds++;
-				// _W.worldDatas.mobCounter++;
-				_W.worldFunctions.refreshCounter('mobCounter',1)
-
-
-
+				console.log("+", this._.perso.id, this._.perso.immat);
+				_Co.countersFunctions.refreshCounter("mobCounter", 1, this);
 			},
 			applynextPos: function () {
 				this._.s.past = structuredClone(this._.s.actual);
@@ -185,20 +183,62 @@ const _M = {
 					this._.s.actual.x,
 					this._.s.actual.y,
 					target._.s.actual.x,
-					target._.s.actual.y,
+					target._.s.actual.y
 				);
+			},
+			addRIP: function () {
+				let spot = _T.tools.createDiv({
+					tag: "div",
+					attributes: { className: "rip", textContent: "☠️" },
+					style: {
+						width: _W.worldDatas.mobdatas.mobw + "px",
+						height: _W.worldDatas.mobdatas.mobh + "px",
+						left: this._.s.actual.x - _W.worldDatas.mobdatas.mobw / 2 + "px",
+						top: this._.s.actual.y - _W.worldDatas.mobdatas.mobh / 2 + "px",
+					},
+				});
+				_O.worldMobsDiv.prepend(spot);
+			},
+			addSpot: function () {
+				if (_W.worldDatas.hd) {
+					let classname =
+						"spot" +
+						(mob._.stats.fatigue.active ? " fatigue" : "") +
+						(mob._.stats.faim.active ? " faim" : "") +
+						(mob._.stats.energie.active ? " energie" : "");
+
+					if (this.spots.cur === 0) {
+						let spot = _T.tools.createDiv({
+							tag: "div",
+							attributes: { className: classname },
+							style: {
+								top: this._.s.actual.y + "px",
+								left: this._.s.actual.x + "px",
+							},
+						});
+						_O.worldMobsDiv.prepend(spot);
+						setTimeout(() => {
+							spot.remove();
+							// _O.worldMobsDiv.remove(spot)
+						}, this.spots.max * 100 * _W.worldDatas.mobCounter);
+					}
+					this.spots.cur++;
+					if (this.spots.cur >= this.spots.max) this.spots.cur = 0;
+				}
 			},
 			_step: function () {
 				_R.roomFunctions.siJeChangeDeCase(this);
 				_R.roomFunctions.isThereAnyOne(this);
 				_MobActions.setFatigueOrNot(this);
 				_MobActions.setFaimOrNot(this);
-				_MobActions.selectAction(this)
+				_MobActions.selectAction(this);
 				_MobActions.doAction(this);
 
 				_M.mobFunctions.regenvalue(this, "fatigue");
-				if (!this._.stats.fatigue.needrest) _M.mobFunctions.regenvalue(this, "faim");
-				if (this._.stats.fatigue.needrest) _M.mobFunctions.regen_energie(this, "energie");
+				if (!this._.stats.fatigue.needrest)
+					_M.mobFunctions.regenvalue(this, "faim");
+				if (this._.stats.fatigue.needrest)
+					_M.mobFunctions.regen_energie(this, "energie");
 
 				_M.mobFunctions.siJeMeReplique(this);
 			},
@@ -255,13 +295,11 @@ const _M = {
 			mobx._.perso.parentId = mob._.perso.id;
 			mobx.createNewMobDiv();
 
-			mobx.initiate();
-
-			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
-
 			mob._.perso.xp = +10;
 			mob._.perso.clones++;
+			_O.indexedMobsBymobIds[mobx._.perso.id] = mobx;
 
+			mobx.initiate();
 			// _M.rewardBonus.replication(mob);
 		},
 		regen_energie: function (mob, valuename) {
@@ -299,14 +337,13 @@ const _M = {
 			// replication ???
 			if (
 				mob._.stats.energie.cur > 90 &&
-				mob._.stats.faim.cur > mob._.stats.faim.max * .5  &&
-				mob._.stats.fatigue.cur < mob._.stats.fatigue.max * .5 &&
+				mob._.stats.faim.cur > mob._.stats.faim.max * 0.5 &&
+				mob._.stats.fatigue.cur < mob._.stats.fatigue.max * 0.5 &&
 				_W.worldDatas.mobCounter < _W.worldDatas.maxreplicaton
 				// && this._.stats.fatigue.cur < 50
 				// && this._.stats.faim.cur < 20
 				// && mob personal max cloning
 			) {
-				_W.worldDatas.mobCounter++
 				_M.mobFunctions.replicate(mob);
 			}
 		},
@@ -415,7 +452,8 @@ const _M = {
 			mob.blocs.alldis.prepend(mob.blocs.consumable);
 			mob.blocs.alldis.prepend(mob.blocs.consumablelast);
 			mob.blocs.alldis.prepend(mob.blocs.ico);
-			if (_W.worldDatas.displayEnemiesUnderMob) mob.blocs.alldis.prepend(mob.blocs.voisins);
+			if (_W.worldDatas.displayEnemiesUnderMob)
+				mob.blocs.alldis.prepend(mob.blocs.voisins);
 			mob.blocs.alldis.prepend(mob.blocs.texte);
 			//-------------------------------------
 

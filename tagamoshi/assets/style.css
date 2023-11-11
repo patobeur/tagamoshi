@@ -211,6 +211,26 @@ html {
     background-color: aliceblue;
     font-size: 1rem;
 }
+.spot{
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+.rip{
+    position: absolute;
+    width: 5px;
+    height: 5px;
+}
+.spot.faim{
+    background-color: rgba(150, 123, 15, 0.4);
+}
+.spot.fatigue{
+    background-color: rgba(58, 165, 42, 0.4);
+}
+.spot.energie{
+    background-color: rgba(79, 42, 165, 0.4);
+}
 
 /* .brand:hover>.nav {
     height:initial;

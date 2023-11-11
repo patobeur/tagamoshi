@@ -12,17 +12,22 @@ const _O = { // Ordinator
 	mouse: { x: 0, y: 0, isDragging: false },
 	setdatas: function () {
 		let size = 52;
+		_W.worldDatas.hd = false;
 		_W.worldDatas.scale = 1;
-		_W.worldDatas.timescale = 1;
-		_W.worldDatas.updateInterval= 1*_W.worldDatas.timescale;
+
+
+		_W.worldDatas.updateInterval= 10
+		_W.worldDatas.timescale = .01;
+
+		_W.worldDatas.treeConsumableDropChance = .7; // 1 = 100%
+		_W.worldDatas.consumabledropchance=.6;
+
+		_W.worldDatas.updateInterval= _W.worldDatas.updateInterval *_W.worldDatas.timescale;
 		_W.worldDatas.updatetreeInterval= 10000*_W.worldDatas.timescale;
 		_W.worldDatas.updatetreeDropRatePlus = 1000;
-		_W.worldDatas.treeConsumableDropChance = .6;
-		
 
 		_W.worldDatas.consumableTimeout = 5000 * _W.worldDatas.timescale; // to be active
 
-		_W.worldDatas.consumabledropchance= 1;
 		_W.worldDatas.maxconsumable = 20;
 
 		_W.worldDatas.mobdatas = {
@@ -42,11 +47,12 @@ const _O = { // Ordinator
 		_W.worldDatas.maxreplicaton= 20;
 		_W.worldDatas.mobDeleteTimeout= 5000; // 5000ms -> 5sec
 		_W.worldDatas.roomSideLength= 100; //Math.floor(window.innerWidth / 5),
-		_W.worldDatas.alldisfontsize= 1; // div alldis
+		
 
 
 		// display 
 		_W.worldDatas.displayEnemiesUnderMob = true;
+		_W.worldDatas.alldisfontsize= 1; // div alldis
 		_W.worldDatas.disfontsize= .7, // all dis in div alldis
 		_W.worldDatas.disconsumablefontsize= _W.worldDatas.disfontsize, //rem
 		_W.worldDatas.disstarvingfontsize= _W.worldDatas.disfontsize, //rem
@@ -70,12 +76,26 @@ const _O = { // Ordinator
 			fontSize: 0.8,
 			backgroundColor: 0.8,
 		};
+		_W.worldDatas.sizes = {
+			size: {
+				w: Math.floor(window.innerWidth/_W.worldDatas.roomSideLength)*_W.worldDatas.roomSideLength,// / 1.05),
+				h: Math.floor(window.innerHeight/_W.worldDatas.roomSideLength)*_W.worldDatas.roomSideLength,// / 1.1),
+			},
+			origine: {
+				w: Math.floor(window.innerWidth/_W.worldDatas.roomSideLength)*_W.worldDatas.roomSideLength,// / 1.05),
+				h: Math.floor(window.innerHeight/_W.worldDatas.roomSideLength)*_W.worldDatas.roomSideLength,// / 1.1),
+			},
+			pos: {
+				top: 0,
+				left: 0
+			},
+		};
 	},
 	start: function () {
 		this.setdatas();
 		_F.frontFunctions.addCss();
 		_W.worldFunctions.createWorldDivsAndAddToDom();
-		_W.worldFunctions.createCountersDivsAndAddToDom();
+		_Co.countersFunctions.createCountersDivsAndAddToDom();
 		_W.worldFunctions.createMobSheatsArray();
 		_W.worldFunctions.createconsumableSheatsArray();
 		_W.worldFunctions.createtreeSheatsArray();
@@ -85,5 +105,6 @@ const _O = { // Ordinator
 };
 window.addEventListener("DOMContentLoaded", () => {
 	_O.start();
-	_WA.init()
+	_WA.init();
+	_Con.init();
 });
