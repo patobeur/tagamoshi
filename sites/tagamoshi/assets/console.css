@@ -6,9 +6,15 @@
     justify-content: center;
     flex-direction: column;
     bottom:15rem;
-    right:1rem;
+    left: 95%;
     border-radius: 17px;
-    padding:.3rem;
-    width:200px;
+    padding: .2rem 3rem .2rem .5rem;
     background-color: blueviolet;
+}
+.console:hover {
+    left:initial;
+    right:-20px;
+}
+.console div {width: 100%;
+    right:-20px;
 }

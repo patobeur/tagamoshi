@@ -243,6 +243,7 @@ const _R = {
 				},
 			});
 			let room = {
+				consumableCounter:0,
 				roomNum: caseNumber,
 				lv: 0,
 				div: newgrid,

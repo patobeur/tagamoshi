@@ -4,25 +4,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Patobeur Dev. Web.</title>
-        <script src="./sites/addon/FullScreenManager/FullScreenManager.js"></script>
-        <script src="./sites/tagamoshi/js/Console.js"></script>
-        <script src="./sites/tagamoshi/js/Counters.js"></script>
-        <script src="./sites/tagamoshi/js/MobActions.js"></script>
-        <script src="./sites/tagamoshi/js/Listeners.js"></script>
-        <script src="./sites/tagamoshi/js/Svg.js"></script>
-        <script src="./sites/tagamoshi/js/Decoration.js"></script>
-        <script src="./sites/tagamoshi/js/Consumable.js"></script>
-        <script src="./sites/tagamoshi/js/Mob.js"></script>
-        <script src="./sites/tagamoshi/js/Front.js"></script>
-        <script src="./sites/tagamoshi/js/Tools.js"></script>
-        <script src="./sites/tagamoshi/js/Rooms.js"></script>
-        <script src="./sites/tagamoshi/js/WorldDatas.js"></script>
-        <script src="./sites/tagamoshi/js/Json.js"></script>
-        <script src="./sites/tagamoshi/js/tagamoshi.js"></script>
-        <link rel="stylesheet" href="./sites/front/assets/style.css">
-        <link rel="stylesheet" href="./sites/tagamoshi/assets/counters.css">
-        <link rel="stylesheet" href="./sites/tagamoshi/assets/console.css">
+        <title>Dev. Web.</title>
+        <script src="./addon/FullScreenManager/FullScreenManager.js"></script>
+        <script src="./addon/Tools/Tools.js"></script>
+        <!-- --------------------------------- -->
+        <script src="./gotcha/gotcha.js"></script>
+        <!-- --------------------------------- -->
+        <link rel="stylesheet" href="./front/assets/style.css">
     </head>
 
     <body>
@@ -65,17 +53,23 @@
                 href="https://codepen.io/Patobeur"></a>
             <a class="github" target="github" title="nouvelle page sur Github !" href="https://github.com/patobeur"></a>
         </div>
+        <!-- <div id="message" class="message">Message ?</div> -->
         <script>
+            // let message = document.getElementById('message')
             let contact = document.getElementById('contact')
             let fusee = document.getElementById('fusee')
             contact.addEventListener("click", (e) => {
                 console.log('Vous souhaitez prendre contact ?')
+                // message.classList.add('message-on')
                 fusee.classList.add('fusee-on')
+                // setTimeout(() => {}, 2000);
             }, true);
+            // fusee.addEventListener("transitionrun", (e)=>{console.log('run')}, true);
+            // fusee.addEventListener("transitionstart", (e)=>{console.log('start')}, true);
             fusee.addEventListener("transitionend", (e) => { fusee.classList.remove('fusee-on') }, true);
         </script>
-        <script>const pagename = 'index';</script>
-        <script src="./sites/front/assets/js/_Front.js"></script>
+        <script>const pagename = 'gotcha';</script>
+        <script src="./front/assets/js/_Front.js"></script>
     </body>
 
 </html>

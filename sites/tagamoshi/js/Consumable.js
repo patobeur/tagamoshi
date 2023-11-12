@@ -65,7 +65,9 @@ const _C = {
 				let rand = _T.tools.rand(0, 100);
 				if (rand <= _W.worldDatas.consumabledropchance * 100) {
 					// if (_W.worldDatas.consumableIds < _W.worldDatas.maxconsumable) {
-					if (_W.worldDatas.consumableCounter < _W.worldDatas.maxconsumable) {
+					if (
+						_W.worldDatas.consumableCounter < _W.worldDatas.maxconsumable
+						&& _O.indexedRoomsByCaseNumber[parent._.s.actual.RoomNum].consumableCounter <= _W.worldDatas.maxroomconsumable ) {
 						let consumable = _C.consumableFunctions.consumable();
 
 						let isconsumableok = consumable.initiate(parent, caseNumber);
@@ -90,9 +92,8 @@ const _C = {
 								consumable.divElement.classList.remove("new");
 								parent.divElement.classList.remove("onfruits");
 								_O.indexedconsumableByIds[consumable._.perso.id] = consumable;
-								_O.indexedRoomsByCaseNumber[
-									consumable._.s.actual.RoomNum
-								].consumables[consumable._.perso.id] = consumable;
+								_O.indexedRoomsByCaseNumber[consumable._.s.actual.RoomNum].consumables[consumable._.perso.id] = consumable;
+								_O.indexedRoomsByCaseNumber[consumable._.s.actual.RoomNum].consumableCounter++
 							}, _W.worldDatas.consumableTimeout);
 						} else {
 							// console.log(

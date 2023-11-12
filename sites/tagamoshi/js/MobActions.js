@@ -77,6 +77,7 @@ const _MobActions = {
 					last.divElement.remove();
 					mob._.stats.faim.cur += last._.sheat.stats.faim;
 					mob._.stats.fatigue.cur = -25;
+					_O.indexedRoomsByCaseNumber[last._.s.actual.RoomNum].consumableCounter--
 					// mob._.stats.fatigue.cur += last._.sheat.stats.fatigue
 					mob._.stats.energie.cur += last._.sheat.stats.energie
 

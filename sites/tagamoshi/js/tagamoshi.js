@@ -17,18 +17,19 @@ const _O = { // Ordinator
 
 
 		_W.worldDatas.updateInterval= 10
-		_W.worldDatas.timescale = .01;
+		_W.worldDatas.timescale = 1;
 
 		_W.worldDatas.treeConsumableDropChance = .7; // 1 = 100%
 		_W.worldDatas.consumabledropchance=.6;
 
 		_W.worldDatas.updateInterval= _W.worldDatas.updateInterval *_W.worldDatas.timescale;
-		_W.worldDatas.updatetreeInterval= 10000*_W.worldDatas.timescale;
+		_W.worldDatas.updatetreeInterval= 10000 *_W.worldDatas.timescale;
 		_W.worldDatas.updatetreeDropRatePlus = 1000;
 
 		_W.worldDatas.consumableTimeout = 5000 * _W.worldDatas.timescale; // to be active
 
 		_W.worldDatas.maxconsumable = 20;
+		_W.worldDatas.maxroomconsumable = 3;
 
 		_W.worldDatas.mobdatas = {
 			lifeNumber: 2,
