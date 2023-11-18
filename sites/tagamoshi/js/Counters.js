@@ -1,5 +1,6 @@
 const _Co = {
 	countersFunctions: {
+		hd:true,
 		refreshCounter: function (counterName, value, obj = false) {
 			if (obj) {
 				_W.worldDatas.counters[counterName + "ico"].textContent =
@@ -8,7 +9,7 @@ const _Co = {
 			_W.worldDatas[counterName] += value;
 			_W.worldDatas.counters[counterName + "num"].textContent = (_W.worldDatas[counterName]<10?'0':'') + _W.worldDatas[counterName];
 
-			if (_W.worldDatas.hd) {
+			if (this.hd) {
 				let classname = value > 0 ? "up" : "down";
 				_W.worldDatas.counters[counterName + "ico"].classList.add(classname);
 				setTimeout(function () {
