@@ -39,7 +39,7 @@ const _mouse = {
 				_mouse.refreshMouseDistanceTo(currentbase)
 				Game.Bases.onMouseMoove();
 			}
-			Game.Bases.onMouseclick();
+			Game.Bases.onMouseclick(event);
 		});
 	},
 	addMouseRightClick() {

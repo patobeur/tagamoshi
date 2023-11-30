@@ -21,9 +21,9 @@ const _css = function () {
 		`position: absolute;border-radius: 9px;background-color: rgba(255, 235, 205, 0.085);display: flex;justify-content: center;align-items: center;` +
 		`}`+
 		//-------------------------------------------------
-		`.power {` +
-		`position: absolute;bottom:100px;right:10px;transform: translate(-50%);color:white;border-radius: 9px;display: flex;justify-content: center;align-items: center;width:20px;` +
-		`}`+
+		// `.power {` +
+		// `position: absolute;bottom:100px;right:10px;transform: translate(-50%);color:white;border-radius: 9px;display: flex;justify-content: center;align-items: center;width:20px;` +
+		// `}`+
 		//-------------------------------------------------
 		`.power .bull {` +
 		`position: relative;border-radius:25%;height:8px;width:10px;` +

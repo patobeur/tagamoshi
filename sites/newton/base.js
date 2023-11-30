@@ -60,17 +60,20 @@ let _base = () => {
 		let r = o.conf.angleToMouse;
 		o.div.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
 	};
-	this.onMouseclick = function () {
-		let currentbase = Game.Bases.bases[this.id - 1];
-		if (currentbase) {
-			// Game.addMobileObjects(this.bases[0]);
-			Game._Mobs.addNewMob(currentbase);
-			let lastMissile =
-				Game._Mobs.datas["missile"].objects[Game._Mobs.datas["missile"].id - 1];
-			lastMissile.conf.angleRadiansToMouse =
-				currentbase.conf.angleRadiansToMouse + 0;
-			lastMissile.conf.angleToMouse = currentbase.conf.angleToMouse + 0;
-			lastMissile.conf.distanceToMouse = currentbase.conf.distanceToMouse + 0;
+	this.onMouseclick = function (event) {
+		console.log(event.target)
+		if(event.target.className!='num') {
+			let currentbase = Game.Bases.bases[this.id - 1];
+			if (currentbase && Game.animeOn===true && Game._Mobs.datas.missile.maxAtTime > Game._Mobs.datas.missile.counter) {
+				// Game.addMobileObjects(this.bases[0]);
+				Game._Mobs.addNewMob(currentbase);
+				let lastMissile =
+					Game._Mobs.datas["missile"].objects[Game._Mobs.datas["missile"].id - 1];
+				lastMissile.conf.angleRadiansToMouse =
+					currentbase.conf.angleRadiansToMouse + 0;
+				lastMissile.conf.angleToMouse = currentbase.conf.angleToMouse + 0;
+				lastMissile.conf.distanceToMouse = currentbase.conf.distanceToMouse + 0;
+			}
 		}
 	};
 	this.onMouseMoove = function () {

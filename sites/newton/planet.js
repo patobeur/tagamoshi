@@ -54,9 +54,6 @@ let _planet = {
 		p.id = this.id;
 		p.div.appendChild(p.visualDiv);
 		Game.world.appendChild(p.div);
-		// this.refreshDivPos(p);
-
-
 		this.success.need += this.conf.success.need
 		console.log(this.success,'+=',this.conf.success.need)
 		this.id++;
@@ -74,17 +71,6 @@ let _planet = {
 				position: "absolute",
 			},
 		});
-		// let titre = tools.createDiv({
-		// 	tag: "div",
-		// 	attributes: {
-		// 		className: "need",
-		// 		textContent: "Need",
-		// 		// innerHTML: _svg['planet'+tools.rand(1,3)].getsvg(p),
-		// 	},
-		// 	style: {
-		// 	},
-		// });
-		// this.needsDiv.appendChild(titre)
 		document.body.appendChild(this.needsDiv)
 	},
 	addNeedDiv: function (p) {
@@ -92,7 +78,6 @@ let _planet = {
 			tag: "div",
 			attributes: {
 				className: "need",
-				// innerHTML: _svg['planet'+tools.rand(1,3)].getsvg(p),
 			},
 			style: {
 			},
@@ -122,33 +107,6 @@ let _planet = {
 		this.stageDone=false
 		console.log('resetAll PLANETS sent')
 	},
-	// checkSuccess: function () {
-	// 	if(this.success.cur >= this.success.need && this.success.done === false) {
-	// 		this.success.done = true;
-	// 	}
-
-	// 	if(this.success.done === true && this.success.cur >=1){
-	// 		console.log('success done')
-	// 		console.log('success done')
-	// 		console.log('success done')
-	// 		this.stageDone=true
-	// 		this.success.cur = 0
-	// 		// reset all planetes 
-	// 		this.resetAll();
-
-	// 		// reset all missile
-	// 		_blackHoles.resetAll();
-
-	// 		// reset all blackHoles
-	// 		Game._Mobs.resetAll();
-	// 		Game.restart();
-
-	// 		// add button restart
-
-	// 		// add a bunch of planete
-	// 		// and black holes 
-	// 	}
-	// },
 	addSuccess: function (m,p) {
 		p.div.classList.add('done');
 		m.div.classList.add('success');
@@ -177,33 +135,12 @@ let _planet = {
 			return;
 		}
 	},
-	refreshDivPos: function (p) {
-		let x = Math.floor(p.conf.position.x); // - Game.worldpos.left)
-		let y = Math.floor(p.conf.position.y); // - Game.worldpos.top)
-		// m.div.style.transform = `translate(${x}px, ${y}px)`;
-		p.div.style.transform = `translate(${x}px, ${y}px)`;
+	// refreshDivPos: function (p) {
+	// 	let x = Math.floor(p.conf.position.x); // - Game.worldpos.left)
+	// 	let y = Math.floor(p.conf.position.y); // - Game.worldpos.top)
+	// 	// m.div.style.transform = `translate(${x}px, ${y}px)`;
+	// 	p.div.style.transform = `translate(${x}px, ${y}px)`;
 
-	},
-	// addChild: function (parent) {
-	// 	let c = tools.createDiv({
-	// 		tag: "div",
-	// 		attributes: {
-	// 			className: "child"
-	// 		},
-	// 		style: {
-	// 			position: "absolute",
-	// 			// top: parent.conf.position.y+'px',
-	// 			// left: parent.conf.position.x+'px',
-	// 			transform: `translate(`+
-	// 				`${parent.conf.position.x + parent.conf.radius - 3 }px,`+
-	// 				`${parent.conf.position.y + parent.conf.radius - 3 }px)`,
-	// 			backgroundColor: 'white',
-	// 			width: 6 + "px",
-	// 			height: 6 + "px",
-	// 			zIndex:10000,
-	// 		},
-	// 	});
-	// 	Game.world.appendChild(c);
 	// },
 	animeStep: function (m) {
 		// let empty = true;

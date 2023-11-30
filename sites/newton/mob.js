@@ -6,6 +6,7 @@ let _mobs = {
 			id: new Number(0),
 			objects: {},
 			counter:new Number(0),
+			maxAtTime:3,
 			conf: {
 				type: "missile",
 				radius: 12,
@@ -15,9 +16,55 @@ let _mobs = {
 				visual: { emoji: "🎱", radius: 30 },
 				vitesse:0,
 				success:{cur:new Number(0),need:new Number(1),done:false},
+				autonomie:{cur:new Number(1000)},
 			},
 		},
 		blackHole: {},
+	},
+	addCoupsDiv: function () {
+			// this.success.need += this.conf.success.need
+			this.coupsDiv = tools.createDiv({
+				tag: "div",
+				attributes: {
+					className: "coups",
+				},
+				style: {
+					position: "absolute",
+				},
+			});
+			document.body.appendChild(this.coupsDiv)
+	},
+	addCoupDiv: function (m) {
+		m.coupDiv = tools.createDiv({
+			tag: "div",
+			attributes: {
+				className: "coup",
+			},
+			style: {
+			},
+		});
+		m.numDiv = tools.createDiv({
+			tag: "div",
+			attributes: {
+				className: "num",
+				textContent: this.datas.missile.counter+1,
+			},
+			style: {
+				position:'absolute',
+			},
+		});
+		let clone = m.visualDiv.cloneNode(true)
+		clone.style='';
+		clone.id='mc_'+m.id
+		clone.className='coup-item'
+		m.coupDiv.appendChild(clone)
+		m.coupDiv.appendChild(m.numDiv)
+		m.coupDiv.addEventListener("click", (event) => {
+			m.coupDiv.classList.add('removed')
+			// this.destroy(m)
+			this.deleteObject(m)
+		});
+		this.coupsDiv.prepend(m.coupDiv)
 	},
 	resetAll: function () {
         let MISSILES = this.datas['missile'].objects
@@ -58,7 +105,7 @@ let _mobs = {
 				height: m.conf.radius * 2 + "px",
 			},
 		});
-		m.visualdiv = tools.createDiv({
+		m.visualDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
 				id: "mv_" + id,
@@ -73,15 +120,21 @@ let _mobs = {
 		});
 		this.setVelocity(m);
 		this.refreshObjectDivPos(m);
-		m.div.appendChild(m.visualdiv);
+		m.div.appendChild(m.visualDiv);
 		Game.world.appendChild(m.div);
+		this.addCoupDiv(m);
+
 		this.datas[conf.type].id++;
 		this.datas[conf.type].counter++;
 	},
 	deleteObject: function (m) {
+		m.coupDiv.remove()
 		m.div.remove();
 		delete this.datas[m.conf.type].objects[m.id];
 		this.datas[m.conf.type].counter--;
+	},
+	destroy: function (m) {
+		m.dead=true
 	},
 	refreshObjectDivPos: function (m) {
 		let x = Math.round(m.conf.position.x); // - Game.worldpos.left)
@@ -104,24 +157,10 @@ let _mobs = {
 			m.div.classList.remove("alerte2");
 		}
 	},
-	// updateVelocityOnClick: function (m) {
-	// 	let o = this.objects[oid];
-	// 	const distance = Math.sqrt(
-	// 		Math.pow(this.mouse.x - m.conf.position.x, 2) +
-	// 			Math.pow(this.mouse.y - m.conf.position.y, 2)
-	// 	);
-	// 	m.conf.speed = Math.min(Math.max(2, distance / 50), 6);
-	// 	m.conf.angle = Math.atan2(
-	// 		this.mouse.y - m.conf.position.y,
-	// 		this.mouse.x - m.conf.position.x
-	// 	);
-	// 	m.conf.velocity.x = m.conf.speed * Math.cos(m.conf.angle);
-	// 	m.conf.velocity.y = m.conf.speed * Math.sin(m.conf.angle);
+	// addAbounchOfMissile: function (number = false) {
+	// 	if (!number) number = 10;
+	// 	for (let z = 0; z < number; z++) this.addMob();
 	// },
-	addAbounchOfMissile: function (number = false) {
-		if (!number) number = 10;
-		for (let z = 0; z < number; z++) this.addMob();
-	},
 	isoutScreen: function (m) {
         if (m.conf.position.x < m.conf.radius){ m.conf.position.x = Game.worldpos.width - m.conf.radius - 1 }
         if (m.conf.position.x > Game.worldpos.width - m.conf.radius){ m.conf.position.x = m.conf.radius + 1}
@@ -168,8 +207,8 @@ let _mobs = {
         o.conf.velocity.y = speed * Math.sin(o.conf.angleToMouse);
 
 	},
-	setAria: function (m) {
-		m.visualdiv.setAttribute('aria-vitesse',Math.floor(m.conf.vitesse/2))
+	setAriaVitesse: function (m) {
+		m.visualDiv.setAttribute('aria-vitesse',Math.floor(m.conf.vitesse/2))
 	},
 	getVitesseEtDirection: function (m) {
 		let vx = m.conf.velocity.x
@@ -203,7 +242,7 @@ let _mobs = {
 				// _mobs.checkVelocityRange(m)
                 if(m.conf.success.cur < m.conf.success.need){
 					this.getVitesseEtDirection(m)
-					this.setAria(m)
+					this.setAriaVitesse(m)
 					m.conf.position.x += m.conf.velocity.x * dt;
 					m.conf.position.y += m.conf.velocity.y * dt;
 					this.refreshObjectDivPos(m);
@@ -211,7 +250,15 @@ let _mobs = {
 				
                 if(m.conf.success.cur >= m.conf.success.need && m.conf.success.done === false){
 					m.conf.success.done = true 
-					m.visualdiv.className= 'visual point';
+					m.visualDiv.className= 'visual point';
+				}
+				
+                if(m.dead!=true && m.conf.autonomie.cur > 0){
+					//console.log('rr',m.conf.autonomie.cur)
+					m.conf.autonomie.cur--
+					if (m.conf.autonomie.cur === 0){
+						m.dead=true;
+					}
 				}
 				
 			}

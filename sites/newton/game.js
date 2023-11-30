@@ -25,11 +25,11 @@ const Game = {
 	},
     refreshPoint: function (pts){
         this.xp+=pts
-        this.xpDiv.textContent=this.xp+' pts';
+        this.xpDiv.textContent=this.xp;
     },
     refreshstageLv: function (){
         this.stageLv++
-        this.stageLvDiv.textContent=this.stageLv+'';
+        this.stageLvDiv.textContent=this.stageLv;
     },
 	checkSuccess: function () {
 		if(_planet.success.cur >= _planet.success.need && _planet.success.done === false) {
@@ -85,7 +85,7 @@ const Game = {
 			tag: "div",
 			attributes: {
 				className: "xp",
-                textContent: '0 Pts'
+                textContent: '0'
 				// innerHTML: _svg['planet'+tools.rand(1,3)].getsvg(p),
 			},
 			style: {
@@ -135,6 +135,7 @@ const Game = {
 		this.animate();
         
 		_planet.addNeedsDiv();
+		_mobs.addCoupsDiv();
         this.newStage()
         this.animeOn=true
         this.addXpDiv()        
