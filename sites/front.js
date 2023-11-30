@@ -12,7 +12,9 @@ let _front = {
             for (const key in this.menuItems) {
                 if (Object.hasOwnProperty.call(this.menuItems, key)) {
                     const element = this.menuItems[key];
+
                     let up = activepagename === key ? ' up' : ''
+
                     let div = _T.tools.createDiv({tag: 'div', attributes: { className: "projet projet" + i + up },style: {}})
                     let anime = _T.tools.createDiv({tag: 'div', attributes: { className: "anime", textContent: "🎲" }})
                     let link = _T.tools.createDiv({tag: 'div', attributes: { className: "link" }})
@@ -26,7 +28,6 @@ let _front = {
             };
         },
         resociaux: function (activepagename=false) {
-
             let rs = _T.tools.createDiv({tag: 'div', attributes: { className: "resociaux unselectable" }})
             let codepen = _T.tools.createDiv({
                 tag: 'a', 
@@ -50,5 +51,6 @@ let _front = {
         }
     },
 }
+if(pagename!='index') {_front.navigation.menuItems.index.url='../index.html'}
 _front.navigation.create(pagename)
 _front.navigation.resociaux(pagename)
