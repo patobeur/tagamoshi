@@ -2,10 +2,10 @@ let _front = {
     navigation: {
         brand: document.getElementById('brand'),
         menuItems: {
-            'spacesheep': { url: '../sites/spacesheep.html', title: 'SpaceSheep', active: false },
-            'index': { url: '../index.html', title: 'Tagamoshi', active: false },
-            'newton': { url: '../sites/newton.html', title: 'newton', active: false },
-            'gotcha': { url: '../sites/gotcha.html', title: 'gotcha', active: false }
+            'spacesheep': { url: './sites/spacesheep.html', title: 'SpaceSheep', active: false },
+            'index': { url: './index.html', title: 'Tagamoshi', active: false },
+            'newton': { url: './sites/newton.html', title: 'newton', active: false },
+            'gotcha': { url: './sites/gotcha.html', title: 'gotcha', active: false }
         },
         create: function (activepagename=false) {
             let i = 1;
