@@ -77,8 +77,12 @@ body {
     border-radius: 9px;
   }
   .coup .num {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 30px;
     height: 30px;
+    color:white;
   }
   .power {
     position: absolute;
@@ -103,7 +107,7 @@ body {
   .lv,
   .xp {
     position: absolute;
-    top: 25px;
+    top: 0px;
     left: 50%;
     transform: translate(-50%);
     display: flex;
@@ -345,7 +349,11 @@ body {
         &.success {
           /* border-radius: .7rem;
           border: 2px dotted rgb(64, 255, 0); */
-          border: 2px dotted rgb(43, 255, 0);
+          border: none;
+          transition-duration: 1s;
+          transition-property: opacity;
+          transition-timing-function: ease-out;
+          opacity: 0;
         }
 
         &.point {
@@ -354,6 +362,11 @@ body {
         }
       }
 
+      &.endtime {
+        .visual {
+          transform: scale(.5);
+        }
+      }
       &.rebond {
         .visual {
           border: 6px solid rgba(79, 67, 13, 0.4);
@@ -415,10 +428,11 @@ body {
       transition-timing-function: ease-out; */
     }
 
-    .removed {
+    .planet.removed {
+      transition-duration: 1s;
+      transition-property: opacity;
+      transition-timing-function: ease-out;
       opacity: 0;
-      background: rgb(255, 255, 255);
-
     }
   }
 }

@@ -2,6 +2,7 @@ let _planet = {
 	id: new Number(0),
 	objects: {},
 	counter: new Number(0),
+	maxAtTime:1,
 	success:{
 		cur:new Number(0),
 		need:new Number(0),
@@ -18,7 +19,7 @@ let _planet = {
 	},
 	// BlackHoles --------------------
 	addABounch: function (number = false) {
-		if (!number) number = 1;
+		if (!number) number = this.maxAtTime;
 		for (let z = 0; z < number; z++) this.add();
 	},
 	add: function (datas = false) {
@@ -108,23 +109,25 @@ let _planet = {
 		console.log('resetAll PLANETS sent')
 	},
 	addSuccess: function (m,p) {
-		p.div.classList.add('done');
+
 		m.div.classList.add('success');
+		p.div.classList.add('done');
 		p.needDiv.classList.add('success');
 		m.conf.success.cur++;
 		p.conf.success.cur++;
 		this.success.cur++;
 		console.log(this.success.cur+'/'+this.success.need);
 		// m.div.remove();
-		Game.refreshPoint(100);
+
+		Game.rewards('missile',100,m);//Math.floor(100/_mobs.datas.missile.counter));
+
 		if (p.conf.success.cur>=p.conf.success.need) {
-			this.counter--;
 			setTimeout(() => {
 				p.div.classList.remove('done');
 				p.div.classList.remove('success');
 				p.div.classList.add('removed');
 				// p.needDiv.classList.add('removed');
-				m.div.classList.add('removed');
+				this.counter--;
 				setTimeout(() => {
 					p.needDiv.remove();
 				}, 2000);
@@ -134,14 +137,8 @@ let _planet = {
 			}, 2000);
 			return;
 		}
+		_mobs.deleteObject(m)
 	},
-	// refreshDivPos: function (p) {
-	// 	let x = Math.floor(p.conf.position.x); // - Game.worldpos.left)
-	// 	let y = Math.floor(p.conf.position.y); // - Game.worldpos.top)
-	// 	// m.div.style.transform = `translate(${x}px, ${y}px)`;
-	// 	p.div.style.transform = `translate(${x}px, ${y}px)`;
-
-	// },
 	animeStep: function (m) {
 		// let empty = true;
         let PLANETS = this.objects

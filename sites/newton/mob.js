@@ -17,6 +17,7 @@ let _mobs = {
 				vitesse:0,
 				success:{cur:new Number(0),need:new Number(1),done:false},
 				autonomie:{cur:new Number(1000)},
+				birthDate:new Date(),
 			},
 		},
 		blackHole: {},
@@ -118,6 +119,8 @@ let _mobs = {
 				height: m.conf.visual.radius * 1.5 + "px",
 			},
 		});
+		
+		m.conf.birthDate=new Date();
 		this.setVelocity(m);
 		this.refreshObjectDivPos(m);
 		m.div.appendChild(m.visualDiv);
@@ -231,13 +234,8 @@ let _mobs = {
                 if(m.dead!=true){
                     // tools.rand(0,1) > .5 ? this.isoutScreen(m) : this.checkRebond(m);
                     this.checkRebond(m)
-					// this.setVelocityWithMouseDatas(m)
-                    //if (_mouse.active){
-                        //tools.updateVelocityOnClick(oid);
-                    //}
                     _blackHoles.aplliquerBlackHoles(m)
 					_planet.animeStep(m)
-
                 }
 				// _mobs.checkVelocityRange(m)
                 if(m.conf.success.cur < m.conf.success.need){
@@ -249,15 +247,17 @@ let _mobs = {
 				}
 				
                 if(m.conf.success.cur >= m.conf.success.need && m.conf.success.done === false){
-					m.conf.success.done = true 
+					m.conf.success.done = true
 					m.visualDiv.className= 'visual point';
 				}
 				
                 if(m.dead!=true && m.conf.autonomie.cur > 0){
-					//console.log('rr',m.conf.autonomie.cur)
+					console.log('rr',m.conf.autonomie.cur)
 					m.conf.autonomie.cur--
-					if (m.conf.autonomie.cur === 0){
-						m.dead=true;
+					if (m.conf.autonomie.cur < 1){
+						m.div.classList.add('endtime')
+						// m.dead=true;
+						this.deleteObject(m)
 					}
 				}
 				

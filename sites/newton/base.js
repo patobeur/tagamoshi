@@ -64,11 +64,10 @@ let _base = () => {
 		console.log(event.target)
 		if(event.target.className!='num') {
 			let currentbase = Game.Bases.bases[this.id - 1];
-			if (currentbase && Game.animeOn===true && Game._Mobs.datas.missile.maxAtTime > Game._Mobs.datas.missile.counter) {
+			if (currentbase && Game.animeOn===true && _mobs.datas.missile.maxAtTime > _mobs.datas.missile.counter) {
 				// Game.addMobileObjects(this.bases[0]);
-				Game._Mobs.addNewMob(currentbase);
-				let lastMissile =
-					Game._Mobs.datas["missile"].objects[Game._Mobs.datas["missile"].id - 1];
+				_mobs.addNewMob(currentbase);
+				let lastMissile = _mobs.datas["missile"].objects[_mobs.datas["missile"].id - 1];
 				lastMissile.conf.angleRadiansToMouse =
 					currentbase.conf.angleRadiansToMouse + 0;
 				lastMissile.conf.angleToMouse = currentbase.conf.angleToMouse + 0;

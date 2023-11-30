@@ -147,9 +147,60 @@ const _mouse = {
 		});
 		document.body.appendChild(this.angleRadiansDiv);
 	},
+	addTouchMove() {
+	  document.addEventListener("touchmove", (event) => {
+		event.preventDefault(); // Empêche le défilement par défaut sur les écrans tactiles
+		const touch = event.touches[0];
+		this.mouse.x = touch.clientX;
+		this.mouse.y = touch.clientY;
+		this.mireDiv.style.top = this.mouse.y - this.mouse.mire.r - Game.worldpos.top + 'px';
+		this.mireDiv.style.left = this.mouse.x - this.mouse.mire.r - Game.worldpos.left + 'px';
+		let currentbase = Game.Bases.bases[Game.Bases.id - 1];
+		if (currentbase) {
+		  _mouse.refreshMouseAngleTo(currentbase);
+		  _mouse.refreshMouseAngleRadiansTo(currentbase);
+		  _mouse.refreshMouseDistanceTo(currentbase);
+		  Game.Bases.onMouseMoove();
+		}
+	  });
+	},
+  
+	addTouchStart() {
+		document.addEventListener("touchstart", (event) => {
+		  const touch = event.touches[0];
+		  this.mouse.x = touch.clientX;
+		  this.mouse.y = touch.clientY;
+		  let currentbase = Game.Bases.bases[Game.Bases.id - 1];
+		  if (currentbase) {
+			_mouse.refreshMouseAngleTo(currentbase);
+			_mouse.refreshMouseAngleRadiansTo(currentbase);
+			_mouse.refreshMouseDistanceTo(currentbase);
+			Game.Bases.onMouseMoove();
+		  }
+		  Game.Bases.onMouseclick(event);
+		});
+	  },
+	  addTouchEnd() {
+		document.addEventListener("touchend", (event) => {
+		  const touch = event.changedTouches[0];
+		  this.mouse.x = touch.clientX;
+		  this.mouse.y = touch.clientY;
+		  let currentbase = Game.Bases.bases[Game.Bases.id - 1];
+		  if (currentbase) {
+			_mouse.refreshMouseAngleTo(currentbase);
+			_mouse.refreshMouseAngleRadiansTo(currentbase);
+			_mouse.refreshMouseDistanceTo(currentbase);
+			Game.Bases.onMouseMoove();
+		  }
+		  Game.Bases.onMouseclick(event);
+		});
+	  },
+
 	init: function () {
 		this.displayPowerDiv()
 		this.displayMire()
+		this.addTouchMove()
+		this.addTouchEnd()
 		// this.displayAngleRadiansDiv()
 		// this.displayAngleDiv()
 		// this.displayDistanceDiv()
