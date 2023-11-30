@@ -3,7 +3,7 @@ class FullScreenManager {
     #fullScreenDiv
     #isFullScreenOn
 	constructor() {
-        this.rootpath='tagamoshi/sites/addon/';
+        this.rootpath='/sites/addon/';
 	}
 	init() {
         this.#addDiv()
