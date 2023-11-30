@@ -32,14 +32,14 @@ body {
   .mouse {
     z-index: 2;
     position: absolute;
-    bottom: 50px;
+    bottom: 46px;
     right: 10px;
   }
 
   .coups {
     position: absolute;
-    bottom: 100px;
-    right: 50px;
+    bottom: 50px;
+    right: 45px;
     border-radius: 9px;
     display: flex;
     justify-content: center;
@@ -54,83 +54,91 @@ body {
     transition-timing-function: ease-out;
     transition-duration: 0;
     transition-property: height;
-  }
-  .coup {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    /* border: 2px solid rgb(255, 255, 255); */
-    margin-bottom: .3rem;
-    transition-delay: .5s;
-    transition-timing-function: ease-out;
-    transition-duration: 0;
-    transition-property: opacity, filter, saturate;
-  }
-  .coup-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.377);
-    border-radius: 9px;
-  }
-  .coup .num {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    color:white;
+    .coup {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      /* border: 2px solid rgb(255, 255, 255); */
+      margin-bottom: .3rem;
+      transition-delay: .5s;
+      transition-timing-function: ease-out;
+      transition-duration: 0;
+      transition-property: opacity, filter, saturate;
+      .coup-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        background-color: rgba(0, 0, 0, 0.377);
+        border-radius: 9px;
+        .num {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          color:white;
+        }
+      }
+    }
   }
   .power {
     position: absolute;
-    bottom: 100px;
-    right: 10px;
-    transform: translate(-50%);
+    bottom: 50px;
+    right: 18px;
     color: white;
-    border-radius: 9px;
+    border-radius: 7px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 20px;
+    align-items: flex-start;
+    width: 16px;
     background-color: rgba(15, 217, 32, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.1);
+    padding-top: 3px;
+    overflow: hidden;
   }
-
   .power .bull {
     /* background-color: rgba(163, 107, 23, 0.574); */
     border: 2px solid rgba(255, 255, 255, 0.2);
   }
-
-  .lv,
-  .xp {
+  .board {
     position: absolute;
     top: 0px;
-    left: 50%;
-    transform: translate(-50%);
+    right: 25px;
+    /* transform: translate(-50%); */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
-    padding: .2rem .5rem;
-    background-color: rgba(240, 248, 255, 0.342);
-    color: black;
+    padding: 0 .2rem .2rem .2rem;
     border-bottom-right-radius: .5rem;
     border-bottom-left-radius: .5rem;
+    background-color: rgba(240, 248, 255, 0.199);
   }
 
-  .xp {
-    &::after {
-      margin-left: .2rem;
-      content: 'pts';
+  .board .lv,
+  .board .xp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: .2rem .5rem;
+      background-color: rgba(240, 248, 255, 0.199);
+      color: black;
+      border-bottom-right-radius: .5rem;
+      border-bottom-left-radius: .5rem;
+      color: rgba(255, 255, 255, 0.699);
     }
-  }
+
+    .board .xp {
+      &::after {
+        margin-left: .2rem;
+        content: 'pts';
+      }
+    }
 
   .lv {
-    left: 60%;
-
+    margin-left: .2rem;
     &::after {
       margin-left: .2rem;
       content: 'lv';
@@ -234,6 +242,18 @@ body {
     background: radial-gradient(circle, rgba(49, 13, 140, 0.9612045501794468) 0%, rgba(7, 11, 22, 1) 100%);
     border-radius: 1rem;
 
+    .reward {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition-duration: 1s;
+      /* transition-delay: 1s; */
+      transition-property: border, opacity;
+      transition-timing-function: ease-out;
+
+    }
     .blackhole,
     .missile {
       position: absolute;

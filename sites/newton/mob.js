@@ -140,8 +140,8 @@ let _mobs = {
 		m.dead=true
 	},
 	refreshObjectDivPos: function (m) {
-		let x = Math.round(m.conf.position.x); // - Game.worldpos.left)
-		let y = Math.round(m.conf.position.y); // - Game.worldpos.top)
+		let x = Math.round(m.conf.position.x-m.conf.radius); // - Game.worldpos.left)
+		let y = Math.round(m.conf.position.y-m.conf.radius); // - Game.worldpos.top)
 		let r = tools.getRotationAngle(m);
 		// m.div.style.transform = `translate(${x}px, ${y}px)`;
 		m.div.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
@@ -232,6 +232,10 @@ let _mobs = {
                     }, 1000);
                 }
                 if(m.dead!=true){
+					
+					// check recup rewards
+					_rewards.animeStep(m)
+
                     // tools.rand(0,1) > .5 ? this.isoutScreen(m) : this.checkRebond(m);
                     this.checkRebond(m)
                     _blackHoles.aplliquerBlackHoles(m)
@@ -252,11 +256,10 @@ let _mobs = {
 				}
 				
                 if(m.dead!=true && m.conf.autonomie.cur > 0){
-					console.log('rr',m.conf.autonomie.cur)
 					m.conf.autonomie.cur--
 					if (m.conf.autonomie.cur < 1){
 						m.div.classList.add('endtime')
-						// m.dead=true;
+						m.dead=true;
 						this.deleteObject(m)
 					}
 				}

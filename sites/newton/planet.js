@@ -14,7 +14,7 @@ let _planet = {
 		mass: 3.989 * Math.pow(10, 3),
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-		visual: { emoji: "🎱", radius: 30 },
+		visual: { emoji: "🎅🏿", radius: 30 },//⛄
 		success:{cur:new Number(0),need:new Number(1),done:false},
 	},
 	// BlackHoles --------------------
@@ -35,7 +35,7 @@ let _planet = {
 			attributes: { id: "p_" + this.id, className: "planet" },
 			style: {
 				position: "absolute",
-				transform: `translate(${p.conf.position.x}px, ${p.conf.position.y}px)`,
+				transform: `translate(${p.conf.position.x - this.conf.radius}px, ${p.conf.position.y - this.conf.radius}px)`,
 				width: p.conf.radius * 2 + "px",
 				height: p.conf.radius * 2 + "px",
 			},
@@ -98,7 +98,6 @@ let _planet = {
                 let p = PLANETS[id]
 				setTimeout(() => {
 					p.div.remove()
-					console.log('removing planete...')
 				}, tools.rand(1000,2000));
 			}
 		}
@@ -106,17 +105,14 @@ let _planet = {
 		this.counter = new Number(0)
 		this.success={cur:new Number(0),need:new Number(0),done:false}
 		this.stageDone=false
-		console.log('resetAll PLANETS sent')
 	},
 	addSuccess: function (m,p) {
-
 		m.div.classList.add('success');
 		p.div.classList.add('done');
 		p.needDiv.classList.add('success');
 		m.conf.success.cur++;
 		p.conf.success.cur++;
 		this.success.cur++;
-		console.log(this.success.cur+'/'+this.success.need);
 		// m.div.remove();
 
 		Game.rewards('missile',100,m);//Math.floor(100/_mobs.datas.missile.counter));

@@ -165,21 +165,21 @@ const _mouse = {
 	  });
 	},
   
-	addTouchStart() {
-		document.addEventListener("touchstart", (event) => {
-		  const touch = event.touches[0];
-		  this.mouse.x = touch.clientX;
-		  this.mouse.y = touch.clientY;
-		  let currentbase = Game.Bases.bases[Game.Bases.id - 1];
-		  if (currentbase) {
-			_mouse.refreshMouseAngleTo(currentbase);
-			_mouse.refreshMouseAngleRadiansTo(currentbase);
-			_mouse.refreshMouseDistanceTo(currentbase);
-			Game.Bases.onMouseMoove();
-		  }
-		  Game.Bases.onMouseclick(event);
-		});
-	  },
+	// addTouchStart() {
+	// 	document.addEventListener("touchstart", (event) => {
+	// 	  const touch = event.touches[0];
+	// 	  this.mouse.x = touch.clientX;
+	// 	  this.mouse.y = touch.clientY;
+	// 	  let currentbase = Game.Bases.bases[Game.Bases.id - 1];
+	// 	  if (currentbase) {
+	// 		_mouse.refreshMouseAngleTo(currentbase);
+	// 		_mouse.refreshMouseAngleRadiansTo(currentbase);
+	// 		_mouse.refreshMouseDistanceTo(currentbase);
+	// 		Game.Bases.onMouseMoove();
+	// 	  }
+	// 	  Game.Bases.onMouseclick(event);
+	// 	});
+	//   },
 	  addTouchEnd() {
 		document.addEventListener("touchend", (event) => {
 		  const touch = event.changedTouches[0];
@@ -195,12 +195,23 @@ const _mouse = {
 		  Game.Bases.onMouseclick(event);
 		});
 	  },
+	  addClickEvent() {
+		if ('ontouchstart' in window || navigator.maxTouchPoints) {
+		  // Si l'appareil prend en charge les événements tactiles
+			this.addTouchMove()
+			this.addTouchEnd()
+		} else {
+		  // Sinon, ajoutez l'événement de clic de souris
+			this.addMouseClick();
+		}
+	  },
 
 	init: function () {
+		this.addMouseRightClick();
+		this.addClickEvent()
 		this.displayPowerDiv()
 		this.displayMire()
-		this.addTouchMove()
-		this.addTouchEnd()
+		this.addMouseMove();
 		// this.displayAngleRadiansDiv()
 		// this.displayAngleDiv()
 		// this.displayDistanceDiv()

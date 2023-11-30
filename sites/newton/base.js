@@ -55,13 +55,13 @@ let _base = () => {
 	};
 	this.refreshDivPos = function (id) {
 		let o = this.bases[id];
-		let x = Math.round(o.conf.position.x);
-		let y = Math.round(o.conf.position.y);
+		let x = Math.round(o.conf.position.x - o.conf.radius);
+		let y = Math.round(o.conf.position.y - o.conf.radius);
 		let r = o.conf.angleToMouse;
 		o.div.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
 	};
 	this.onMouseclick = function (event) {
-		console.log(event.target)
+		// console.log(event.target)
 		if(event.target.className!='num') {
 			let currentbase = Game.Bases.bases[this.id - 1];
 			if (currentbase && Game.animeOn===true && _mobs.datas.missile.maxAtTime > _mobs.datas.missile.counter) {

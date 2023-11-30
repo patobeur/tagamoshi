@@ -59,7 +59,6 @@ let _blackHoles = {
                 p.div.classList.add('removed')
 				setTimeout(() => {
 					p.div.remove()
-					console.log('reseting bo ...')
                     delete p
 				}, tools.rand(1000,4000));
 			}
@@ -67,6 +66,5 @@ let _blackHoles = {
 		this.bobjects = {}
 		this.bobjectsCounter = new Number(0)
 		// this.boId = new Number(0)
-		console.log('resetAll Bo done')
 	},
 };

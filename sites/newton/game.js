@@ -23,34 +23,34 @@ const Game = {
         this.worldpos = this.world.getBoundingClientRect();
 	},
     refreshXpPoint: function (){
-        this.xpDiv.textContent=this.xp;
+        this.xpDiv.textContent=Math.floor(this.xp);
     },
     refreshstageLv: function (){
         this.stageLv++
         this.stageLvDiv.textContent=this.stageLv;
     },
-    extraRewards: function (value){
+    extraRewards: function (m){
         console.log('extraRewards')
+        _rewards.add(m)
+
     },
     rewards: function (type=false,value,m){
         if(type==='missile'){
             let timeNow = new Date();
-            m.conf.age = Math.abs(timeNow.getTime() - m.conf.birthDate.getTime());
-            console.log(m.conf.age)
-            console.log(m.conf.autonomie.cur)
-            
-            let multiplicateur = _mobs.datas.missile.counter
-            let newvalue = Math.floor(value/multiplicateur)
+
+            m.conf.age = Math.floor(Math.abs(timeNow.getTime() - m.conf.birthDate.getTime()) / 10);
+            let multiplicateur = _mobs.datas.missile.counter            
+            let newvalue = Math.floor(m.conf.age/multiplicateur)
             let expected = this.xp + newvalue
-            let step = value/10;
-            if(_mobs.datas.missile.counter<3) {
-                // this.extraRewards()
+            let step = m.conf.age /10;
+
+            this.extraRewards(m)
+            if(_mobs.datas.missile.counter<2) {
             }
             // pour le fun
             let reward = setInterval(() => {
                 this.xp = this.xp + step
                 this.refreshXpPoint();
-                console.log('current:',this.xp)
                 if (this.xp >= expected){
                     clearInterval(reward);
                 }
@@ -63,9 +63,6 @@ const Game = {
 		}
 		if(_planet.success.done === true && _planet.success.cur >=1){
             this.animeOn=false
-			console.log('success done')
-			console.log('success done')
-			console.log('success done')
 			// reset all
 			_planet.resetAll();
 			_mobs.resetAll();
@@ -102,6 +99,16 @@ const Game = {
         this.worldpos = this.world.getBoundingClientRect();
     },
 	addXpDiv: function (p) {
+		this.boardDiv = tools.createDiv({
+			tag: "div",
+			attributes: {
+				className: "board",
+                textContent: ''
+				// innerHTML: _svg['planet'+tools.rand(1,3)].getsvg(p),
+			},
+			style: {
+			},
+		});
 		this.xpDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
@@ -112,7 +119,6 @@ const Game = {
 			style: {
 			},
 		});
-		document.body.appendChild(this.xpDiv)
 		this.stageLvDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
@@ -123,7 +129,9 @@ const Game = {
 			style: {
 			},
 		});
-		document.body.appendChild(this.stageLvDiv)
+        this.boardDiv.appendChild(this.xpDiv)
+        this.boardDiv.appendChild(this.stageLvDiv)
+		document.body.appendChild(this.boardDiv)
 
 	},
 	restart: function () {
@@ -134,7 +142,7 @@ const Game = {
         setTimeout(() => {
             this.stageLv++;
             this.isSceneEmpty=true
-            console.log('restarting..........')
+            console.log('Starting level',this.stageLv)
             _blackHoles.addAbounch(2)
             _planet.addABounch()
             this.animeOn=true
@@ -152,9 +160,6 @@ const Game = {
         this.Bases.init(this.world)
 
 		_mouse.init();
-		_mouse.addMouseMove();
-		_mouse.addMouseClick();
-		_mouse.addMouseRightClick();
 		this.animate();
         
 		_planet.addNeedsDiv();
