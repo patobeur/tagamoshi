@@ -1,0 +1,310 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0;
+  overflow: hidden;
+  background-color: rgb(2, 2, 23);
+
+  &.up #World {
+    /* background-color: rgb(12, 42, 3); */
+  }
+
+  .mire {
+    z-index: 3;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid brown;
+    border-radius: 50%;
+  }
+  .mouse {
+    z-index: 2;
+    position: absolute;
+    bottom: 50px;
+    right: 10px;
+  }
+  .power{
+    background-color: rgba(15, 217, 32, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+  .power .bull{
+    /* background-color: rgba(163, 107, 23, 0.574); */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  .lv,
+  .xp {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:rgba(255, 255, 255, 0.5);
+  }
+  .lv {
+    top: 100px;
+    left: 60%;
+  }
+  .needs {
+    position: absolute;
+    bottom: 100px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+    color:white;
+  }
+  .needs .need {
+    width:32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border:1px solid rgba(255, 255, 255, 0.1);
+    /* border-left:0; */
+    background-color: rgba(226, 208, 43, 0.1);
+    width:40px;
+    height:40px;
+    margin: .1rem .5rem;
+    border-radius: .3rem;
+    filter: saturate(0);
+    opacity:.5;
+    transition-delay: .5s; 
+    transition-timing-function: ease-out;
+    transition-duration: 0;
+    transition-property: opacity,filter,saturate;
+  }
+  /* .needs .need:first-child{
+    border-start-end-radius: .3rem;
+    background-color: rgba(49, 226, 43, 0.363);
+    border-bottom: 0;
+    height:initial;
+  }
+  .needs .need:last-child{
+    border-end-end-radius: .3rem;
+    border-top: 0;
+    background-color: rgba(46, 43, 226, 0.363);
+  } */
+  .needs .need .need-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .2rem;
+  }
+  .needs .need.success {
+    /* background-color: rgba(226, 214, 43, 0.603); */
+    /* box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.26); */
+    opacity:1;
+    filter: saturate(.5);
+    transition-delay: 400ms; 
+    transition-timing-function: ease-out;
+    transition-property: opacity,filter,saturate;
+    animation: 100ms slidein linear infinite alternate ;
+  }
+  @keyframes slidein {
+    0% { filter: saturate(1);
+      transform: scale(.1);}
+    50% { filter: saturate(0.5); 
+      transform: scale(.8);}
+    100% {filter: saturate(0);
+      transform: scale(.2); }
+  }
+  .needs .need.removed {
+    width:16px;
+    height:16px;
+    filter: saturate(1);
+  }
+  #World {
+    z-index: -1;
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%);
+    /* background-color: rgb(44, 74, 150); */
+    background: rgb(13, 13, 140);
+    background: radial-gradient(circle, rgb(6, 6, 82) 0%, rgba(8, 3, 52, 1) 100%);
+    border-radius: 1rem;
+
+    .blackhole,
+    .missile {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition-duration: 1s;
+      /* transition-delay: 1s; */
+      transition-property: border, opacity;
+      transition-timing-function: ease-out;
+
+      .visual {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background-color: none;
+      }
+    }
+
+    .missile {
+      .visual {
+        border: 2px dotted rgb(255, 0, 0);
+        font-size: 20px;
+        line-height: 0rem;
+        transform: rotate(90deg);
+        &[aria-vitesse="18"] {
+          border: 2px dotted rgba(255, 0, 0, 0.9); /* Rouge vif pour le danger absolu */
+        }        
+        &[aria-vitesse="17"] {
+          border: 2px dotted rgba(255, 85, 0, 0.8);
+        }        
+        &[aria-vitesse="16"] {
+          border: 2px dotted rgba(255, 170, 0, 0.7);
+        }        
+        &[aria-vitesse="15"] {
+          border: 2px dotted rgba(255, 255, 0, 0.7); /* Jaune vif pour une vitesse élevée */
+        }        
+        &[aria-vitesse="14"] {
+          border: 2px dotted rgba(170, 255, 0, 0.7);
+        }        
+        &[aria-vitesse="13"] {
+          border: 2px dotted rgba(85, 255, 0, 0.7);
+        }        
+        &[aria-vitesse="12"] {
+          border: 2px dotted rgba(0, 255, 0, 0.7); /* Vert vif pour une vitesse modérée */
+        }
+        
+        &[aria-vitesse="11"] {
+          border: 2px dotted rgba(0, 255, 85, 0.7);
+        }
+        
+        &[aria-vitesse="10"] {
+          border: 2px dotted rgba(0, 255, 170, 0.7);
+        }
+        
+        &[aria-vitesse="9"] {
+          border: 2px dotted rgba(0, 255, 255, 0.7); /* Cyan vif pour une vitesse plus basse */
+        }
+        
+        &[aria-vitesse="8"] {
+          border: 2px dotted rgba(0, 170, 255, 0.7);
+        }
+        
+        &[aria-vitesse="7"] {
+          border: 2px dotted rgba(0, 85, 255, 0.7);
+        }
+        
+        &[aria-vitesse="6"] {
+          border: 2px dotted rgba(0, 0, 255, 0.7); /* Bleu vif pour une vitesse faible */
+        }
+        
+        &[aria-vitesse="5"] {
+          border: 2px dotted rgba(85, 0, 255, 0.7);
+        }
+        
+        &[aria-vitesse="4"] {
+          border: 2px dotted rgba(170, 0, 255, 0.7);
+        }
+        
+        &[aria-vitesse="3"] {
+          border: 2px dotted rgba(255, 0, 255, 0.7); /* Magenta vif pour une vitesse très basse */
+        }
+        
+        &[aria-vitesse="2"] {
+          border: 2px dotted rgba(255, 0, 170, 0.7);
+        }
+        
+        &[aria-vitesse="1"] {
+          border: 2px dotted rgba(255, 0, 85, 0.7);
+        }
+        
+        &[aria-vitesse="0"] {
+          border: 2px dotted rgba(255, 255, 255, 0.7); /* Blanc pour le calme absolu */
+        }
+        &.success{
+          /* border-radius: .7rem;
+          border: 2px dotted rgb(64, 255, 0); */
+          border: 2px dotted rgb(43, 255, 0);
+        }
+        &.point{
+          border-radius: .7rem;
+          border: 2px dotted rgb(255, 225, 0);
+        }
+      }
+
+      &.rebond {
+        .visual {
+          border: 6px solid rgba(79, 67, 13, 0.4);
+        }
+      }
+
+      &.alerte {
+        .visual {
+          border: 6px solid rgba(170, 93, 5, 0.4)
+        }
+      }
+
+      &.alerte2 {
+        .visual {
+          border: 6px solid rgba(170, 5, 5, 0.4);
+          opacity: 0;
+        }
+      }
+    }
+
+    .blackhole {
+      /* box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1); */
+      /* background-color: rgb(0, 2, 7); */
+      background: radial-gradient(circle, rgba(0, 0, 0, .8) 0%, rgba(0, 0, 0, 0) 60%);
+    }
+    .planet,
+    .base {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .planet .visual,
+    .base .visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .planet .visual {
+      transition-duration: 1s;
+      /* transition-delay: 1s; */
+      transition-property: border, opacity;
+      transition-timing-function: ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(0, 0, 0);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
+    }
+    .planet {
+      /* transition-duration: 1s;
+      transition-delay: 1s; 
+      transition-property: border, opacity;
+      transition-timing-function: ease-out; */
+    }
+    .removed {
+      opacity: 0;
+      background: rgb(255, 255, 255);
+      
+    }
+  }
+}

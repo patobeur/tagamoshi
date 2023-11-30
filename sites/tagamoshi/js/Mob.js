@@ -189,7 +189,7 @@ const _M = {
 			addRIP: function () {
 				let spot = _T.tools.createDiv({
 					tag: "div",
-					attributes: { className: "rip", textContent: "☠️" },
+					attributes: { className: "mob rip", textContent: "☠️" },
 					style: {
 						width: _W.worldDatas.mobdatas.mobw + "px",
 						height: _W.worldDatas.mobdatas.mobh + "px",

@@ -4,8 +4,8 @@ let _Front = {
         menuItems: {
             'spacesheep': { url: '../sites/spacesheep.html', title: 'SpaceSheep', active: false },
             'index': { url: '../index.html', title: 'Tagamoshi', active: false },
-            'notyet': { url: '#', title: 'notyet', active: false },
-            'gotcha': { url: '../sites/gotcha.html', title: 'gotcha', active: false },
+            'newton': { url: '../sites/newton.html', title: 'newton', active: false },
+            'gotcha': { url: '../sites/gotcha.html', title: 'gotcha', active: false }
         },
         create: function (activepagename=false) {
             let i = 1;
@@ -24,7 +24,31 @@ let _Front = {
                 }
                 i++;
             };
+        },
+        resociaux: function (activepagename=false) {
+
+            let rs = _T.tools.createDiv({tag: 'div', attributes: { className: "resociaux unselectable" }})
+            let codepen = _T.tools.createDiv({
+                tag: 'a', 
+                attributes: { 
+                    className: "codepen", 
+                    target: "_codepen", 
+                    title: "Nouvelle page sur Codepen !", 
+                    href: 'https://codepen.io/Patobeur'
+            }})
+            let github = _T.tools.createDiv({
+                tag: 'a', 
+                attributes: { 
+                    className: "github", 
+                    target: "_github", 
+                    title: "Nouvelle page sur Github !",
+                    href: 'https://github.com/patobeur'
+            }})
+            rs.appendChild(codepen)
+            rs.appendChild(github)
+            document.body.appendChild(rs)
         }
     },
 }
 _Front.navigation.create(pagename)
+_Front.navigation.resociaux(pagename)
