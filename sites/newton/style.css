@@ -9,6 +9,9 @@
   -ms-user-select:none;
   user-select:none;
 }
+  html {
+      scroll-behavior: unset;
+  }
 body {
   margin: 0;
   overflow: hidden;
@@ -362,7 +365,7 @@ body {
   }
   #World {
     z-index: -1;
-    position: absolute;
+    position: fixed;
     bottom: 25px;
     left: 50%;
     width: 100%;

@@ -3,7 +3,7 @@ const _Con = {
 	divs:{},
 	emojis: ["🐰", "🌴", "🍒", "🗺️"],
 	init: function () {
-		this.create();
+		// this.create();
 	},
 	create: function () {
 		// _W.worldDatas.hd = false;

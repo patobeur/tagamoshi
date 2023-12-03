@@ -33,13 +33,15 @@ let _messages = {
 		let fuseesrestantes = _mobs.datas.missile.maxAtTime-_mobs.datas.missile.counter - 1
 		let pluriel = (fuseesrestantes>0) ? 's' :''
 		let messages = {
+			
 			newmissile:{ emoji: "🕯️", ele:{textContent:(_mobs.datas.missile.maxAtTime+1)+' fusées disponibles.'} },
 			newplanet:{ emoji: "🕯️", ele:{textContent:_planet.maxAtTime+' planètes à sauver.'} },
 			newblackHoles:{ emoji: "🕯️", ele:{textContent:_blackHoles.maxAtTime+' trous noirs à proximité..'} },
+
 			extraRewards:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'Extra Cadeau !! ....'} },
 			oneClick:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:`D'un coup  !!`} },
-			getbonus:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'You get a bonus !!'} },
-			getplanete:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'You saved us !! ...............'} },
+			getbonus:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'Bonus !!'} },
+			getplanete:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'Merci !! ...............'} },
 			nombreCoups:{ emoji: "🕯️", ele:{color:'green',fontsize:'1.1rem',textContent:'en '+Game.shoots + ' coup'+(Game.shoots>1?'s':'')+'...'} },
 
 			default:{ emoji: "🕯️", ele:{textContent:'Go !'} },

@@ -1,12 +1,12 @@
 .console {
     font-size: 1.5rem;
-    position: absolute;
+    position: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     bottom:15rem;
-    left: 95%;
+    left: 99%;
     border-radius: 17px;
     padding: .2rem 3rem .2rem .5rem;
     background-color: blueviolet;
