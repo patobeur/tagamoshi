@@ -19,11 +19,10 @@ let _base = () => {
 	this.addbase = function (datas = false) {
 		let base = { conf: JSON.parse(JSON.stringify(this.basesconf)) };
 		base.conf.id = this.id;
+		// alea pos
 		base.conf.position.x = datas && datas.x ? datas.x : this.worldpos.width / 2;
-		base.conf.position.y =
-			datas && datas.y
-				? datas.y
-				: this.worldpos.height - this.basesconf.radius - 50;
+		base.conf.position.y = datas && datas.y ? datas.y : this.worldpos.height - this.basesconf.radius - 50;
+
 		base.div = tools.createDiv({
 			tag: "div",
 			attributes: { className: "base" },
@@ -54,29 +53,33 @@ let _base = () => {
 		this.id++;
 	};
 	this.refreshDivPos = function (id) {
+		let modif = +90
 		let o = this.bases[id];
 		let x = Math.round(o.conf.position.x - o.conf.radius);
 		let y = Math.round(o.conf.position.y - o.conf.radius);
 		let r = o.conf.angleToMouse;
-		o.div.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
+		o.div.style.transform = `translate(${x}px, ${y}px) rotate(${r+modif}deg)`;
 	};
 	this.onMouseclick = function (event) {
 		// console.log(event.target)
-		if(event.target.className!='num') {
+		if(event.target.className!='clickable') {
+			
 			let currentbase = Game.Bases.bases[this.id - 1];
+
 			if (currentbase && Game.animeOn===true && _mobs.datas.missile.maxAtTime > _mobs.datas.missile.counter) {
-				// Game.addMobileObjects(this.bases[0]);
-				_mobs.addNewMob(currentbase);
+				
+				_mobs.add(currentbase);
+				Game.shoots++
+
 				let lastMissile = _mobs.datas["missile"].objects[_mobs.datas["missile"].id - 1];
-				lastMissile.conf.angleRadiansToMouse =
-					currentbase.conf.angleRadiansToMouse + 0;
+				lastMissile.conf.angleRadiansToMouse = currentbase.conf.angleRadiansToMouse + 0;
 				lastMissile.conf.angleToMouse = currentbase.conf.angleToMouse + 0;
 				lastMissile.conf.distanceToMouse = currentbase.conf.distanceToMouse + 0;
 			}
 		}
 	};
 	this.onMouseMoove = function () {
-		this.refreshDivPos(Game.Bases.id - 1);
+		this.refreshDivPos(this.id - 1);
 	};
 	return this;
 };

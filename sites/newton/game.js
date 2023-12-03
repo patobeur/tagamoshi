@@ -5,8 +5,9 @@ const Game = {
     animeOn:false,
     minfast:new Number(0),
     maxfast:new Number(0),
-    lifes:{cur:new Number(3),done:false},
+    // lifes:{cur:new Number(3),done:false},
     isSceneEmpty:true,
+    shoots:0,
     wordlDivConf: {
         tag:'div',
         attributes:{
@@ -25,8 +26,7 @@ const Game = {
     refreshXpPoint: function (){
         this.xpDiv.textContent=Math.floor(this.xp);
     },
-    refreshstageLv: function (){
-        this.stageLv++
+    refreshstageLvDiv: function (){
         this.stageLvDiv.textContent=this.stageLv;
     },
     extraRewards: function (m){
@@ -36,25 +36,22 @@ const Game = {
     },
     rewards: function (type=false,value,m){
         if(type==='missile'){
-            let timeNow = new Date();
-
-            m.conf.age = Math.floor(Math.abs(timeNow.getTime() - m.conf.birthDate.getTime()) / 10);
-            let multiplicateur = _mobs.datas.missile.counter            
-            let newvalue = Math.floor(m.conf.age/multiplicateur)
-            let expected = this.xp + newvalue
-            let step = m.conf.age /10;
 
             this.extraRewards(m)
             if(_mobs.datas.missile.counter<2) {
             }
-            // pour le fun
+
+            let timeNow = new Date();
+            let distibuted = 0;
+            let age = Math.floor(Math.abs(timeNow.getTime()-m.conf.birthDate.getTime())/100);
             let reward = setInterval(() => {
-                this.xp = this.xp + step
+                distibuted += age/10
+                this.xp += age/10
                 this.refreshXpPoint();
-                if (this.xp >= expected){
+                if (distibuted >= age){
                     clearInterval(reward);
                 }
-            }, 500);
+            },100);
         }
     },
 	checkSuccess: function () {
@@ -62,12 +59,6 @@ const Game = {
 			_planet.success.done = true;
 		}
 		if(_planet.success.done === true && _planet.success.cur >=1){
-            this.animeOn=false
-			// reset all
-			_planet.resetAll();
-			_mobs.resetAll();
-			_blackHoles.resetAll();
-			// add button restart ?
 			this.restart();
 		}
 	},
@@ -75,6 +66,7 @@ const Game = {
         if(this.animeOn){
             this.checkSuccess()
             _mobs.animeStep(dt)
+            _skills.animeStep(dt)
             _mouse.active = false;
         }
 	},
@@ -134,23 +126,51 @@ const Game = {
 		document.body.appendChild(this.boardDiv)
 
 	},
+	leveling: function () {
+        _mobs.datas.missile.maxAtTime = Math.floor(((this.stageLv+1)/10)+3)
+        _planet.maxAtTime = Math.floor((this.stageLv+1)/5)+1
+        _blackHoles.maxAtTime = Math.floor((this.stageLv+1)/10)+1
+    },
 	restart: function () {
-        _mobs.datas.missile.maxAtTime+=Math.floor(this.stageLv/3)
-        _planet.maxAtTime+=Math.floor(this.stageLv/5)
-        this.refreshstageLv()
         this.animeOn=false
+
+        _messages.add({name:'bravo'})
+        // reset all
+        
+        _messages.add({name:'nombreCoups'})
+        this.shoots = 0
+        _planet.resetAll();
+        _mobs.resetAll();
+        _blackHoles.resetAll();
+
+        
+        this.animeOn=false
+
         setTimeout(() => {
-            this.stageLv++;
             this.isSceneEmpty=true
-            console.log('Starting level',this.stageLv)
-            _blackHoles.addAbounch(2)
-            _planet.addABounch()
+            this.stageLv++
+            this.leveling()
+            this.refreshstageLvDiv()
+
+            this.startNewStage()
             this.animeOn=true
         }, 5000);
     },
-	newStage: function () {
-        _blackHoles.addAbounch(2)
+    checkIfOneClick: function () {
+        if(this.shoots===1) {
+            _messages.add({name:'oneClick'})
+            return true
+        }
+        return false
+    },
+	startNewStage: function () {
+        let first = (this.stageLv===0) ? 5 : false;
+        shoots=0;
+        _blackHoles.addABounch(first)
         _planet.addABounch()
+        _messages.add({name:'newmissile'})
+        _messages.add({name:'newplanet'})
+        _messages.add({name:'newblackHoles'})
     },
 	go: function () {
         tools.addCss(_css());
@@ -162,13 +182,22 @@ const Game = {
 		_mouse.init();
 		this.animate();
         
-		_planet.addNeedsDiv();
+		_planet.addVignettesDiv();
 		_mobs.addCoupsDiv();
-        this.newStage()
-        this.animeOn=true
-        this.addXpDiv()        
 
+        _messages.init()
+        _messages.add({name:'bonjour'})
+
+        this.startNewStage()
+        this.animeOn=true
+        this.addXpDiv()   
+        _skills.init()
+        
 	},
+    // Skill value powers
+    bhActivity:true,
+    borderLimited:true,
+    //
 };
 document.addEventListener("DOMContentLoaded", function () {
 	Game.go();

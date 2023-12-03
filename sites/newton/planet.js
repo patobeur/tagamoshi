@@ -11,13 +11,13 @@ let _planet = {
 	stageDone:false,
 	conf: {
 		radius: 10,
-		mass: 3.989 * Math.pow(10, 3),
+		mass: 13.989 * Math.pow(10, 3),
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
 		visual: { emoji: "🎅🏿", radius: 30 },//⛄
 		success:{cur:new Number(0),need:new Number(1),done:false},
 	},
-	// BlackHoles --------------------
+	// Planets --------------------
 	addABounch: function (number = false) {
 		if (!number) number = this.maxAtTime;
 		for (let z = 0; z < number; z++) this.add();
@@ -61,9 +61,9 @@ let _planet = {
 		this.counter++;
 		this.addNeedDiv(p)
 	},
-	addNeedsDiv: function () {
+	addVignettesDiv: function () {
 		// this.success.need += this.conf.success.need
-		this.needsDiv = tools.createDiv({
+		this.vignettesDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
 				className: "needs",
@@ -72,7 +72,7 @@ let _planet = {
 				position: "absolute",
 			},
 		});
-		document.body.appendChild(this.needsDiv)
+		document.body.appendChild(this.vignettesDiv)
 	},
 	addNeedDiv: function (p) {
 		p.needDiv = tools.createDiv({
@@ -88,10 +88,12 @@ let _planet = {
 		clone.id='n_'+p.id
 		clone.className='need-item'
 		p.needDiv.appendChild(clone)
-		this.needsDiv.appendChild(p.needDiv)
+		this.vignettesDiv.appendChild(p.needDiv)
 
 	},
 	resetAll: function () {
+        
+
         let PLANETS = this.objects
         for (const id in PLANETS) {
 			if (Object.hasOwnProperty.call(PLANETS, id)) {
@@ -115,6 +117,7 @@ let _planet = {
 		this.success.cur++;
 		// m.div.remove();
 
+        _messages.add({name:'getplanete'})
 		Game.rewards('missile',100,m);//Math.floor(100/_mobs.datas.missile.counter));
 
 		if (p.conf.success.cur>=p.conf.success.need) {
@@ -135,6 +138,13 @@ let _planet = {
 		}
 		_mobs.deleteObject(m)
 	},
+	aplliquerGravity: function (m) {
+		for (const id in this.bobjects) {
+			if (Object.hasOwnProperty.call(this.objects, id)) {
+				_newton.appliquerGravite(m, this.objects[id]);
+			}
+		}
+	},
 	animeStep: function (m) {
 		// let empty = true;
         let PLANETS = this.objects
@@ -142,6 +152,9 @@ let _planet = {
 			if (Object.hasOwnProperty.call(PLANETS, id)) {
                 let p = PLANETS[id]
 				if(p.conf.done!=true){
+					
+				_newton.appliquerGravite(m, p);
+
 					let distance = tools.calculateDistance(
 						m.conf.position.x,// + Game.worldpos.left,
 						m.conf.position.y,// + Game.worldpos.height,
@@ -153,6 +166,7 @@ let _planet = {
 						// console.log('ooo DONE oooooooooo')
 						// this.addChild(m)
 						this.addSuccess(m,p)
+						Game.checkIfOneClick()
 						p.div.style.filter = `hue-rotate(180deg)`;
 					}
 					// if (distance<50) {

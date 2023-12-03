@@ -4,15 +4,15 @@ let _rewards = {
 	counter: new Number(0),
 	getRewardsType: () => {
 		let cadeaux = [
-			{ visual: { emoji: "🕯️", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🎄", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "⛄", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🎅🏿", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🤶🏾", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🎁", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "❄️", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🌟", range: 24 , skillName:'antigravity'} },
-			{ visual: { emoji: "🔔", range: 24 , skillName:'antigravity'} },
+			{ visual: { emoji: "🕯️", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🎄", range: 24 , type:'skills'} },
+			{ visual: { emoji: "⛄", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🎅🏿", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🤶🏾", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🎁", range: 24 , type:'skills'} },
+			{ visual: { emoji: "❄️", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🌟", range: 24 , type:'skills'} },
+			{ visual: { emoji: "🔔", range: 24 , type:'skills'} },
 		];
 		let rand = tools.rand(0, cadeaux.length - 1);
 		rand = JSON.parse(JSON.stringify(cadeaux[rand]));
@@ -27,24 +27,32 @@ let _rewards = {
 		visual: { emoji: "🎁", radius: 24 },
 		vitesse: 0,
 		success: { cur: new Number(0), need: new Number(1), done: false },
-		autonomie: { cur: new Number(1000) },
+		autonomie: { cur: new Number(0) ,max: new Number(1000) },
 		birthDate: new Date(),
 		collected: false,
+	},
+	collecting(r) {
+		r.conf.collected = true;
+		r.div.classList.add("collected");
+		_messages.add({name:'getbonus'})
+
+		_skills.add(r)
+
+		
+		setTimeout(() => {
+			r.div.remove();
+			delete r;
+		}, 100);
+		delete this.objects[id];
+		this.counter--;
 	},
 	animeStep(m) {
 		for (const id in this.objects) {
 			if (Object.hasOwnProperty.call(this.objects, id)) {
 				let r = this.objects[id];
 				if (!r.conf.collected && this.checkCollide(m, r)) {
-					r.conf.collected = true;
-					r.div.classList.add("collected");
-					console.log("collide");
-					setTimeout(() => {
-						r.div.remove();
-						delete r;
-					}, 1000);
-					delete this.objects[id];
-					this.counter--;
+					let r = this.objects[id];
+					this.collecting(r)
 				}
 			}
 		}
@@ -71,6 +79,7 @@ let _rewards = {
 		console.log(type)
 		r.conf.visual.emoji = type.visual.emoji;
 		r.conf.range = type.visual.range;
+		r.conf.rewardtype = type.visual.type;
 
 		r.conf.position.x = m.conf.position.x + 0;
 		r.conf.position.y = m.conf.position.y + 0;

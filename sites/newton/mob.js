@@ -16,7 +16,7 @@ let _mobs = {
 				visual: { emoji: "🎱", radius: 30 },
 				vitesse:0,
 				success:{cur:new Number(0),need:new Number(1),done:false},
-				autonomie:{cur:new Number(1000)},
+				autonomie:{cur:new Number(0),max:new Number(1000)},
 				birthDate:new Date(),
 			},
 		},
@@ -27,7 +27,7 @@ let _mobs = {
 			this.coupsDiv = tools.createDiv({
 				tag: "div",
 				attributes: {
-					className: "coups",
+					className: "vignettecoups",
 				},
 				style: {
 					position: "absolute",
@@ -35,37 +35,58 @@ let _mobs = {
 			});
 			document.body.appendChild(this.coupsDiv)
 	},
-	addCoupDiv: function (m) {
-		m.coupDiv = tools.createDiv({
+	addVignette: function (m) {
+		m.containerDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
-				className: "coup",
+				className: "container",
 			},
 			style: {
+				position: "absolute",
 			},
 		});
-		m.numDiv = tools.createDiv({
+		m.timerDiv = tools.createDiv({
 			tag: "div",
 			attributes: {
-				className: "num",
+				className: "timer",
+			},
+			style: {
+				position:'absolute',
+			}
+		});
+		m.VignetteDiv = tools.createDiv({
+			tag: "div",
+			attributes: {
+				className: "vignette",
+			}
+		});
+		m.clikDiv = tools.createDiv({
+			tag: "div",
+			attributes: {
+				className: "clickable",
 				textContent: this.datas.missile.counter+1,
 			},
 			style: {
 				position:'absolute',
-			},
+			}
 		});
 		let clone = m.visualDiv.cloneNode(true)
 		clone.style='';
-		clone.id='mc_'+m.id
-		clone.className='coup-item'
-		m.coupDiv.appendChild(clone)
-		m.coupDiv.appendChild(m.numDiv)
-		m.coupDiv.addEventListener("click", (event) => {
-			m.coupDiv.classList.add('removed')
+		clone.id='mc_'+m.id;
+		clone.className='vignette-item';
+
+		m.containerDiv.appendChild(m.timerDiv)
+		m.containerDiv.appendChild(clone)
+		m.containerDiv.appendChild(m.clikDiv)
+		
+		m.VignetteDiv.appendChild(m.containerDiv)
+
+		m.clikDiv.addEventListener("click", (event) => {
+			m.VignetteDiv.classList.add('removed')
 			// this.destroy(m)
 			this.deleteObject(m)
 		});
-		this.coupsDiv.prepend(m.coupDiv)
+		this.coupsDiv.prepend(m.VignetteDiv)
 	},
 	resetAll: function () {
         let MISSILES = this.datas['missile'].objects
@@ -76,11 +97,12 @@ let _mobs = {
 				m.dead=true
 			}
 		}
+        this.datas.missile.counter = 0
 		// this.datas['missile'].objects = {}
 		// this.datas['missile'].counter = new Number(0)
 		// this.datas['missile'].id = new Number(0)
 	},
-	addNewMob: function (datas = false) {
+	add: function (datas = false) {
         conf = (datas && datas.type && typeof this.datas[datas.type] != "undefined")
             ? JSON.parse(JSON.stringify(this.datas[datas.type].conf))
             : JSON.parse(JSON.stringify(this.datas["missile"].conf));
@@ -90,7 +112,7 @@ let _mobs = {
 			conf.position.y = p.y ? datas.conf.position.y + 0 : tools.rand(conf.radius, Game.worldpos.height - conf.radius);
 		}
 		let allObjects = this.datas[conf.type].objects;
-		let counter = this.datas[conf.type].counter;
+		// let counter = this.datas[conf.type].counter;
 		let id = this.datas[conf.type].id;
 		
 		allObjects[id] = { conf: conf };
@@ -111,12 +133,12 @@ let _mobs = {
 			attributes: {
 				id: "mv_" + id,
 				className: "visual",
-				textContent: m.conf.visual.emoji,
+				// textContent: m.conf.visual.emoji,
 				innerHTML: _svg.spaceship.getsvg(m),
 			},
 			style: {
-				width: m.conf.visual.radius * 1.5 + "px",
-				height: m.conf.visual.radius * 1.5 + "px",
+				width: m.conf.visual.radius * 2 + "px",
+				height: m.conf.visual.radius * 2 + "px",
 			},
 		});
 		
@@ -125,13 +147,15 @@ let _mobs = {
 		this.refreshObjectDivPos(m);
 		m.div.appendChild(m.visualDiv);
 		Game.world.appendChild(m.div);
-		this.addCoupDiv(m);
 
+		this.addVignette(m);
+		
+		_messages.add({name:'newmissile'});
 		this.datas[conf.type].id++;
 		this.datas[conf.type].counter++;
 	},
 	deleteObject: function (m) {
-		m.coupDiv.remove()
+		m.VignetteDiv.remove()
 		m.div.remove();
 		delete this.datas[m.conf.type].objects[m.id];
 		this.datas[m.conf.type].counter--;
@@ -165,7 +189,7 @@ let _mobs = {
 	// 	for (let z = 0; z < number; z++) this.addMob();
 	// },
 	isoutScreen: function (m) {
-        if (m.conf.position.x < m.conf.radius){ m.conf.position.x = Game.worldpos.width - m.conf.radius - 1 }
+        if (m.conf.position.x < m.conf.radius){ m.conf.position.x = Game.worldpos.width - m.conf.radius - 1}
         if (m.conf.position.x > Game.worldpos.width - m.conf.radius){ m.conf.position.x = m.conf.radius + 1}
         if (m.conf.position.y < m.conf.radius){ m.conf.position.y = Game.worldpos.height - m.conf.radius - 1}
         if (m.conf.position.y > Game.worldpos.height - m.conf.radius){ m.conf.position.y = m.conf.radius + 1}
@@ -195,19 +219,19 @@ let _mobs = {
 			m.div.classList.remove("rebond");
 		}, 100);
 	},
-	setVelocity: function (o) {
-		o.conf.distanceToMouse = Math.sqrt(
-			Math.pow(_mouse.mouse.x - o.conf.position.x, 2) +
-			Math.pow(_mouse.mouse.y - o.conf.position.y, 2)
+	setVelocity: function (m) {
+		m.conf.distanceToMouse = Math.sqrt(
+			Math.pow(_mouse.mouse.x - Game.worldpos.x - m.conf.position.x, 2) +
+			Math.pow(_mouse.mouse.y - Game.worldpos.y - m.conf.position.y, 2)
 		);
-		let speed = Math.min(Math.max(2, o.conf.distanceToMouse / 50), 6);
+		let speed = Math.min(Math.max(2, m.conf.distanceToMouse / 50), 6);
 
-        o.conf.angleToMouse = Math.atan2(
-            _mouse.mouse.y - o.conf.position.y,
-            _mouse.mouse.x - o.conf.position.x
+        m.conf.angleToMouse = Math.atan2(
+            _mouse.mouse.y - Game.worldpos.y - m.conf.position.y,
+            _mouse.mouse.x - Game.worldpos.x - m.conf.position.x
         );
-        o.conf.velocity.x = speed * Math.cos(o.conf.angleToMouse);
-        o.conf.velocity.y = speed * Math.sin(o.conf.angleToMouse);
+        m.conf.velocity.x = speed * Math.cos(m.conf.angleToMouse);
+        m.conf.velocity.y = speed * Math.sin(m.conf.angleToMouse);
 
 	},
 	setAriaVitesse: function (m) {
@@ -233,13 +257,21 @@ let _mobs = {
                 }
                 if(m.dead!=true){
 					
-					// check recup rewards
+					// check si recup rewards
 					_rewards.animeStep(m)
 
-                    // tools.rand(0,1) > .5 ? this.isoutScreen(m) : this.checkRebond(m);
-                    this.checkRebond(m)
+                    // // tools.rand(0,1) > .5 ? this.isoutScreen(m) : this.checkRebond(m);
+                    // this.checkRebond(m)
+					m.timerDiv.style.height = (m.conf.autonomie.pourcent * 30)+'px'
+
                     _blackHoles.aplliquerBlackHoles(m)
 					_planet.animeStep(m)
+
+                    if (Game.borderLimited){
+						this.checkRebond(m)
+					 } else {
+						this.isoutScreen(m)
+					};
                 }
 				// _mobs.checkVelocityRange(m)
                 if(m.conf.success.cur < m.conf.success.need){
@@ -255,9 +287,12 @@ let _mobs = {
 					m.visualDiv.className= 'visual point';
 				}
 				
-                if(m.dead!=true && m.conf.autonomie.cur > 0){
-					m.conf.autonomie.cur--
-					if (m.conf.autonomie.cur < 1){
+                if(m.dead!=true && m.conf.autonomie.cur < m.conf.autonomie.max){
+					m.conf.autonomie.cur++
+
+					m.conf.autonomie.pourcent = 1 - (m.conf.autonomie.cur / m.conf.autonomie.max)
+
+					if (m.conf.autonomie.cur >= m.conf.autonomie.max){
 						m.div.classList.add('endtime')
 						m.dead=true;
 						this.deleteObject(m)

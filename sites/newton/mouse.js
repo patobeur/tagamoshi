@@ -9,15 +9,16 @@ const _mouse = {
 		},
 		mire:{
 			r:10,//px
-		}
+		},
+		distanceToBase:0,
 	},
 	addMouseMove() {
 		document.addEventListener("mousemove", (event) => {
 			// this.mouse.active = true;
 			this.mouse.x = event.clientX;
 			this.mouse.y = event.clientY;
-			this.mireDiv.style.top = this.mouse.y - this.mouse.mire.r - Game.worldpos.top +'px'
-			this.mireDiv.style.left = this.mouse.x - this.mouse.mire.r - Game.worldpos.left +'px'
+			this.mireDiv.style.top = this.mouse.y - this.mouse.mire.r - Game.worldpos.y +'px'
+			this.mireDiv.style.left = this.mouse.x - this.mouse.mire.r - Game.worldpos.x +'px'
 			let currentbase = Game.Bases.bases[Game.Bases.id-1]
 			if(currentbase){
 				_mouse.refreshMouseAngleTo(currentbase)
@@ -32,27 +33,32 @@ const _mouse = {
 			// this.mouse.active = true;
 			this.mouse.x = event.clientX;
 			this.mouse.y = event.clientY;
-			let currentbase = Game.Bases.bases[Game.Bases.id-1]
-			if(currentbase){
-				_mouse.refreshMouseAngleTo(currentbase)
-				_mouse.refreshMouseAngleRadiansTo(currentbase)
-				_mouse.refreshMouseDistanceTo(currentbase)
-				Game.Bases.onMouseMoove();
+			// let currentbase = Game.Bases.bases[Game.Bases.id-1]
+			// if(currentbase){
+			// 	_mouse.refreshMouseDistanceTo(currentbase)
+			// 	_mouse.refreshMouseAngleTo(currentbase)
+			// 	_mouse.refreshMouseAngleRadiansTo(currentbase)
+			// 	Game.Bases.onMouseMoove();
+			// }
+			if(event.target.className!='clickable') {
+				Game.Bases.onMouseclick(event);
 			}
-			Game.Bases.onMouseclick(event);
 		});
 	},
 	addMouseRightClick() {
 		document.addEventListener("contextmenu", (event) => {
 			this.mouse.x = event.clientX;
 			this.mouse.y = event.clientY;
-			this.mouse.active = true;
-			event.preventDefault();
-			return false;
+			if(event.target.className!='clickable') {
+				this.mouse.active = true;
+				event.preventDefault();
+				return false;
+			}
 		});
 	},
-	refreshPowerDiv: function (distance) {
-		this.mouse.power.level = distance/window.innerHeight
+	refreshPowerDiv: function () {
+		// this.mouse.power.level = this.distanceToBase/window.innerHeight
+		this.mouse.power.level = this.distanceToBase/Game.worldpos.height
 		this.power.style.height = (this.mouse.power.level*this.mouse.power.height)+'px'
 		this.power.style.filter = `hue-rotate(${this.mouse.power.level*270}deg)`
 	},
@@ -62,22 +68,26 @@ const _mouse = {
 		if(this.angleRadiansDiv) this.angleRadiansDiv.textContent = Math.floor(angleRadians) + "r";
 	},
 	refreshMouseAngleTo: function (o) {
-		let modif = 90
-		let angle = tools.getAngleToMouseDegrees(o) + modif
+		let angle = tools.getAngleToMouseDegrees(o)
 		o.conf.angleToMouse = angle
 		if(this.anglediv) this.anglediv.textContent = Math.floor(angle) + "°";
 	},
     refreshMouseDistanceTo: function (currentbase) {
-		let o = currentbase
-		const distance = Math.floor(tools.calculateDistance(
-			o.conf.position.x,
-			o.conf.position.y,
-			this.mouse.x,
-			this.mouse.y
+		let cBase = currentbase
+		this.distanceToBase = Math.floor(tools.calculateDistance(
+			cBase.conf.position.x,
+			cBase.conf.position.y,
+			this.mouse.x - Game.worldpos.x,
+			this.mouse.y - Game.worldpos.y,
 		));
-		o.conf.distanceToMouse = distance
-		if(this.distanceToBaseDiv) this.distanceToBaseDiv.textContent = distance + "px";
-		if(this.refreshPowerDiv) this.refreshPowerDiv(distance)
+		// console.log('--------------------')
+		// console.log('this.mouse.x-Game.worldpos.x',this.mouse.x-Game.worldpos.x)
+		// console.log('cBase.conf.position.x',cBase.conf.position.x)
+		// console.log('Game.worldpos.x',Game.worldpos.x)
+		cBase.conf.distanceToMouse = this.distanceToBase
+
+		if(this.distanceToBaseDiv) this.distanceToBaseDiv.textContent = this.distanceToBase + "px";
+		if(this.refreshPowerDiv) this.refreshPowerDiv()
 	},
 	displayPowerDiv: function () {
 		this.power = tools.createDiv({
@@ -153,8 +163,8 @@ const _mouse = {
 		const touch = event.touches[0];
 		this.mouse.x = touch.clientX;
 		this.mouse.y = touch.clientY;
-		this.mireDiv.style.top = this.mouse.y - this.mouse.mire.r - Game.worldpos.top + 'px';
-		this.mireDiv.style.left = this.mouse.x - this.mouse.mire.r - Game.worldpos.left + 'px';
+		this.mireDiv.style.top = this.mouse.y - this.mouse.mire.r - Game.worldpos.y + 'px';
+		this.mireDiv.style.left = this.mouse.x - this.mouse.mire.r - Game.worldpos.x + 'px';
 		let currentbase = Game.Bases.bases[Game.Bases.id - 1];
 		if (currentbase) {
 		  _mouse.refreshMouseAngleTo(currentbase);
@@ -212,8 +222,8 @@ const _mouse = {
 		this.displayPowerDiv()
 		this.displayMire()
 		this.addMouseMove();
-		// this.displayAngleRadiansDiv()
-		// this.displayAngleDiv()
-		// this.displayDistanceDiv()
+		this.displayAngleRadiansDiv()
+		this.displayAngleDiv()
+		this.displayDistanceDiv()
 	},
 };

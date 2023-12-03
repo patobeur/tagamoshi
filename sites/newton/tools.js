@@ -67,8 +67,8 @@ const tools = {
 	getAngleToMouseDegrees: function (obj, adjusted = false) {
 		
 		let radians = Math.atan2(
-			_mouse.mouse.y - Game.worldpos.top - obj.conf.position.y,
-			_mouse.mouse.x - Game.worldpos.left - obj.conf.position.x
+			_mouse.mouse.y - Game.worldpos.y - obj.conf.position.y,
+			_mouse.mouse.x - Game.worldpos.x - obj.conf.position.x
 		);
 		let degrees = (radians * 180) / Math.PI;
 		if (adjusted) degrees = (degrees + 360) % 360; // angle de 0 à 360 degrés
