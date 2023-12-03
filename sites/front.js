@@ -35,7 +35,7 @@ let _front = {
                     className: "codepen", 
                     target: "_codepen", 
                     title: "Nouvelle page sur Codepen !", 
-                    href: 'https://codepen.io/Patobeur'
+                    href: (typeof fuseecodepen != 'undefined' && fuseecodepen) ? fuseecodepen : 'https://codepen.io/Patobeur'
             }})
             let github = _T.tools.createDiv({
                 tag: 'a', 
@@ -43,7 +43,7 @@ let _front = {
                     className: "github", 
                     target: "_github", 
                     title: "Nouvelle page sur Github !",
-                    href: 'https://github.com/patobeur'
+                    href: (typeof fuseegithub != 'undefined' && fuseegithub) ? fuseegithub : 'https://github.com/patobeur'
             }})
             rs.appendChild(codepen)
             rs.appendChild(github)

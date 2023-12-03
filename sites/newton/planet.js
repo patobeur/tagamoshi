@@ -10,8 +10,8 @@ let _planet = {
 	},
 	stageDone:false,
 	conf: {
-		radius: 10,
-		mass: 13.989 * Math.pow(10, 3),
+		radius: Game.planetesRadius,
+		mass: Game.planetesMass,
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
 		visual: { emoji: "🎅🏿", radius: 30 },//⛄
@@ -152,8 +152,8 @@ let _planet = {
 			if (Object.hasOwnProperty.call(PLANETS, id)) {
                 let p = PLANETS[id]
 				if(p.conf.done!=true){
-					
-				_newton.appliquerGravite(m, p);
+
+					if (Game.planetesActivity) _newton.appliquerGravite(m, p);
 
 					let distance = tools.calculateDistance(
 						m.conf.position.x,// + Game.worldpos.left,
@@ -163,17 +163,15 @@ let _planet = {
 					)
 					if (distance<15) {
 						p.conf.done = true
-						// console.log('ooo DONE oooooooooo')
-						// this.addChild(m)
 						this.addSuccess(m,p)
 						Game.checkIfOneClick()
 						p.div.style.filter = `hue-rotate(180deg)`;
 					}
-					// if (distance<50) {
+					// if (distance<30) {
 					// 	console.log('------------------------')
 					// 	this.addChild(m)
 					// }
-					// empty = false
+					empty = false
 				}
 			}
 		}

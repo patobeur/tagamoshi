@@ -4,8 +4,8 @@ let _blackHoles = {
 	bobjectsCounter: new Number(0),
 	maxAtTime: new Number(1),
 	blackHoleConf: {
-		radius: 200,
-		mass: 3.989 * Math.pow(10, 3),
+		radius: Game.blackHolesRadius,
+		mass: Game.blackHolesMass,
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
 		visual: { emoji: "🎱", radius: 100 },

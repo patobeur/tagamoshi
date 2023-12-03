@@ -195,8 +195,14 @@ const Game = {
         
 	},
     // Skill value powers
-    bhActivity:true,
     borderLimited:true,
+    
+    planetesActivity:false,
+    planetesMass:3.989 * Math.pow(10, 3),
+
+    blackholesActivity:true,
+    blackHolesRadius:200,
+    blackHolesMass:3.989 * Math.pow(10, 3),
     //
 };
 document.addEventListener("DOMContentLoaded", function () {
