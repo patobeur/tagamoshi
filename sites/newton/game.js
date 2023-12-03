@@ -30,7 +30,8 @@ const Game = {
         this.stageLvDiv.textContent=this.stageLv;
     },
     extraRewards: function (m){
-        console.log('extraRewards')
+        // console.log('extraRewards')
+        _messages.add('extraRewards')
         _rewards.add(m)
 
     },
@@ -175,13 +176,14 @@ const Game = {
 	go: function () {
         tools.addCss(_css());
         this.addWorld()
+		_mouse.init();
+        _planet.init();
+        _blackHoles.init();
         
         this.Bases = _base()
         this.Bases.init(this.world)
 
-		_mouse.init();
 		this.animate();
-        
 		_planet.addVignettesDiv();
 		_mobs.addCoupsDiv();
 
@@ -196,9 +198,10 @@ const Game = {
 	},
     // Skill value powers
     borderLimited:true,
-    
+
     planetesActivity:false,
     planetesMass:3.989 * Math.pow(10, 3),
+    planetesRadius:10,
 
     blackholesActivity:true,
     blackHolesRadius:200,

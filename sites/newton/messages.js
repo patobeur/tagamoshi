@@ -36,8 +36,8 @@ let _messages = {
 			newmissile:{ emoji: "🕯️", ele:{textContent:(_mobs.datas.missile.maxAtTime+1)+' fusées disponibles.'} },
 			newplanet:{ emoji: "🕯️", ele:{textContent:_planet.maxAtTime+' planètes à sauver.'} },
 			newblackHoles:{ emoji: "🕯️", ele:{textContent:_blackHoles.maxAtTime+' trous noirs à proximité..'} },
-
-			oneClick:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'One click ! Only bro !!'} },
+			extraRewards:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'Extra Cadeau !! ....'} },
+			oneClick:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:`D'un coup  !!`} },
 			getbonus:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'You get a bonus !!'} },
 			getplanete:{ emoji: "🕯️", ele:{color:'yellow',fontsize:'1.2rem',textContent:'You saved us !! ...............'} },
 			nombreCoups:{ emoji: "🕯️", ele:{color:'green',fontsize:'1.1rem',textContent:'en '+Game.shoots + ' coup'+(Game.shoots>1?'s':'')+'...'} },

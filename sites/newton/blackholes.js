@@ -4,11 +4,15 @@ let _blackHoles = {
 	bobjectsCounter: new Number(0),
 	maxAtTime: new Number(1),
 	blackHoleConf: {
-		radius: Game.blackHolesRadius,
-		mass: Game.blackHolesMass,
+		radius: 200,
+		mass: 3.989 * Math.pow(10, 3),
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
 		visual: { emoji: "🎱", radius: 100 },
+	},
+	init(){
+		this.radius= Game.blackHolesRadius;
+		this.mass= Game.blackHolesMass
 	},
 	// BlackHoles --------------------
 	addABounch: function (number = false) {
@@ -59,7 +63,7 @@ let _blackHoles = {
 		this.refreshBObjectDivPos(this.boId);
 		this.boId++;
 		this.bobjectsCounter++;
-		console.log(bo);
+		// console.log(bo);
 	},
 	refreshBObjectDivPos: function (oid) {
 		let o = this.bobjects[oid];

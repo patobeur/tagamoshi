@@ -10,12 +10,16 @@ let _planet = {
 	},
 	stageDone:false,
 	conf: {
-		radius: Game.planetesRadius,
-		mass: Game.planetesMass,
+		radius: 10,
+		mass: 3.989 * Math.pow(10, 3),
 		velocity: { x: 0, y: 0 },
 		position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
 		visual: { emoji: "🎅🏿", radius: 30 },//⛄
 		success:{cur:new Number(0),need:new Number(1),done:false},
+	},
+	init(){
+		this.conf.radius= Game.planetesRadius;
+		this.conf.mass= Game.planetesMass
 	},
 	// Planets --------------------
 	addABounch: function (number = false) {
@@ -56,7 +60,7 @@ let _planet = {
 		p.div.appendChild(p.visualDiv);
 		Game.world.appendChild(p.div);
 		this.success.need += this.conf.success.need
-		console.log(this.success,'+=',this.conf.success.need)
+		// console.log(this.success,'+=',this.conf.success.need)
 		this.id++;
 		this.counter++;
 		this.addNeedDiv(p)

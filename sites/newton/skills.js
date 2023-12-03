@@ -46,7 +46,7 @@ let _skills = {
 		},
 	},
 	init() {
-		console.log('datas')
+		// console.log('datas')
 		this.addSkillsDiv()
 		this.addAllSkills()
 	},
@@ -133,7 +133,7 @@ let _skills = {
 	},
 	activateSkill(skillName) {
 		let skill = this.skills[skillName];
-		console.log(skill)
+		// console.log(skill)
 		skill.div.classList.add('up')
 		skill.counter++
 		skill.div.addEventListener("click", (event) => {
@@ -146,7 +146,7 @@ let _skills = {
 	clickSkill(skill){
 		if(skill.autonomie.cur>0){
 			skill.div.classList.remove('running')
-			console.log('stop skill ?')
+			// console.log('stop skill ?')
 			this.endskilltimer(skill)
 		}
 		else {
@@ -159,8 +159,8 @@ let _skills = {
 		}
 	},
 	add(r) {
-		console.log(r)
-		console.log(r.conf.rewardtype)
+		// console.log(r)
+		// console.log(r.conf.rewardtype)
 		
 		let rand = tools.rand(0,this.skillsNames.length-1)
 		let skillName = this.skillsNames[rand]
